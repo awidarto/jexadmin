@@ -239,26 +239,16 @@ class IncomingController extends AdminController {
             array('DESCRIPTN',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
         );
 
-        $db = Config::get('lundin.main_db');
+        $db = Config::get('jayon.main_db');
 
-        $company = Input::get('acc-company');
+        $this->def_order_by = 'ordertime';
+        $this->def_order_dir = 'desc';
+        $this->place_action = 'first';
+        $this->show_select = true;
 
-        $company = strtolower($company);
-
-        if(Schema::hasTable( $db.'.'.$company.'_a_salfldg' )){
-            $company = Config::get('lundin.default_company');
-        }
-
-        $company = strtolower($company);
-
-        $this->def_order_by = 'TRANS_DATETIME';
-        $this->def_order_dir = 'DESC';
-        $this->place_action = 'none';
-        $this->show_select = false;
-
-        $this->sql_key = 'TRANS_DATETIME';
-        $this->sql_table_name = $company.'_a_salfldg';
-        $this->sql_connection = 'mysql2';
+        $this->sql_key = 'delivery_id';
+        $this->sql_table_name = Config::get('jayon.incoming_delivery_table');
+        $this->sql_connection = 'mysql';
 
         $this->responder_type = 's';
 
@@ -316,26 +306,16 @@ class IncomingController extends AdminController {
             array('DESCRIPTN',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
         );
 
-        $db = Config::get('lundin.main_db');
+        $db = Config::get('jayon.main_db');
 
-        $company = Input::get('acc-company');
+        $this->def_order_by = 'ordertime';
+        $this->def_order_dir = 'desc';
+        $this->place_action = 'first';
+        $this->show_select = true;
 
-        $company = strtolower($company);
-
-        if(Schema::hasTable( $db.'.'.$company.'_a_salfldg' )){
-            $company = Config::get('lundin.default_company');
-        }
-
-        $company = strtolower($company);
-
-        $this->def_order_by = 'TRANS_DATETIME';
-        $this->def_order_dir = 'DESC';
-        $this->place_action = 'none';
-        $this->show_select = false;
-
-        $this->sql_key = 'TRANS_DATETIME';
-        $this->sql_table_name = $company.'_a_salfldg';
-        $this->sql_connection = 'mysql2';
+        $this->sql_key = 'delivery_id';
+        $this->sql_table_name = Config::get('jayon.incoming_delivery_table');
+        $this->sql_connection = 'mysql';
 
         $this->responder_type = 's';
 
