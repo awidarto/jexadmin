@@ -50,9 +50,9 @@ return array(
             'driver'   => 'mongodb',
             'host'     => 'localhost',
             'port'     => 27017,
-            'username' => 'assetman',
-            'password' => 'hotswap',
-            'database' => 'lundin'
+            'username' => 'jayonexpress',
+            'password' => 'bosseddy234',
+            'database' => 'jayonexpress'
         ),
 
 		'sqlite' => array(
