@@ -58,10 +58,13 @@ class DeliveryapiController extends \BaseController {
         $txtab = \Config::get('jayon.incoming_delivery_table');
 
         $orders = $this->model
-                    ->select(\Config::get('jayon.incoming_delivery_table').'.*',
-                                \Config::get('jayon.jayon_members_table').'.merchantname as merchant_name',
-                                \Config::get('jayon.applications_table').'.application_name as app_name',
-                                $txtab.'.width * '.$txtab.'.height * '.$txtab.'.length as vol'
+                    ->select(
+                            \DB::raw(
+                                \Config::get('jayon.incoming_delivery_table').'.* ,'.
+                                \Config::get('jayon.jayon_members_table').'.merchantname as merchant_name ,'.
+                                \Config::get('jayon.applications_table').'.application_name as app_name ,'.
+                                '('.$txtab.'.width * '.$txtab.'.height * '.$txtab.'.length ) as volume'
+                            )
                     )
                     ->leftJoin(\Config::get('jayon.jayon_members_table'), \Config::get('jayon.incoming_delivery_table').'.merchant_id', '=', \Config::get('jayon.jayon_members_table').'.id' )
                     ->leftJoin(\Config::get('jayon.applications_table'), \Config::get('jayon.incoming_delivery_table').'.application_id', '=', \Config::get('jayon.applications_table').'.id' )

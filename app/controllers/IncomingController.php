@@ -192,26 +192,36 @@ class IncomingController extends AdminController {
     {
 
         $this->heads = array(
-            array('Period',array('search'=>true,'sort'=>true, 'style'=>'min-width:90px;','daterange'=>true)),
-            array('Date',array('search'=>true,'sort'=>true, 'style'=>'min-width:100px;','daterange'=>true)),
-            array('JV Ref',array('search'=>true,'sort'=>true, 'style'=>'min-width:120px;')),
-            array('Account',array('search'=>true,'style'=>'min-width:100px;','sort'=>true)),
-            array('Account Description',array('search'=>true,'style'=>'min-width:125px;','sort'=>true)),
-            array('Reference Doc.',array('search'=>true,'sort'=>true)),
-            array('Orig. Currency',array('search'=>true,'sort'=>true)),
-            array('Orig. Amount',array('search'=>true,'sort'=>true)),
-            array('Conversion Rate',array('search'=>true,'sort'=>true)),
-            array('Base Amount',array('search'=>true,'sort'=>true)),
-            array('Transaction Description',array('search'=>true,'sort'=>true)),
+            array('Timestamp',array('search'=>true,'sort'=>true, 'style'=>'min-width:90px;','daterange'=>true)),
+            array('PU Time',array('search'=>true,'sort'=>true, 'style'=>'min-width:100px;','daterange'=>true)),
+            array('PU Pic',array('search'=>true,'sort'=>true, 'style'=>'min-width:120px;')),
+            array('PU Person & Device',array('search'=>true,'style'=>'min-width:100px;','sort'=>true)),
+            array('Requested Delivery Date',array('search'=>true,'style'=>'min-width:125px;','sort'=>true, 'daterange'=>true )),
+            array('Requested Slot',array('search'=>true,'sort'=>true)),
+            array('Zone',array('search'=>true,'sort'=>true)),
+            array('City',array('search'=>true,'sort'=>true)),
+            array('Shipping Address',array('search'=>true,'sort'=>true, 'style'=>'max-width:200px;width:200px;' )),
+            array('No Kode Penjualan Toko',array('search'=>true,'sort'=>true)),
+            array('Type',array('search'=>true,'sort'=>true)),
+            array('Merchant & Shop Name',array('search'=>true,'sort'=>true)),
+            array('Delivery ID',array('search'=>true,'sort'=>true)),
+            array('Status',array('search'=>true,'sort'=>true)),
+            array('Directions',array('search'=>true,'sort'=>true)),
+            array('TTD Toko',array('search'=>true,'sort'=>true)),
+            array('Delivery Charge',array('search'=>true,'sort'=>true)),
+            array('COD Surcharge',array('search'=>true,'sort'=>true)),
+            array('COD Value',array('search'=>true,'sort'=>true)),
+            array('Buyer',array('search'=>true,'sort'=>true)),
+            array('ZIP',array('search'=>true,'sort'=>true)),
+            array('Phone',array('search'=>true,'sort'=>true)),
+            array('W x H x L = V',array('search'=>true,'sort'=>true)),
+            array('Weight Range',array('search'=>true,'sort'=>true)),
         );
 
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
         $this->title = 'General Ledger';
 
-        $this->place_action = 'none';
-
-        $this->show_select = false;
 
         Breadcrumbs::addCrumb('Cost Report',URL::to( strtolower($this->controller_name) ));
 
@@ -226,25 +236,38 @@ class IncomingController extends AdminController {
         //table generator part
 
         $this->fields = array(
-            array('PERIOD',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('TRANS_DATETIME',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('VCHR_NUM',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('ACCNT_CODE',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('j10_acnt.DESCR',array('kind'=>'text', 'alias'=>'ACC_DESCR' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-            array('TREFERENCE',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('CONV_CODE',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('OTHER_AMT',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true, 'class'=>'column-amt' )),
-            array('BASE_RATE',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true, 'class'=>'column-amt' )),
-            array('AMOUNT',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true, 'class'=>'column-amt' )),
-            array('DESCRIPTN',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
+            array('ordertime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('pickuptime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('buyerdeliverytime',array('kind'=>'daterange','query'=>'like','pos'=>'both','show'=>true)),
+            array('buyerdeliveryslot',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+            array('buyerdeliveryzone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('buyerdeliverycity',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('shipping_address',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('merchant_trans_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('delivery_type',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array(Config::get('jayon.jayon_members_table').'.merchantname',array('kind'=>'text','alias'=>'merchant_name','query'=>'like','callback'=>'merchantInfo','pos'=>'both','show'=>true)),
+            array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('status',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('directions',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('delivery_cost',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('cod_cost',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('total_price',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('buyer_name',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('shipping_zip',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('phone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('volume',array('kind'=>'numeric','query'=>'like','pos'=>'both','show'=>true)),
+            array('weight',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
         );
 
         $db = Config::get('jayon.main_db');
 
         $this->def_order_by = 'ordertime';
         $this->def_order_dir = 'desc';
-        $this->place_action = 'first';
-        $this->show_select = true;
+        $this->place_action = 'none';
+        $this->show_select = false;
 
         $this->sql_key = 'delivery_id';
         $this->sql_table_name = Config::get('jayon.incoming_delivery_table');
@@ -259,26 +282,35 @@ class IncomingController extends AdminController {
     {
 
         $this->heads = array(
-            array('Period',array('search'=>true,'sort'=>true, 'style'=>'min-width:90px;','daterange'=>true)),
-            array('Date',array('search'=>true,'sort'=>true, 'style'=>'min-width:100px;','daterange'=>true)),
-            array('JV Ref',array('search'=>true,'sort'=>true, 'style'=>'min-width:120px;')),
-            array('Account',array('search'=>true,'style'=>'min-width:100px;','sort'=>true)),
-            array('Account Description',array('search'=>true,'style'=>'min-width:125px;','sort'=>true)),
-            array('Reference Doc.',array('search'=>true,'sort'=>true)),
-            array('Orig. Currency',array('search'=>true,'sort'=>true)),
-            array('Orig. Amount',array('search'=>true,'sort'=>true)),
-            array('Conversion Rate',array('search'=>true,'sort'=>true)),
-            array('Base Amount',array('search'=>true,'sort'=>true)),
-            array('Transaction Description',array('search'=>true,'sort'=>true)),
+            array('Timestamp',array('search'=>true,'sort'=>true, 'style'=>'min-width:90px;','daterange'=>true)),
+            array('PU Time',array('search'=>true,'sort'=>true, 'style'=>'min-width:100px;','daterange'=>true)),
+            array('PU Pic',array('search'=>true,'sort'=>true, 'style'=>'min-width:120px;')),
+            array('PU Person & Device',array('search'=>true,'style'=>'min-width:100px;','sort'=>true)),
+            array('Requested Delivery Date',array('search'=>true,'style'=>'min-width:125px;','sort'=>true, 'daterange'=>true )),
+            array('Requested Slot',array('search'=>true,'sort'=>true)),
+            array('Zone',array('search'=>true,'sort'=>true)),
+            array('City',array('search'=>true,'sort'=>true)),
+            array('Shipping Address',array('search'=>true,'sort'=>true, 'style'=>'max-width:200px;width:200px;' )),
+            array('No Kode Penjualan Toko',array('search'=>true,'sort'=>true)),
+            array('Type',array('search'=>true,'sort'=>true)),
+            array('Merchant & Shop Name',array('search'=>true,'sort'=>true)),
+            array('Delivery ID',array('search'=>true,'sort'=>true)),
+            array('Status',array('search'=>true,'sort'=>true)),
+            array('Directions',array('search'=>true,'sort'=>true)),
+            array('TTD Toko',array('search'=>true,'sort'=>true)),
+            array('Delivery Charge',array('search'=>true,'sort'=>true)),
+            array('COD Surcharge',array('search'=>true,'sort'=>true)),
+            array('COD Value',array('search'=>true,'sort'=>true)),
+            array('Buyer',array('search'=>true,'sort'=>true)),
+            array('ZIP',array('search'=>true,'sort'=>true)),
+            array('Phone',array('search'=>true,'sort'=>true)),
+            array('W x H x L = V',array('search'=>true,'sort'=>true)),
+            array('Weight Range',array('search'=>true,'sort'=>true)),
         );
 
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
-        $this->title = 'General Ledger';
-
-        $this->place_action = 'none';
-
-        $this->show_select = false;
+        $this->title = 'Incoming Order';
 
         Breadcrumbs::addCrumb('Cost Report',URL::to( strtolower($this->controller_name) ));
 
@@ -293,25 +325,38 @@ class IncomingController extends AdminController {
         //table generator part
 
         $this->fields = array(
-            array('PERIOD',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true )),
-            array('TRANS_DATETIME',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('VCHR_NUM',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('ACCNT_CODE',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('j10_acnt.DESCR',array('kind'=>'text', 'alias'=>'ACC_DESCR' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-            array('TREFERENCE',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('CONV_CODE',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('OTHER_AMT',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true , 'class'=>'column-amt' )),
-            array('BASE_RATE',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true , 'class'=>'column-amt' )),
-            array('AMOUNT',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true , 'class'=>'column-amt' )),
-            array('DESCRIPTN',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
+            array('ordertime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('pickuptime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('buyerdeliverytime',array('kind'=>'daterange','query'=>'like','pos'=>'both','show'=>true)),
+            array('buyerdeliveryslot',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+            array('buyerdeliveryzone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('buyerdeliverycity',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('shipping_address',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('merchant_trans_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('delivery_type',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array(Config::get('jayon.jayon_members_table').'.merchantname',array('kind'=>'text','alias'=>'merchant_name','query'=>'like','callback'=>'merchantInfo','pos'=>'both','show'=>true)),
+            array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('status',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('directions',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('delivery_cost',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('cod_cost',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('total_price',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('buyer_name',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('shipping_zip',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('phone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('volume',array('kind'=>'numeric','query'=>'like','pos'=>'both','show'=>true)),
+            array('weight',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
         );
 
         $db = Config::get('jayon.main_db');
 
         $this->def_order_by = 'ordertime';
         $this->def_order_dir = 'desc';
-        $this->place_action = 'first';
-        $this->show_select = true;
+        $this->place_action = 'none';
+        $this->show_select = false;
 
         $this->sql_key = 'delivery_id';
         $this->sql_table_name = Config::get('jayon.incoming_delivery_table');
@@ -366,10 +411,13 @@ class IncomingController extends AdminController {
 
         $txtab = Config::get('jayon.incoming_delivery_table');
 
-        $model = $model->select(Config::get('jayon.incoming_delivery_table').'.*',
-            Config::get('jayon.jayon_members_table').'.merchantname as merchant_name',
-            Config::get('jayon.applications_table').'.application_name as app_name',
-            $txtab.'.width * '.$txtab.'.height * '.$txtab.'.length as vol'
+        $model = $model->select(
+                DB::raw(
+                    Config::get('jayon.incoming_delivery_table').'.* ,'.
+                    Config::get('jayon.jayon_members_table').'.merchantname as merchant_name ,'.
+                    Config::get('jayon.applications_table').'.application_name as app_name ,'.
+                    '('.$txtab.'.width * '.$txtab.'.height * '.$txtab.'.length ) as volume'
+                )
             )
             ->leftJoin(Config::get('jayon.jayon_members_table'), Config::get('jayon.incoming_delivery_table').'.merchant_id', '=', Config::get('jayon.jayon_members_table').'.id' )
             ->leftJoin(Config::get('jayon.applications_table'), Config::get('jayon.incoming_delivery_table').'.application_id', '=', Config::get('jayon.applications_table').'.id' )
