@@ -73,6 +73,20 @@ class DeliveryapiController extends \BaseController {
                     ->take(10)
                     ->get();
 
+        for($n = 0; $n < count($orders);$n++){
+            $or = new \stdClass();
+            foreach( $orders[$n] as $k=>$v ){
+                $nk = $this->underscoreToCamelCase($k);
+                $or->$nk = (is_null($v))?'':$v;
+            }
+
+            $or->extId = $or->id;
+            unset($or->id);
+
+            $orders[$n] = $or;
+        }
+
+
         $actor = $key;
         \Event::fire('log.api',array($this->controller_name, 'get' ,$actor,'logged out'));
 
@@ -156,5 +170,27 @@ class DeliveryapiController extends \BaseController {
         //
     }
 
+    public function underscoreToCamelCase( $string, $first_char_caps = false)
+    {
+
+        $strings = explode('_', $string);
+
+        if(count($strings) > 1){
+            for($i = 0; $i < count($strings);$i++){
+                if($i == 0){
+                    if($first_char_caps == true){
+                        $strings[$i] = ucwords($strings[$i]);
+                    }
+                }else{
+                    $strings[$i] = ucwords($strings[$i]);
+                }
+            }
+
+            return implode('', $strings);
+        }else{
+            return $string;
+        }
+
+    }
 
 }

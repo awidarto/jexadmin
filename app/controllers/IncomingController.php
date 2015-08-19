@@ -91,13 +91,13 @@ class IncomingController extends AdminController {
             array('PU Time',array('search'=>true,'sort'=>true, 'style'=>'min-width:100px;','daterange'=>true)),
             array('PU Pic',array('search'=>true,'sort'=>true, 'style'=>'min-width:120px;')),
             array('PU Person & Device',array('search'=>true,'style'=>'min-width:100px;','sort'=>true)),
-            array('Requested Delivery Date',array('search'=>true,'style'=>'min-width:125px;','sort'=>true, 'daterange'=>true )),
-            array('Requested Slot',array('search'=>true,'sort'=>true)),
+            array('Delivery Date',array('search'=>true,'style'=>'min-width:125px;','sort'=>true, 'daterange'=>true )),
+            array('Slot',array('search'=>true,'sort'=>true)),
             array('Zone',array('search'=>true,'sort'=>true)),
             array('City',array('search'=>true,'sort'=>true)),
             array('Shipping Address',array('search'=>true,'sort'=>true, 'style'=>'max-width:200px;width:200px;' )),
             array('No Kode Penjualan Toko',array('search'=>true,'sort'=>true)),
-            array('Type',array('search'=>true,'sort'=>true)),
+            array('Type',array('search'=>true,'sort'=>true,'select'=>Config::get('jayon.deliverytype_selector_legacy') )),
             array('Merchant & Shop Name',array('search'=>true,'sort'=>true)),
             array('Delivery ID',array('search'=>true,'sort'=>true)),
             array('Status',array('search'=>true,'sort'=>true)),
@@ -150,8 +150,8 @@ class IncomingController extends AdminController {
             array('buyerdeliveryzone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('buyerdeliverycity',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('shipping_address',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('merchant_trans_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('delivery_type',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('merchant_trans_id',array('kind'=>'text','callback'=>'dispBar' ,'query'=>'like','pos'=>'both','show'=>true)),
+            array('delivery_type',array('kind'=>'text','callback'=>'colorizetype' ,'query'=>'like','pos'=>'both','show'=>true)),
             array(Config::get('jayon.jayon_members_table').'.merchantname',array('kind'=>'text','alias'=>'merchant_name','query'=>'like','callback'=>'merchantInfo','pos'=>'both','show'=>true)),
             array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('status',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
@@ -286,13 +286,13 @@ class IncomingController extends AdminController {
             array('PU Time',array('search'=>true,'sort'=>true, 'style'=>'min-width:100px;','daterange'=>true)),
             array('PU Pic',array('search'=>true,'sort'=>true, 'style'=>'min-width:120px;')),
             array('PU Person & Device',array('search'=>true,'style'=>'min-width:100px;','sort'=>true)),
-            array('Requested Delivery Date',array('search'=>true,'style'=>'min-width:125px;','sort'=>true, 'daterange'=>true )),
-            array('Requested Slot',array('search'=>true,'sort'=>true)),
+            array('Delivery Date',array('search'=>true,'style'=>'min-width:125px;','sort'=>true, 'daterange'=>true )),
+            array('Slot',array('search'=>true,'sort'=>true)),
             array('Zone',array('search'=>true,'sort'=>true)),
             array('City',array('search'=>true,'sort'=>true)),
             array('Shipping Address',array('search'=>true,'sort'=>true, 'style'=>'max-width:200px;width:200px;' )),
             array('No Kode Penjualan Toko',array('search'=>true,'sort'=>true)),
-            array('Type',array('search'=>true,'sort'=>true)),
+            array('Type',array('search'=>true,'sort'=>true,'select'=>Config::get('jayon.deliverytype_selector') )),
             array('Merchant & Shop Name',array('search'=>true,'sort'=>true)),
             array('Delivery ID',array('search'=>true,'sort'=>true)),
             array('Status',array('search'=>true,'sort'=>true)),
@@ -742,20 +742,34 @@ class IncomingController extends AdminController {
         $this->heads = null;
 
         $this->fields = array(
-            array('PERIOD',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('TRANS_DATETIME',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('TREFERENCE',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('ACCNT_CODE',array('kind'=>'text', 'callback'=>'accDesc' ,'query'=>'like','pos'=>'both','show'=>true)),
-            array('DESCRIPTN',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('TREFERENCE',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('CONV_CODE',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('AMOUNT',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('AMOUNT',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('DESCRIPTN',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
+            array('ordertime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('pickuptime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('buyerdeliverytime',array('kind'=>'daterange','query'=>'like','pos'=>'both','show'=>true)),
+            array('buyerdeliveryslot',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+            array('buyerdeliveryzone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('buyerdeliverycity',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('shipping_address',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('merchant_trans_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('delivery_type',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array(Config::get('jayon.jayon_members_table').'.merchantname',array('kind'=>'text','alias'=>'merchant_name','query'=>'like','callback'=>'merchantInfo','pos'=>'both','show'=>true)),
+            array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('status',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('directions',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('delivery_cost',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('cod_cost',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('total_price',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('buyer_name',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('shipping_zip',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('phone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('volume',array('kind'=>'numeric','query'=>'like','pos'=>'both','show'=>true)),
+            array('weight',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
         );
 
-        $this->def_order_dir = 'DESC';
-        $this->def_order_by = 'TRANS_DATETIME';
+        $this->def_order_by = 'ordertime';
+        $this->def_order_dir = 'desc';
 
         return parent::postDlxl();
     }
@@ -1044,9 +1058,14 @@ class IncomingController extends AdminController {
     public function dispBar($data)
 
     {
-        $display = HTML::image(URL::to('qr/'.urlencode(base64_encode($data['SKU']))), $data['SKU'], array('id' => $data['_id'], 'style'=>'width:100px;height:auto;' ));
+        $display = HTML::image(URL::to('qr/'.urlencode(base64_encode($data['delivery_id'].'|'.$data['merchant_trans_id'] ))), $data['merchant_trans_id'], array('id' => $data['delivery_id'], 'style'=>'width:100px;height:auto;' ));
         //$display = '<a href="'.URL::to('barcode/dl/'.urlencode($data['SKU'])).'">'.$display.'</a>';
-        return $display.'<br />'. '<a href="'.URL::to('asset/detail/'.$data['_id']).'" >'.$data['SKU'].'</a>';
+        return $display.'<br />'. '<a href="'.URL::to('asset/detail/'.$data['delivery_id']).'" >'.$data['merchant_trans_id'].'</a>';
+    }
+
+    public function colorizetype($data)
+    {
+        return Prefs::colorizetype($data['delivery_type']);
     }
 
 

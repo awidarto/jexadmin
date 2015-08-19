@@ -13,6 +13,13 @@ $config['deliverytype_selector'] = array(
     'PS'=>'PS'
     );
 
+$config['deliverytype_selector_legacy'] = array(
+    'noid'=>'All',
+    'COD'=>'COD/CCOD',
+    'Delivery Only'=>'DO',
+    'PS'=>'PS'
+    );
+
 $config['main_db'] = 'jayonexpress_main';
 /*table names*/
 $config['incoming_delivery_table'] = 'delivery_order_active';

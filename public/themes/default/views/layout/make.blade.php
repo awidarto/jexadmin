@@ -21,6 +21,7 @@
 
     <link href="{{ URL::to('makeadmin') }}/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet">
 
+    {{ HTML::style('css/syscolors.css') }}
 
     <script src="{{ URL::to('makeadmin') }}/assets/global/plugins/modernizr/modernizr-2.6.2-respond-1.1.0.min.js"></script>
 

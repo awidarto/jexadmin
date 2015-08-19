@@ -342,4 +342,39 @@ class Prefs {
         }
     }
 
+    public static function colorizestatus($status, $prefix = '', $suffix = ''){
+
+        $colors = Config::get('jayon.status_colors');
+        if($status == '' || !in_array($status, array_keys($colors))){
+            $class = 'brown';
+            $status = 'N/A';
+        }else{
+            $class = $colors[$status];
+        }
+
+        $atatus = str_replace('_', ' ', $status);
+        $status = $prefix.ucwords($status).$suffix;
+
+        return sprintf('<span class="%s">%s</span>',$class,$status);
+    }
+
+    public static function colorizetype($type, $prefix = '', $suffix = ''){
+
+        if($type == 'COD'){
+            $class = 'brown';
+        }else if($type == 'CCOD'){
+            $class = 'maroon';
+        }else if($type == 'PS'){
+            $class = 'green';
+        }else{
+            $class = 'red';
+            $type = 'DO';
+        }
+
+        $type = $prefix.$type.$suffix;
+
+        return sprintf('<span class="%s" style="text-align:center;">%s</span>',$class,$type);
+    }
+
+
 }
