@@ -960,6 +960,24 @@ class AjaxController extends BaseController {
         return Response::json($result);
     }
 
+    public function getDevice()
+    {
+        $q = Input::get('term');
+
+        $q = '%'.$q.'%';
+
+        $devices = Device::where('identifier','like',$q)->get();
+
+        $result = array();
+
+        foreach($devices as $d){
+            $result[] = array('id'=>$d->key,'value'=>$d->identifier,'name'=>$d->identifier,'label'=>$d->identifier.' ( '.$d->key.' )');
+        }
+
+        return Response::json($result);
+    }
+
+
     public function getEmail()
     {
         $q = Input::get('term');

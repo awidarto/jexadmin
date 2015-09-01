@@ -22,14 +22,14 @@
               </ul>
             </li>
             <li class="nav-parent">
-              <a href="#"><i class="fa fa-cog"></i><span>HRMS Parameters</span> <span class="fa arrow"></span></a>
+              <a href="#"><i class="fa fa-cog"></i><span>Assets</span> <span class="fa arrow"></span></a>
               <ul class="children collapse">
-                <li><a href="{{ URL::to('company') }}"> Companies</a></li>
-                <li><a href="{{ URL::to('holiday') }}"> Holidays</a></li>
+                <li><a href="{{ URL::to('device') }}"> Devices</a></li>
+                <li><a href="{{ URL::to('parsedevice') }}"> Parse Devices</a></li>
               </ul>
             </li>
             <li class="nav-parent {{ hsa( array('gl','coa') ) }} ">
-              <a href=""><i class="fa fa-table"></i><span>Cost Reports</span><span class="fa arrow"></span></a>
+              <a href=""><i class="fa fa-table"></i><span>Reports</span><span class="fa arrow"></span></a>
               <ul class="children collapse">
                 <li class="{{ sa('gl') }}" ><a href="{{ URL::to('gl') }}"> General Ledger</a></li>
                 <li class="{{ sa('coa') }}" ><a href="{{ URL::to('coa') }}"> Chart Of Accounts</a></li>
@@ -45,6 +45,7 @@
                     <li class="{{ sa('usergroup') }}">
                       <a href="{{ URL::to('usergroup') }}" class="{{ sa('usergroup') }}" ><i class="fa fa-group"></i> Roles</a>
                     </li>
+                    <li class="{{ sa('holiday') }}"><a href="{{ URL::to('holiday') }}"> Holidays</a></li>
                     <li class="{{ sa('option') }}">
                       <a href="{{ URL::to('option') }}" class="{{ sa('option') }}" ><i class="fa fa-wrench"></i> Options</a>
                     </li>

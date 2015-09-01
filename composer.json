@@ -24,7 +24,8 @@
         "barryvdh/laravel-debugbar":"~1.8",
         "xethron/migrations-generator": "dev-master",
         "dayed/auth2": "dev-master",
-        "sleeping-owl/with-join": "1.*"
+        "sleeping-owl/with-join": "1.*",
+        "parse/php-sdk" : "1.1.*"
 	},
 	"autoload": {
 		"classmap": [

@@ -38,6 +38,10 @@ Route::controller('assetlocation', 'AssetlocationController');
 Route::controller('rack', 'RackController');
 Route::controller('asset', 'AssetController');
 
+Route::controller('device', 'DeviceController');
+Route::controller('parsedevice', 'ParsedeviceController');
+
+
 Route::controller('employee', 'EmployeeController');
 
 Route::controller('holiday', 'HolidayController');
@@ -162,6 +166,46 @@ Route::get('syncmerchant', function(){
         $member->save();
 
     }
+
+});
+
+
+Route::get('parsetest',function(){
+
+    ParseClient::initialize('lNz2h3vr3eJK9QMAKOLSaIvETaQWsbFJ8Em32TIw', '8QQoPiTZTkqSMkYLQQxHiaKBXO6Jq7iD2dCJjGUz', '2bKlPqYIKMpW1rJOdpBXQ8pf7cMXxGaFKrCXMr19');
+
+    $query = ParseInstallation::query();
+    //$query = new ParseInstallationQuery();
+    $results = $query->find('*');
+
+    foreach($results as $r){
+        $p = Parsedevice::where('objectId','=',$r->getObjectId())->first();
+
+        if($p){
+
+        }else{
+            $p = new Parsedevice;
+            $p->objectId = $r->getObjectId();
+            $p->createdAt = $r->getCreatedAt();
+        }
+
+        $p->JEXDeviceId     = $r->get('JEXDeviceId');
+        $p->appIdentifier   = $r->get('appIdentifier');
+        $p->appName         = $r->get('appName');
+        $p->appVersion      = $r->get('appVersion');
+        $p->deviceBrand     = $r->get('deviceBrand');
+        $p->deviceType      = $r->get('deviceType');
+        $p->installationId  = $r->get('installationId');
+        $p->parseVersion    = $r->get('parseVersion');
+        $p->timeZone        = $r->get('timeZone');
+        $p->updatedAt = $r->getUpdatedAt();
+
+        $p->save();
+    }
+
+    $pd = Parsedevice::get();
+
+    print_r($pd);
 
 });
 
