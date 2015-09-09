@@ -3,6 +3,7 @@
         <span class="username">{{ Auth::user()->fullname }}</span>
     </a>
     <ul class="dropdown-menu">
+      {{--
       <li>
         <a href="{{ URL::to('profile')}}"><i class="icon-user"></i><span>My Profile</span></a>
       </li>
@@ -12,6 +13,7 @@
       <li>
         <a href="#"><i class="icon-settings"></i><span>Account Settings</span></a>
       </li>
+      --}}
       <li>
        <a href="{{ URL::to('logout')}}"><i class="icon-logout"></i><span>Logout</span></a>
       </li>

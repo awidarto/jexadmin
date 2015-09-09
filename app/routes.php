@@ -56,6 +56,13 @@ Route::controller('gl', 'GlController');
 
 //shipment routes
 Route::controller('incoming', 'IncomingController');
+Route::controller('zoning', 'ZoningController');
+Route::controller('courierassign', 'CourierassignController');
+Route::controller('dispatched', 'DispatchedController');
+Route::controller('canceled', 'CanceledController');
+Route::controller('delivered', 'DeliveredController');
+Route::controller('orderarchive', 'OrderarchiveController');
+Route::controller('deliverylog', 'DeliverylogController');
 
 
 Route::controller('approval', 'ApprovalController');
@@ -90,6 +97,10 @@ Route::group(array('prefix' => 'api/v1/mobile'), function (){
     Route::put('/auth/login', 'Api\AuthController@login');
     Route::post('/auth/logout', 'Api\AuthController@logout');
     Route::put('/auth/logout', 'Api\AuthController@logout');
+    Route::post('/upload', 'Api\UploadapiController@postFile');
+    Route::put('/sync/assets', 'Api\SyncapiController@putAssets');
+    Route::post('/sync/scanlog', 'Api\SyncapiController@postScanlog');
+    Route::resource('img', 'Api\ImgapiController');
     Route::resource('location', 'Api\LocationapiController');
     Route::resource('rack', 'Api\RackapiController');
     Route::resource('asset', 'Api\AssetapiController');

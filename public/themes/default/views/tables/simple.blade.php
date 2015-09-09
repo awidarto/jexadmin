@@ -71,9 +71,15 @@ td{
     hyphens:none !important;
 }
 
-td hr{
-    margin: 2px;
+td .dropdown-menu{
+    font-size: 11px !important;
 }
+
+td .dropdown-menu .action{
+    padding: 7px 10px;
+    font-size: 11px !important;
+}
+
 
 select.input-sm {
     height: 30px;
@@ -112,20 +118,7 @@ select.input-sm {
 .action{
     cursor: pointer;
 }
-/*
-.ui-autocomplete-input {
-  border: none;
-  font-size: 14px;
-  width: 300px;
-  height: 24px;
-  margin-bottom: 5px;
-  padding-top: 2px;
-  border: 1px solid #DDD !important;
-  padding-top: 0px !important;
-  z-index: 1511;
-  position: relative;
-}
-*/
+
 .ui-menu .ui-menu-item a {
   font-size: 12px;
 }
@@ -194,6 +187,7 @@ select.input-sm {
 
 </style>
 
+{{ HTML::style('css/syscolors.css') }}
 
 {{--
 <div class="row-fluid box">
@@ -233,7 +227,8 @@ select.input-sm {
             <a href="{{ URL::to($print_url) }}" class="btn btn-sm btn-transparent btn-primary"><i class="fa fa-print"></i> Print Preview</a>
 
          </div>
-         <div class="col-md-6 command-bar">
+         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 command-bar">
+
             {{ $additional_filter }}
 
          </div>
@@ -464,7 +459,8 @@ select.input-sm {
 				"oLanguage": { "sSearch": "Search "},
 				"sPaginationType": "full_numbers",
                 "sDom": "lpirt",
-				"iDisplayLength":50,
+				"iDisplayLength":150,
+                "lengthMenu": [[100, 150, 200, 250], [100, 150, 200, 250]],
                 "initComplete": function(settings, json){
                     //alert( 'DataTables has finished its initialisation.' );
                     $('.dataTables_length select').select2('destroy');

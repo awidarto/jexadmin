@@ -88,6 +88,7 @@ class IncomingController extends AdminController {
 
         $this->heads = array(
             array('Timestamp',array('search'=>true,'sort'=>true, 'style'=>'min-width:90px;','daterange'=>true)),
+            array('Status',array('search'=>true,'sort'=>true)),
             array('PU Time',array('search'=>true,'sort'=>true, 'style'=>'min-width:100px;','daterange'=>true)),
             array('PU Pic',array('search'=>true,'sort'=>true, 'style'=>'min-width:120px;')),
             array('PU Person & Device',array('search'=>true,'style'=>'min-width:100px;','sort'=>true)),
@@ -100,7 +101,6 @@ class IncomingController extends AdminController {
             array('Type',array('search'=>true,'sort'=>true,'select'=>Config::get('jayon.deliverytype_selector_legacy') )),
             array('Merchant & Shop Name',array('search'=>true,'sort'=>true)),
             array('Delivery ID',array('search'=>true,'sort'=>true)),
-            array('Status',array('search'=>true,'sort'=>true)),
             array('Directions',array('search'=>true,'sort'=>true)),
             array('TTD Toko',array('search'=>true,'sort'=>true)),
             array('Delivery Charge',array('search'=>true,'sort'=>true)),
@@ -142,6 +142,7 @@ class IncomingController extends AdminController {
 
         $this->fields = array(
             array('ordertime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('status',array('kind'=>'text','callback'=>'statusList','query'=>'like','pos'=>'both','show'=>true)),
             array('pickuptime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
             array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
@@ -154,7 +155,6 @@ class IncomingController extends AdminController {
             array('delivery_type',array('kind'=>'text','callback'=>'colorizetype' ,'query'=>'like','pos'=>'both','show'=>true)),
             array(Config::get('jayon.jayon_members_table').'.merchantname',array('kind'=>'text','alias'=>'merchant_name','query'=>'like','callback'=>'merchantInfo','pos'=>'both','show'=>true)),
             array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('status',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('directions',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('delivery_cost',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
@@ -201,13 +201,13 @@ class IncomingController extends AdminController {
             array('Zone',array('search'=>true,'sort'=>true)),
             array('City',array('search'=>true,'sort'=>true)),
             array('Shipping Address',array('search'=>true,'sort'=>true, 'style'=>'max-width:200px;width:200px;' )),
-            array('No Kode Penjualan Toko',array('search'=>true,'sort'=>true)),
+            array('No Invoice',array('search'=>true,'sort'=>true)),
             array('Type',array('search'=>true,'sort'=>true)),
             array('Merchant & Shop Name',array('search'=>true,'sort'=>true)),
-            array('Delivery ID',array('search'=>true,'sort'=>true)),
+            array('Box ID',array('search'=>true,'sort'=>true)),
             array('Status',array('search'=>true,'sort'=>true)),
             array('Directions',array('search'=>true,'sort'=>true)),
-            array('TTD Toko',array('search'=>true,'sort'=>true)),
+            array('Signatures',array('search'=>true,'sort'=>true)),
             array('Delivery Charge',array('search'=>true,'sort'=>true)),
             array('COD Surcharge',array('search'=>true,'sort'=>true)),
             array('COD Value',array('search'=>true,'sort'=>true)),
@@ -291,13 +291,13 @@ class IncomingController extends AdminController {
             array('Zone',array('search'=>true,'sort'=>true)),
             array('City',array('search'=>true,'sort'=>true)),
             array('Shipping Address',array('search'=>true,'sort'=>true, 'style'=>'max-width:200px;width:200px;' )),
-            array('No Kode Penjualan Toko',array('search'=>true,'sort'=>true)),
+            array('No Invoice',array('search'=>true,'sort'=>true)),
             array('Type',array('search'=>true,'sort'=>true,'select'=>Config::get('jayon.deliverytype_selector') )),
             array('Merchant & Shop Name',array('search'=>true,'sort'=>true)),
-            array('Delivery ID',array('search'=>true,'sort'=>true)),
+            array('Box ID',array('search'=>true,'sort'=>true)),
             array('Status',array('search'=>true,'sort'=>true)),
             array('Directions',array('search'=>true,'sort'=>true)),
-            array('TTD Toko',array('search'=>true,'sort'=>true)),
+            array('Signatures',array('search'=>true,'sort'=>true)),
             array('Delivery Charge',array('search'=>true,'sort'=>true)),
             array('COD Surcharge',array('search'=>true,'sort'=>true)),
             array('COD Value',array('search'=>true,'sort'=>true)),
@@ -753,7 +753,7 @@ class IncomingController extends AdminController {
             array('shipping_address',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('merchant_trans_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('delivery_type',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array(Config::get('jayon.jayon_members_table').'.merchantname',array('kind'=>'text','alias'=>'merchant_name','query'=>'like','callback'=>'merchantInfo','pos'=>'both','show'=>true)),
+            array('merchant_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('status',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('directions',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
@@ -765,79 +765,54 @@ class IncomingController extends AdminController {
             array('shipping_zip',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('phone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('volume',array('kind'=>'numeric','query'=>'like','pos'=>'both','show'=>true)),
+            array('actual_weight',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('weight',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
         );
 
+        $db = Config::get('jayon.main_db');
+
         $this->def_order_by = 'ordertime';
         $this->def_order_dir = 'desc';
+        $this->place_action = 'first';
+        $this->show_select = true;
 
-        return parent::postDlxl();
+        $this->sql_key = 'delivery_id';
+        $this->sql_table_name = Config::get('jayon.incoming_delivery_table');
+        $this->sql_connection = 'mysql';
+
+        return parent::postSQLDlxl();
     }
 
     public function getImport(){
 
-        $this->importkey = 'SKU';
+        $this->importkey = 'delivery_id';
 
         return parent::getImport();
     }
 
     public function postUploadimport()
     {
-        $this->importkey = 'SKU';
+        $this->importkey = 'delivery_id';
 
         return parent::postUploadimport();
     }
 
     public function beforeImportCommit($data)
     {
-        $defaults = array();
 
-        $files = array();
+        unset($data['createdDate']);
+        unset($data['lastUpdate']);
 
-        // set new sequential ID
+        $data['created'] = $data['created_at'];
 
+        unset($data['created_at']);
+        unset($data['updated_at']);
 
-        $data['priceRegular'] = new MongoInt32($data['priceRegular']);
-
-        $data['thumbnail_url'] = array();
-        $data['large_url'] = array();
-        $data['medium_url'] = array();
-        $data['full_url'] = array();
-        $data['delete_type'] = array();
-        $data['delete_url'] = array();
-        $data['filename'] = array();
-        $data['filesize'] = array();
-        $data['temp_dir'] = array();
-        $data['filetype'] = array();
-        $data['fileurl'] = array();
-        $data['file_id'] = array();
-        $data['caption'] = array();
-
-        $data['defaultpic'] = '';
-        $data['brchead'] = '';
-        $data['brc1'] = '';
-        $data['brc2'] = '';
-        $data['brc3'] = '';
-
-
-        $data['defaultpictures'] = array();
-        $data['files'] = array();
+        unset($data['volume']);
+        unset($data['sessId']);
+        unset($data['isHead']);
 
         return $data;
-    }
-
-    public function postRack()
-    {
-        $locationId = Input::get('loc');
-        if($locationId == ''){
-            $racks = Assets::getRack()->RackToSelection('_id','SKU',true);
-        }else{
-            $racks = Assets::getRack(array('locationId'=>$locationId))->RackToSelection('_id','SKU',true);
-        }
-
-        $options = Assets::getRack(array('locationId'=>$locationId));
-
-        return Response::json(array('result'=>'OK','html'=>$racks, 'options'=>$options ));
     }
 
     public function makeActions($data)
@@ -863,7 +838,13 @@ class IncomingController extends AdminController {
 
         $actions = $stat.'<br />'.$edit.'<br />'.$delete;
         */
-        $actions = '';
+        $delete = '<span class="del action" id="'.$data['delivery_id'].'" >Delete</span>';
+        $edit = '<a href="'.URL::to('advertiser/edit/'.$data['delivery_id']).'">Update</a>';
+        $dl = '<a href="'.URL::to('brochure/dl/'.$data['delivery_id']).'" target="new">Download</a>';
+
+        $actions = View::make('shared.action')
+                        ->with('actions',array($dl))
+                        ->render();
         return $actions;
     }
 
@@ -1062,6 +1043,13 @@ class IncomingController extends AdminController {
         //$display = '<a href="'.URL::to('barcode/dl/'.urlencode($data['SKU'])).'">'.$display.'</a>';
         return $display.'<br />'. '<a href="'.URL::to('asset/detail/'.$data['delivery_id']).'" >'.$data['merchant_trans_id'].'</a>';
     }
+
+    public function statusList($data)
+    {
+
+        return '<span class="orange white-text">'.$data['status'].'</span><br /><span class="brown">'.$data['pickup_status'].'</span><br /><span class="green">'.$data['courier_status'].'</span><br /><span class="maroon">'.$data['warehouse_status'].'</span>';
+    }
+
 
     public function colorizetype($data)
     {

@@ -255,19 +255,14 @@
     @include('partials.makesearch')
     <!-- END QUICKVIEW SIDEBAR -->
     <!-- BEGIN PRELOADER -->
-    <div class="loader-overlay">
-      <div class="spinner">
-        <div class="bounce1"></div>
-        <div class="bounce2"></div>
-        <div class="bounce3"></div>
-      </div>
-    </div>
     <!-- END PRELOADER -->
     <a href="#" class="scrollup"><i class="fa fa-angle-up"></i></a>
     <script src="{{ URL::to('makeadmin')}}/assets/global/plugins/gsap/main-gsap.min.js"></script>
     <script src="{{ URL::to('makeadmin')}}/assets/global/plugins/bootstrap/js/bootstrap.min.js"></script>
     <script src="{{ URL::to('makeadmin')}}/assets/global/plugins/jquery-cookies/jquery.cookies.min.js"></script> <!-- Jquery Cookies, for theme -->
+    {{--
     <script src="{{ URL::to('makeadmin')}}/assets/global/plugins/jquery-block-ui/jquery.blockUI.min.js"></script> <!-- simulate synchronous behavior when using AJAX -->
+    --}}
     <script src="{{ URL::to('makeadmin')}}/assets/global/plugins/bootbox/bootbox.min.js"></script> <!-- Modal with Validation -->
     <script src="{{ URL::to('makeadmin')}}/assets/global/plugins/mcustom-scrollbar/jquery.mCustomScrollbar.concat.min.js"></script> <!-- Custom Scrollbar sidebar -->
     <script src="{{ URL::to('makeadmin')}}/assets/global/plugins/bootstrap-dropdown/bootstrap-hover-dropdown.min.js"></script> <!-- Show Dropdown on Mouseover -->

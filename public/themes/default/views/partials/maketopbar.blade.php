@@ -3,8 +3,11 @@
             <div class="topnav">
               <a class="menutoggle" href="#" data-toggle="sidebar-collapsed"><span class="menu__handle"><span>Menu</span></span></a>
               <ul class="nav nav-icons">
+                {{--
+
                 <li><a href="#" class="toggle-sidebar-top"><span class="icon-user-following"></span></a></li>
                 <li><a href="mailbox.html"><span class="octicon octicon-mail-read"></span></a></li>
+                --}}
               </ul>
             </div>
           </div>
@@ -198,8 +201,10 @@
                 @include('partials.makeidentity')
               </li>
               <!-- END USER DROPDOWN -->
-              <!-- CHAT BAR ICON -->
+              <!-- CHAT BAR ICON
               <li id="quickview-toggle"><a href="#"><i class="icon-bubbles"></i></a></li>
+
+            -->
             </ul>
           </div>
           <!-- header-right -->
