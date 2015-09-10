@@ -28,6 +28,8 @@ class UploadapiController extends \Controller {
 
         //$user = \Apiauth::user($key);
 
+        $user = \Device::where('key','=',$key)->first();
+
         $parent_id = Input::get('parid');
 
         $parent_class = Input::get('parclass');
@@ -37,6 +39,8 @@ class UploadapiController extends \Controller {
         $image_id = Input::get('img');
 
         $ns = Input::get('ns');
+
+        $isSignature = Input::get('signature');
 
         if( isset($file_id) && $file_id != '' ){
             $rstring = $file_id;
@@ -140,6 +144,7 @@ class UploadapiController extends \Controller {
                     'is_image'=>$is_image,
                     'is_audio'=>$is_audio,
                     'is_video'=>$is_video,
+                    'is_signature'=>$isSignature,
                     'is_pdf'=>$is_pdf,
                     'is_doc'=>$is_doc,
                     'name'=> $filename,
@@ -172,7 +177,7 @@ class UploadapiController extends \Controller {
                 \Uploaded::insertGetId($item);
             }
 
-            $actor = $user->fullname.' : '.$user->email;
+            $actor = $user->identifier.' : '.$user->devname;
             \Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'upload image'));
 
             return \Response::json(array('status'=>'OK', 'timestamp'=>time(), 'message'=>$image_id ));
@@ -180,7 +185,7 @@ class UploadapiController extends \Controller {
 
         }
 
-        $actor = $user->fullname.' : '.$user->email;
+        $actor = $user->identifier.' : '.$user->devname;
         \Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'upload image failed'));
 
         return \Response::json(array('status'=>'ERR:NOFILE', 'timestamp'=>time(), 'message'=>$image_id ));
