@@ -49,6 +49,10 @@ class UploadapiController extends \Controller {
 
         $isSignature = Input::get('signature');
 
+        $lat = Input::get('lat');
+
+        $lon = Input::get('lon');
+
         if( isset($file_id) && $file_id != '' ){
             $rstring = $file_id;
         }else{
@@ -154,6 +158,8 @@ class UploadapiController extends \Controller {
                     'is_signature'=>$isSignature,
                     'is_pdf'=>$is_pdf,
                     'is_doc'=>$is_doc,
+                    'latitude'=>$lat,
+                    'longitude'=>$lon,
                     'name'=> $filename,
                     'type'=> $filemime,
                     'size'=> $filesize,
