@@ -26,7 +26,17 @@ class SyncapiController extends \Controller {
 
         $key = \Input::get('key');
 
-        $user = \Apiauth::user($key);
+        //$user = \Apiauth::user($key);
+
+        $user = \Device::where('key','=',$key)->first();
+
+        if(!$user){
+            $actor = 'no id : no name';
+            \Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found, upload image failed'));
+
+            return \Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>$image_id ));
+        }
+
 
         $json = \Input::all();
 
@@ -55,12 +65,124 @@ class SyncapiController extends \Controller {
         //print_r($result);
 
         //die();
-        $actor = $user->fullname.' : '.$user->email;
+        $actor = $user->identifier.' : '.$user->devname;
 
         \Event::fire('log.api',array($this->controller_name, 'get' ,$actor,'sync scan log'));
 
         return Response::json($result);
     }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @return Response
+     */
+    public function postGeolog()
+    {
+
+        $key = \Input::get('key');
+
+        //$user = \Apiauth::user($key);
+
+        $user = \Device::where('key','=',$key)->first();
+
+        if(!$user){
+            $actor = 'no id : no name';
+            \Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found, upload image failed'));
+
+            return \Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>$image_id ));
+        }
+
+        $json = \Input::all();
+
+        $batch = \Input::get('batch');
+
+        $result = array();
+
+        foreach( $json as $j){
+
+            if(isset( $j['logId'] )){
+                if(isset($j['datetimestamp'])){
+                    $j['mtimestamp'] = new \MongoDate(strtotime($j['datetimestamp']));
+                }
+
+                $log = \Geolog::where('logId', $j['logId'] )->first();
+
+                if($log){
+                    $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'] );
+                }else{
+                    \Geolog::insert($j);
+                    $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'] );
+                }
+            }
+        }
+
+        //print_r($result);
+
+        //die();
+        $actor = $user->identifier.' : '.$user->devname;
+
+        \Event::fire('log.api',array($this->controller_name, 'get' ,$actor,'sync scan log'));
+
+        return Response::json($result);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @return Response
+     */
+    public function postNote()
+    {
+
+        $key = \Input::get('key');
+
+        //$user = \Apiauth::user($key);
+
+        $user = \Device::where('key','=',$key)->first();
+
+        if(!$user){
+            $actor = 'no id : no name';
+            \Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found, upload image failed'));
+
+            return \Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>$image_id ));
+        }
+
+
+        $json = \Input::all();
+
+        $batch = \Input::get('batch');
+
+        $result = array();
+
+        foreach( $json as $j){
+
+            if(isset( $j['logId'] )){
+                if(isset($j['timestamp'])){
+                    $j['mtimestamp'] = new \MongoDate(strtotime($j['timestamp']));
+                }
+
+                $log = \Deliverynote::where('logId', $j['logId'] )->first();
+
+                if($log){
+                    $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'] );
+                }else{
+                    \Deliverynote::insert($j);
+                    $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'] );
+                }
+            }
+        }
+
+        //print_r($result);
+
+        //die();
+        $actor = $user->identifier.' : '.$user->devname;
+
+        \Event::fire('log.api',array($this->controller_name, 'get' ,$actor,'sync scan log'));
+
+        return Response::json($result);
+    }
+
 
     /**
      * Store a newly created resource in storage.
