@@ -94,6 +94,8 @@ class DeliveryapiController extends \BaseController {
             $or->extId = $or->id;
             unset($or->id);
 
+            $or->boxList = $this->boxList('delivery_id',$or->deliveryId);
+
             $orders[$n] = $or;
         }
 
@@ -201,6 +203,20 @@ class DeliveryapiController extends \BaseController {
         }else{
             return $string;
         }
+
+    }
+
+    public function boxList($field,$val){
+
+        $boxes = \Box::where($field,$val)->get();
+
+        $bx = array();
+
+        foreach($boxes as $b){
+            $bx[] = $b->box_id;
+        }
+
+        return implode(',',$bx);
 
     }
 

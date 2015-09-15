@@ -158,8 +158,8 @@ class SyncapiController extends \Controller {
         foreach( $json as $j){
 
             if(isset( $j['logId'] )){
-                if(isset($j['timestamp'])){
-                    $j['mtimestamp'] = new \MongoDate(strtotime($j['timestamp']));
+                if(isset($j['datetimestamp'])){
+                    $j['mtimestamp'] = new \MongoDate(strtotime($j['datetimestamp']));
                 }
 
                 $log = \Deliverynote::where('logId', $j['logId'] )->first();
@@ -178,7 +178,7 @@ class SyncapiController extends \Controller {
         //die();
         $actor = $user->identifier.' : '.$user->devname;
 
-        \Event::fire('log.api',array($this->controller_name, 'get' ,$actor,'sync scan log'));
+        \Event::fire('log.api',array($this->controller_name, 'get' ,$actor,'sync note'));
 
         return Response::json($result);
     }
