@@ -57,6 +57,8 @@ class DeliveryapiController extends \BaseController {
 
         $dev = \Device::where('key','=',$key)->first();
 
+        //print_r($dev);
+
         $txtab = \Config::get('jayon.incoming_delivery_table');
 
         $orders = $this->model
@@ -208,7 +210,7 @@ class DeliveryapiController extends \BaseController {
 
     public function boxList($field,$val){
 
-        $boxes = \Box::where($field,$val)->get();
+        $boxes = \Box::where($field,'=',$val)->get();
 
         $bx = array();
 
@@ -216,7 +218,11 @@ class DeliveryapiController extends \BaseController {
             $bx[] = $b->box_id;
         }
 
-        return implode(',',$bx);
+        if(count($bx) > 0){
+            return implode(',',$bx);
+        }else{
+            return '1';
+        }
 
     }
 

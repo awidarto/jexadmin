@@ -9,6 +9,9 @@
     <title>{{ Config::get('site.name') }}</title>
 
     @include('layout.css')
+
+    {{ HTML::style('css/typography.css')}}
+
     <link href="{{ URL::to('makeadmin') }}/assets/global/css/style.css" rel="stylesheet">
     <link href="{{ URL::to('makeadmin') }}/assets/global/css/theme.css" rel="stylesheet">
     <link href="{{ URL::to('makeadmin') }}/assets/global/css/ui.css" rel="stylesheet">

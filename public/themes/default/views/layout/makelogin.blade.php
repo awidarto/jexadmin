@@ -6,7 +6,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta content="" name="description" />
         <meta content="themes-lab" name="author" />
+
         <link rel="shortcut icon" href="{{ URL::to('makeadmin') }}/assets/global/images/favicon.png">
+
+        {{ HTML::style('css/typography.css')}}
+
         <link href="{{ URL::to('makeadmin') }}/assets/global/css/style.css" rel="stylesheet">
         <link href="{{ URL::to('makeadmin') }}/assets/global/css/ui.css" rel="stylesheet">
         <link href="{{ URL::to('makeadmin') }}/assets/global/plugins/bootstrap-loading/lada.min.css" rel="stylesheet">
