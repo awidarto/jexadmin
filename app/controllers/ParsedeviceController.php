@@ -96,11 +96,11 @@ class ParsedeviceController extends AdminController {
             array('App Identifier',array('search'=>true,'sort'=>true)),
             array('App Name',array('search'=>true,'sort'=>true)),
             array('App Version',array('search'=>true,'sort'=>true)),
-            array('Device Brand',array('search'=>true,'sort'=>true,'date'=>true)),
-            array('Device Type',array('search'=>true,'sort'=>true,'date'=>true)),
-            array('Installation Id',array('search'=>true,'sort'=>true,'date'=>true)),
-            array('Parse Version',array('search'=>true,'sort'=>true,'date'=>true)),
-            array('Time Zone',array('search'=>true,'sort'=>true,'date'=>true)),
+            array('Device Brand',array('search'=>true,'sort'=>true)),
+            array('Device Type',array('search'=>true,'sort'=>true)),
+            array('Installation Id',array('search'=>true,'sort'=>true)),
+            array('Parse Version',array('search'=>true,'sort'=>true)),
+            array('Time Zone',array('search'=>true,'sort'=>true)),
         );
 
         //print $this->model->where('docFormat','picture')->get()->toJSON();

@@ -70,6 +70,7 @@ td{
     padding: 4px 6px 6px 4px !important;
     hyphens:none !important;
     border: none !important;
+    color: black;
 }
 
 select.input-sm {

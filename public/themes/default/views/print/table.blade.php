@@ -69,6 +69,7 @@ td{
     font-size: 11px;
     padding: 4px 6px 6px 4px !important;
     hyphens:none !important;
+    color: black;
 }
 
 select.input-sm {
