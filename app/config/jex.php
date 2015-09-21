@@ -1,6 +1,22 @@
 <?php
 
 return array(
+        'buckets'=>array(
+                'incoming'=>'Incoming',
+                'dispatcher'=>'Dispatcher',
+                'tracker'=>'Tracker'
+            ),
+        'move_options'=>array(
+                'dispatched'=>'Dispatcher',
+                'inprogress'=>'Tracker'
+            ),
+
+        'node_type'=>array(
+            'hub'=>'Hub',
+            'warehouse'=>'Warehouse',
+            'courier'=>'Courier',
+            '3pl'=>'3PL'),
+
         'default_heads'=>array(
             array('Timestamp',array('search'=>true,'sort'=>true, 'style'=>'min-width:90px;','daterange'=>true)),
             array('Status',array('search'=>true,'sort'=>true)),
