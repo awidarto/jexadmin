@@ -61,6 +61,7 @@ class DeliveryapiController extends \BaseController {
 
         $txtab = \Config::get('jayon.incoming_delivery_table');
 
+        /*
         $orders = $this->model
                     ->select(
                             \DB::raw(
@@ -85,6 +86,43 @@ class DeliveryapiController extends \BaseController {
                     })
                     ->orderBy('ordertime','desc')
                     ->get();
+        */
+
+        $orders = $this->model
+                ->select(
+                    \DB::raw(
+                        \Config::get('jayon.incoming_delivery_table').'.* ,'.
+                        \Config::get('jayon.jayon_couriers_table').'.fullname as courier ,'.
+                        \Config::get('jayon.jayon_devices_table').'.identifier as device ,'.
+                        \Config::get('jayon.jayon_members_table').'.merchantname as merchant_name ,'.
+                        \Config::get('jayon.applications_table').'.application_name as app_name ,'.
+                        '('.$txtab.'.width * '.$txtab.'.height * '.$txtab.'.length ) as volume'
+                )
+            )
+            ->leftJoin(\Config::get('jayon.jayon_couriers_table'), \Config::get('jayon.incoming_delivery_table').'.courier_id', '=', \Config::get('jayon.jayon_couriers_table').'.id' )
+            ->leftJoin(\Config::get('jayon.jayon_devices_table'), \Config::get('jayon.incoming_delivery_table').'.device_id', '=', \Config::get('jayon.jayon_devices_table').'.id' )
+            ->leftJoin(\Config::get('jayon.jayon_members_table'), \Config::get('jayon.incoming_delivery_table').'.merchant_id', '=', \Config::get('jayon.jayon_members_table').'.id' )
+            ->leftJoin(\Config::get('jayon.applications_table'), \Config::get('jayon.incoming_delivery_table').'.application_id', '=', \Config::get('jayon.applications_table').'.id' )
+
+            ->where(function($q) use($dev, $deliverydate){
+                    $q->where('device_id','=',$dev->id)
+                    ->where('assignment_date','=',$deliverydate);
+
+            })
+            ->where(function($query){
+                $query->where('status','=', \Config::get('jayon.trans_status_admin_courierassigned') )
+                    ->orWhere('status','=', \Config::get('jayon.trans_status_mobile_pickedup') )
+                    ->orWhere('status','=', \Config::get('jayon.trans_status_mobile_enroute') )
+                    ->orWhere(function($q){
+                            $q->where('status', \Config::get('jayon.trans_status_new'))
+                                ->where(\Config::get('jayon.incoming_delivery_table').'.pending_count', '>', 0);
+                    });
+
+            })
+
+            ->orderBy('ordertime','desc')
+            ->get();
+
 
         for($n = 0; $n < count($orders);$n++){
             $or = new \stdClass();
