@@ -904,12 +904,16 @@ class IncomingController extends AdminController {
         }
     }
 
+    public function puDisp($data){
+        return $data['pickup_person'].'<br />'.$data['pickup_dev_id'];
+    }
+
     public function dispFBar($data)
 
     {
         $display = HTML::image(URL::to('qr/'.urlencode(base64_encode($data['delivery_id'].'|'.$data['merchant_trans_id'].'|'.$data['fulfillment_code'].'|box:1' ))), $data['merchant_trans_id'], array('id' => $data['delivery_id'], 'style'=>'width:100px;height:auto;' ));
         //$display = '<a href="'.URL::to('barcode/dl/'.urlencode($data['SKU'])).'">'.$display.'</a>';
-        return $display.'<br />'. '<a href="'.URL::to('incoming/detail/'.$data['delivery_id']).'" >'.$data['fulfillment_code'].' '.$data['box_count'].' box</a>';
+        return $display.'<br />'. '<a href="'.URL::to('incoming/detail/'.$data['delivery_id']).'" >'.$data['fulfillment_code'].' ('.$data['box_count'].' box)</a>';
     }
 
     public function dispBar($data)
