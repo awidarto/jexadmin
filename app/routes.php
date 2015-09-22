@@ -102,6 +102,7 @@ Route::group(array('prefix' => 'api/v1/mobile'), function (){
     Route::post('/sync/scanlog', 'Api\SyncapiController@postScanlog');
     Route::post('/sync/note', 'Api\SyncapiController@postNote');
     Route::post('/sync/geolog', 'Api\SyncapiController@postGeolog');
+    Route::post('/sync/order', 'Api\SyncapiController@postOrder');
     Route::post('/sync/boxstatus', 'Api\SyncapiController@postBoxstatus');
     Route::resource('img', 'Api\ImgapiController');
     Route::resource('location', 'Api\LocationapiController');
