@@ -117,7 +117,7 @@ class SyncapiController extends \Controller {
                         $bs[$this->camel_to_underscore($k)] = $v;
                     }*/
 
-                    \Boxstatus::insert($bs);
+                    \Boxstatus::insert($j);
                     $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'] );
                 }
             }
