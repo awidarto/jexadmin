@@ -237,7 +237,7 @@ class SyncapiController extends \Controller {
             //$j['mtimestamp'] = new \MongoDate(time());
 
             if(is_array($j)){
-                $blog = new \Box();
+                $blog = new \Boxid();
 
                 foreach ($j as $k=>$v) {
                     $blog->{$k} = $v;
