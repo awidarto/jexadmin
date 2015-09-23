@@ -402,11 +402,11 @@ class SyncapiController extends \Controller {
 
     }
 
-    public function camel_to_underscore($string)
+    public function camel_to_underscore($str)
     {
-        preg_replace("/(?<=\\w)(?=[A-Z])/","_$1", $string);
-        $string = strtolower($string);
-        return $string;
+        $str[0] = strtolower($str[0]);
+        $func = create_function('$c', 'return "_" . strtolower($c[1]);');
+        return preg_replace_callback('/([A-Z])/', $func, $str);
     }
 
 }
