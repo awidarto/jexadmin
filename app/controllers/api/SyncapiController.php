@@ -167,7 +167,7 @@ class SyncapiController extends \Controller {
             //$j['mtimestamp'] = new \MongoDate();
 
             if(is_array($j)){
-                $olog = new \Orderlog();
+                $olog = new \Orderstatuslog();
 
                 foreach ($j as $k=>$v) {
                     $olog->{$k} = $v;
