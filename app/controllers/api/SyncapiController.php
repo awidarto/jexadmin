@@ -404,7 +404,7 @@ class SyncapiController extends \Controller {
 
     public function camel_to_underscore($string)
     {
-        preg_replace('/(?<=\\w)(?=[A-Z])/','_$1', $string);
+        preg_replace("/(?<=\\w)(?=[A-Z])/","_$1", $string);
         $string = strtolower($string);
         return $string;
     }
