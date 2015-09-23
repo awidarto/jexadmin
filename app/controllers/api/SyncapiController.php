@@ -232,7 +232,7 @@ class SyncapiController extends \Controller {
 
         foreach( $json as $j){
 
-            $j['mtimestamp'] = new \MongoDate();
+            //$j['mtimestamp'] = new \MongoDate(time());
 
             if(is_array($j)){
                 $olog = new \Orderlog();
@@ -240,6 +240,8 @@ class SyncapiController extends \Controller {
                 foreach ($j as $k=>$v) {
                     $olog->{$k} = $v;
                 }
+
+                $olog->mtimestamp = new \MongoDate(time());
 
                 $r = $olog->save();
 
