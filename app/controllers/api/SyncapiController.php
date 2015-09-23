@@ -111,7 +111,12 @@ class SyncapiController extends \Controller {
                 if($log){
                     $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'] );
                 }else{
-                    \Boxstatus::insert($j);
+                    $bs = array();
+                    foreach($j as $k=>$v){
+                        $bs[$this->camel_to_underscore($k)] = $v;
+                    }
+
+                    \Boxstatus::insert($bs);
                     $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'] );
                 }
             }
@@ -395,6 +400,13 @@ class SyncapiController extends \Controller {
 
         \Dumper::insert($json);
 
+    }
+
+    public function camel_to_underscore($string)
+    {
+        preg_replace('/(?<=\\w)(?=[A-Z])/','_$1', $string);
+        $string = strtolower($string);
+        return $string;
     }
 
 }
