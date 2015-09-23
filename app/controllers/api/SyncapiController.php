@@ -213,11 +213,23 @@ class SyncapiController extends \Controller {
 
             //$j['mtimestamp'] = new \MongoDate(time());
 
-            if( \Orderlog::insert($j) ){
-                $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>'log inserted' );
-            }else{
-                $result[] = array('status'=>'NOK', 'timestamp'=>time(), 'message'=>'insertion failed' );
+            if(is_array($j)){
+                $olog = new \Orderlog();
+
+                foreach ($j as $k=>$v) {
+                    $olog->{$k} = $v;
+                }
+
+                $r = $olog->save();
+
+                if( $r ){
+                    $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>'log inserted' );
+                }else{
+                    $result[] = array('status'=>'NOK', 'timestamp'=>time(), 'message'=>'insertion failed' );
+                }
+
             }
+
 
         }
 
