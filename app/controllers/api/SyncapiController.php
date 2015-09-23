@@ -162,7 +162,7 @@ class SyncapiController extends \Controller {
 
         foreach( $json as $j){
 
-            $j['mtimestamp'] = new \MongoDate(time());
+            //$j['mtimestamp'] = new \MongoDate(time());
 
             if( \Orderstatuslog::insert($j) ){
                 $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>'log inserted' );
@@ -211,7 +211,7 @@ class SyncapiController extends \Controller {
 
         foreach( $json as $j){
 
-            $j['mtimestamp'] = new \MongoDate(time());
+            //$j['mtimestamp'] = new \MongoDate(time());
 
             if( \Orderlog::insert($j) ){
                 $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>'log inserted' );
