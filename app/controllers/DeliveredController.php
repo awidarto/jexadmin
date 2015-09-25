@@ -146,7 +146,7 @@ class DeliveredController extends AdminController {
             array('pickuptime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
             array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('buyerdeliverytime',array('kind'=>'daterange','query'=>'like','pos'=>'both','show'=>true)),
+            array('deliverytime',array('kind'=>'daterange','query'=>'like','pos'=>'both','show'=>true)),
             array('buyerdeliveryslot',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
             array('buyerdeliveryzone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('buyerdeliverycity',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
