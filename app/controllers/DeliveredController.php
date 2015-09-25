@@ -429,7 +429,7 @@ class DeliveredController extends AdminController {
                     ->orWhere('status','=', Config::get('jayon.trans_status_mobile_return') );
 
             } )
-            ->orderBy('ordertime','desc');
+            ->orderBy('deliverytime','desc');
 
         //print_r($in);
 
