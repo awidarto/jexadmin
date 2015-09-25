@@ -184,6 +184,10 @@ class SyncapiController extends \Controller {
                 $shipment->status = $olog->status;
                 $shipment->courier_status = $olog->courierStatus;
 
+                if($olog->status == 'pending'){
+                    $shipment->pending_count = $shipment->pending_count + 1;
+                }
+
                 $shipment->save();
 
 
