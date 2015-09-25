@@ -179,10 +179,10 @@ class SyncapiController extends \Controller {
 
                 $r = $olog->save();
 
-                $shipment = \Shipment::where('delivery_id','=',$j['deliveryId'])->first();
+                $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)->first();
 
-                $shipment->status = $j['status'];
-                $shipment->courier_status = $j['courierStatus'];
+                $shipment->status = $olog->status;
+                $shipment->courier_status = $olog->courierStatus;
 
                 $shipment->save();
 
