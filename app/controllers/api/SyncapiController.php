@@ -167,6 +167,8 @@ class SyncapiController extends \Controller {
             //$j['mtimestamp'] = new \MongoDate();
 
             if(is_array($j)){
+
+
                 $olog = new \Orderstatuslog();
 
                 foreach ($j as $k=>$v) {
@@ -176,6 +178,14 @@ class SyncapiController extends \Controller {
                 $olog->mtimestamp = new \MongoDate(time());
 
                 $r = $olog->save();
+
+                $shipment = \Shipment::where('delivery_id','=',$j['deliveryId'])->first();
+
+                $shipment->status = $j['status'];
+                $shipment->courier_status = $j['courierStatus'];
+
+                $shipment->save();
+
 
                 if( $r ){
                     $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>'log inserted' );
