@@ -88,7 +88,7 @@
                     picker.setEndDate(moment().add('days',3));
                 }
         });
-
+        /*
         $('.d-datepicker').bootstrapDatepicker({
             startView: 0, // 0: month view , 1: year view, 2: multiple year view
             language: 'en',
@@ -103,7 +103,7 @@
             rtl: false,
             format : 'yyyy-mm-dd'
         });
-
+        */
 
         $('.filterdaterangepicker').daterangepicker({
             opens:'right',
@@ -262,6 +262,90 @@
 		   'maxChars' : 0, //if not provided there is no limit,
 		   'placeholderColor' : '#666666'
 		});
+
+        $('.tag_city').tagsInput({
+            'autocomplete_url': base + 'ajax/city',
+           'height':'100px',
+           'width':'100%',
+           'interactive':true,
+           'onChange' : function(c){
+
+                },
+           'onAddTag' : function(t){
+                    console.log(t);
+                },
+           'onRemoveTag' : function(t){
+                    console.log(t);
+                },
+           'defaultText':'add city',
+           'removeWithBackspace' : true,
+           'minChars' : 0,
+           'maxChars' : 0, //if not provided there is no limit,
+           'placeholderColor' : '#666666'
+        });
+
+        $('.tag_district').tagsInput({
+            'autocomplete_url': base + 'ajax/district',
+           'height':'100px',
+           'width':'100%',
+           'interactive':true,
+           'onChange' : function(c){
+
+                },
+           'onAddTag' : function(t){
+                    console.log(t);
+                },
+           'onRemoveTag' : function(t){
+                    console.log(t);
+                },
+           'defaultText':'add zone',
+           'removeWithBackspace' : true,
+           'minChars' : 0,
+           'maxChars' : 0, //if not provided there is no limit,
+           'placeholderColor' : '#666666'
+        });
+
+        $('.tag_status').tagsInput({
+            'autocomplete_url': base + 'ajax/status',
+           'height':'100px',
+           'width':'100%',
+           'interactive':true,
+           'onChange' : function(c){
+
+                },
+           'onAddTag' : function(t){
+                    console.log(t);
+                },
+           'onRemoveTag' : function(t){
+                    console.log(t);
+                },
+           'defaultText':'add status',
+           'removeWithBackspace' : true,
+           'minChars' : 0,
+           'maxChars' : 0, //if not provided there is no limit,
+           'placeholderColor' : '#666666'
+        });
+
+        $('.tag_courier_status').tagsInput({
+            'autocomplete_url': base + 'ajax/courierstatus',
+           'height':'100px',
+           'width':'100%',
+           'interactive':true,
+           'onChange' : function(c){
+
+                },
+           'onAddTag' : function(t){
+                    console.log(t);
+                },
+           'onRemoveTag' : function(t){
+                    console.log(t);
+                },
+           'defaultText':'add status',
+           'removeWithBackspace' : true,
+           'minChars' : 0,
+           'maxChars' : 0, //if not provided there is no limit,
+           'placeholderColor' : '#666666'
+        });
 
 
 		$('.auto_user').autocomplete({

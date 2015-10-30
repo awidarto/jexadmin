@@ -52,6 +52,8 @@ class AdminController extends Controller {
 
     public $printlink = '';
 
+    public $pdflink = '';
+
     public $makeActions = 'makeActions';
 
     public $can_add = true;
@@ -110,6 +112,18 @@ class AdminController extends Controller {
 
     public $report_data = null;
 
+    public $report_file_path = null;
+
+    public $report_file_name = null;
+
+    public $report_type = false;
+
+    public $report_entity = false;
+
+    public $report_header_data = false;
+
+    public $doc_number = false;
+
     public $additional_table_param = array();
     //public $product_info_url = 'ajax/productinfo';
 
@@ -133,10 +147,13 @@ class AdminController extends Controller {
 
     public $print = false;
 
+    public $pdf = false;
+
     public $import_main_form = 'shared.importinput';
 
     public $import_aux_form = '';
 
+    public $export_output_fields = null;
 
 	public function __construct(){
 
@@ -239,8 +256,6 @@ class AdminController extends Controller {
     public function printPage()
     {
 
-
-        Breadcrumbs::addCrumb($this->title,URL::to('/'));
 
         $controller_name = strtolower($this->controller_name);
 
@@ -462,46 +477,99 @@ class AdminController extends Controller {
 
         $this->printlink = (is_null($this->printlink) || $this->printlink == '')? strtolower($this->controller_name).'/print': $this->printlink;
 
-        //print_r($this->table_raw);
+        $this->pdflink = (is_null($this->pdflink) || $this->pdflink == '')? strtolower($this->controller_name).'/genpdf': $this->pdflink;
 
-        return View::make($this->report_view)
-            ->with('title',$this->title )
-            ->with('report_data', $this->report_data)
-            ->with('newbutton', $this->newbutton )
-            ->with('disablesort',$disablesort )
-            ->with('addurl',$this->addurl )
-            ->with('importurl',$this->importurl )
-            ->with('ajaxsource',URL::to($this->ajaxsource) )
-            ->with('ajaxdel',URL::to($this->delurl) )
-            ->with('ajaxdlxl',URL::to($this->dlxl) )
-            ->with('crumb',$this->crumb )
-            ->with('printlink', $this->printlink )
-            ->with('can_add', $this->can_add )
-            ->with('is_report',$this->is_report)
-            ->with('report_action',$this->report_action)
-            ->with('is_additional_action',$this->is_additional_action)
-            ->with('additional_action',$this->additional_action)
-            ->with('additional_filter',$this->additional_filter)
-            ->with('js_additional_param', $this->js_additional_param)
-            ->with('modal_sets', $this->modal_sets)
-            ->with('tables',$this->table_raw)
-            ->with('table_dnd', $this->table_dnd)
-            ->with('table_dnd_url', $this->table_dnd_url)
-            ->with('table_dnd_idx', $this->table_dnd_idx)
-            ->with('table_group', $this->table_group)
-            ->with('table_group_field', $this->table_group_field)
-            ->with('table_group_idx', $this->table_group_idx)
-            ->with('table_group_collapsible', $this->table_group_collapsible)
-            ->with('js_table_event', $this->js_table_event)
-            ->with('column_styles', $this->column_styles)
-            ->with('additional_page_data',$this->additional_page_data)
-            ->with('additional_table_param',$this->additional_table_param)
-            ->with('product_info_url',$this->product_info_url)
-            ->with('prefix',$this->prefix)
-            ->with('heads',$heads )
-            ->with('fields',$fields)
-            ->with('start_index',$start_index)
-            ->with('row',$this->rowdetail );
+        /*
+        if($this->report_entity == false){
+
+        }else{
+            $this->report_entity = (is_null($this->report_entity) || $this->report_entity == '')? strtolower($this->controller_name): $this->report_entity;
+
+            if($this->doc_number == false){
+                $sequencer = new Sequence();
+                $this->doc_number = $sequencer->getNewId($this->report_entity);
+            }
+        }
+        */
+
+            $html = View::make($this->report_view)
+                ->with('title',$this->title )
+                ->with('report_data', $this->report_data)
+                ->with('newbutton', $this->newbutton )
+                ->with('disablesort',$disablesort )
+                ->with('addurl',$this->addurl )
+                ->with('importurl',$this->importurl )
+                ->with('ajaxsource',URL::to($this->ajaxsource) )
+                ->with('ajaxdel',URL::to($this->delurl) )
+                ->with('ajaxdlxl',URL::to($this->dlxl) )
+                ->with('crumb',$this->crumb )
+                ->with('printlink', $this->printlink )
+                ->with('pdflink', $this->pdflink )
+                ->with('can_add', $this->can_add )
+                ->with('is_report',$this->is_report)
+                ->with('report_action',$this->report_action)
+                ->with('doc_number',$this->doc_number)
+                ->with('is_additional_action',$this->is_additional_action)
+                ->with('additional_action',$this->additional_action)
+                ->with('additional_filter',$this->additional_filter)
+                ->with('js_additional_param', $this->js_additional_param)
+                ->with('modal_sets', $this->modal_sets)
+                ->with('tables',$this->table_raw)
+                ->with('table_dnd', $this->table_dnd)
+                ->with('table_dnd_url', $this->table_dnd_url)
+                ->with('table_dnd_idx', $this->table_dnd_idx)
+                ->with('table_group', $this->table_group)
+                ->with('table_group_field', $this->table_group_field)
+                ->with('table_group_idx', $this->table_group_idx)
+                ->with('table_group_collapsible', $this->table_group_collapsible)
+                ->with('js_table_event', $this->js_table_event)
+                ->with('column_styles', $this->column_styles)
+                ->with('additional_page_data',$this->additional_page_data)
+                ->with('additional_table_param',$this->additional_table_param)
+                ->with('product_info_url',$this->product_info_url)
+                ->with('prefix',$this->prefix)
+                ->with('heads',$heads )
+                ->with('fields',$fields)
+                ->with('start_index',$start_index)
+                ->with('row',$this->rowdetail )
+                ->with('pdf',$this->pdf);
+
+        /*
+        PDF::loadHTML($html->render())->setPaper('a4')
+                 ->setOrientation('landscape')
+                 ->setOption('margin-bottom', 0)
+                 ->save($this->report_file_path.$this->report_file_name);
+        */
+        if($this->report_file_name){
+
+
+            file_put_contents($this->report_file_path.$this->report_file_name, $html);
+
+            $sd = new Document();
+            $sd->timestamp = new MongoDate();
+            $sd->type = $this->report_type;
+            $sd->fullpath = $this->report_file_path.$this->report_file_name;
+            $sd->filename = $this->report_file_name;
+            $sd->creator_id = Auth::user()->_id;
+            $sd->creator_name = Auth::user()->fullname;
+            $sd->save();
+
+        }
+
+
+        if($this->pdf == true){
+
+                $html->render();
+
+                $snappy = App::make('snappy.pdf');
+
+                return PDF::loadHTML($html)->setPaper('a4')
+                         ->setOrientation('landscape')->setOption('margin-bottom', 0)->stream($this->report_file_name);
+
+        }else{
+
+            return $html;
+        }
 
 
     }
@@ -509,6 +577,8 @@ class AdminController extends Controller {
 
 	public function tableResponder()
 	{
+
+        date_default_timezone_set('Asia/Jakarta');
 
 		$fields = $this->fields;
 
@@ -605,6 +675,10 @@ class AdminController extends Controller {
 		$form = $this->form;
 
 		$counter = 1 + $pagestart;
+
+
+        $count_display_all = count($results);
+
 
 		foreach ($results as $doc) {
 
@@ -1766,6 +1840,7 @@ class AdminController extends Controller {
 
         Former::framework($this->form_framework);
 
+
 		//$this->crumb->add($controller_name.'/add','New '.Str::singular($this->controller_name));
         $data = $this->beforeAddForm();
 
@@ -1780,6 +1855,7 @@ class AdminController extends Controller {
         Breadcrumbs::addCrumb('New '.$this->title,URL::to('/'));
 
 		return View::make($controller_name.'.'.$this->form_add)
+                    ->with('validator',$this->validator)
 					->with('back',$controller_name)
                     ->with('auxdata',$data)
 					->with('form',$form)
@@ -1791,7 +1867,9 @@ class AdminController extends Controller {
 
 	public function postAdd($data = null){
 
-		//print_r(Session::get('permission'));
+        Former::setOption('fetch_errors', true);
+
+		//print_r(Session::get('errors'));
 		if(is_null($data)){
 			$data = Input::get();
 		}
@@ -1812,7 +1890,9 @@ class AdminController extends Controller {
 
             Event::fire('log.a',array($controller_name, 'add' ,$actor,'validation failed'));
 
-	    	return Redirect::to($controller_name.'/add')->withErrors($validation)->withInput(Input::all());
+	    	return Redirect::to($controller_name.'/add')
+                ->withErrors($validation)
+                ->withInput(Input::all());
 
 	    }else{
 
@@ -1908,7 +1988,7 @@ class AdminController extends Controller {
 
             Event::fire('log.a',array($controller_name, 'update' ,$actor,'validation failed'));
 
-	    	return Redirect::to($controller_name.'/edit/'.$id)->withInput(Input::all())->withErrors($validation);
+	    	return Redirect::to($controller_name.'/edit/'.$_id)->withInput(Input::all())->withErrors($validation);
 
 	    }else{
 
@@ -1992,7 +2072,11 @@ class AdminController extends Controller {
 	}
 
 	public function makeActions($data){
-		return '';
+        $delete = '<span class="del" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete item" id="'.$data['_id'].'" ><i class="fa fa-trash"></i> Del</span>';
+        $edit = '<a href="'.URL::to( strtolower($this->controller_name).'/edit/'.$data['_id']).'" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit item" ><i class="fa fa-edit"></i> Edit</a>';
+        $actions = $edit.'<br />'.$delete;
+
+		return $actions;
 	}
 
 	public function beforeUpdate($id,$data)
@@ -2510,7 +2594,6 @@ class AdminController extends Controller {
                         $label = (isset($doc[$field[0]]))?true:false;
                     }
 
-
                     if($label){
 
                         if( isset($field[1]['callback']) && $field[1]['callback'] != ''){
@@ -2584,6 +2667,24 @@ class AdminController extends Controller {
         //print public_path();
 
         $fname =  $this->controller_name.'_'.date('d-m-Y-H-m-s',time());
+
+
+
+        if(!is_null($this->export_output_fields) && count($this->export_output_fields) > 0){
+            $tempdata = array();
+            $sfields = $sdata[1];
+            foreach ($sdata as $sd) {
+                $temprow = array();
+                for($i = 0; $i < count($sd); $i++){
+                    if( in_array($sfields[$i], $this->export_output_fields) ){
+                        $temprow[] = $sd[$i];
+                    }
+                }
+                $tempdata[] = $temprow;
+            }
+
+            $sdata = $tempdata;
+        }
 
         /*
         Excel::create( $fname )
@@ -2941,6 +3042,8 @@ class AdminController extends Controller {
 
     public function postUploadimport()
     {
+        set_time_limit(0);
+
         date_default_timezone_set('Asia/Jakarta');
 
         $file = Input::file('inputfile');
@@ -2986,6 +3089,10 @@ class AdminController extends Controller {
 
             $headrow = $imp[$headindex - 1];
 
+            for($h=0;$h < count($headrow);$h++){
+                $headrow[$h] = strtolower($headrow[$h]);
+            }
+
             //print_r($headrow);
 
             $firstdata = $firstdata - 1;
@@ -3009,8 +3116,9 @@ class AdminController extends Controller {
 
                 $rowtemp = array();
                 foreach($rowitem as $k=>$v){
-                    $sessobj->{ $headrow[$k] } = $this->prepImportItem($headrow[$k],$v);
-                    $rowtemp[$headrow[$k]] = $v;
+                    $hkey = strtolower($headrow[$k]);
+                    $sessobj->{ $hkey } = $this->prepImportItem($headrow[$k],$v,$rowitem);
+                    $rowtemp[$hkey] = $v;
                 }
 
                 if(count($aux_form_data) > 0){
@@ -3042,8 +3150,8 @@ class AdminController extends Controller {
         return array();
     }
 
-    public function prepImportItem($field, $v){
-        return $v;
+    public function prepImportItem($field, $val){
+        return $val;
     }
 
     public function getCommit($sessid)
@@ -3056,6 +3164,8 @@ class AdminController extends Controller {
 
         $imports = Importsession::where('sessId','=',$sessid)
             ->where('isHead','=',0)
+            ->take(200)
+            ->skip(0)
             ->get();
 
         $headselect = array();
@@ -3091,11 +3201,25 @@ class AdminController extends Controller {
     {
         $in = Input::get();
 
+        $force_all = $in['force_all'];
+
         $importkey = $in['edit_key'];
 
-        $selector = $in['selector'];
 
         $edit_selector = isset($in['edit_selector'])?$in['edit_selector']:array();
+
+        if($force_all == 1){
+            $selectall = Importsession::where('sessId','=',$sessid)
+                                        ->where('isHead','=',0)
+                                        ->get()->toArray();
+
+            $selector = array();
+            foreach($selectall as $sel){
+                $selector[] = $sel['_id'];
+            }
+        }else{
+            $selector = $in['selector'];
+        }
 
         foreach($selector as $selected){
             $rowitem = Importsession::find($selected)->toArray();
@@ -3114,11 +3238,18 @@ class AdminController extends Controller {
                             $obj->{$k} = $v;
                         }
                     }
+
+                    unset($obj->isHead);
+
                     $obj->lastUpdate = new MongoDate();
+
+                    //print_r($obj);
+
                     $obj->save();
                 }else{
 
                     unset($rowitem['_id']);
+                    unset($rowitem['isHead']);
                     $rowitem['createdDate'] = new MongoDate();
                     $rowitem['lastUpdate'] = new MongoDate();
 

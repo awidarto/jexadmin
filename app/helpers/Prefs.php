@@ -8,10 +8,28 @@ class Prefs {
     public static $faqcategory;
     public static $productcategory;
     public static $role;
+    public static $merchant;
+    public static $logistic;
+    public static $device;
+    public static $courier;
+    public static $position;
+    public static $node;
 
     public function __construct()
     {
 
+    }
+
+
+    public static function getTypeselect()
+    {
+        return Config::get('jex.logistic_type_select');
+    }
+
+    public static function getDeliveryId()
+    {
+        $d = date('d-mY',time()).'-'.strtoupper( str_random(5) ) ;
+        return $d;
     }
 
     public static function hashcheck($in , $pass){
@@ -33,6 +51,204 @@ class Prefs {
         }else{
             return false;
         }
+    }
+
+    //Courier
+    public static function getCourier($key = null, $val=null){
+        if(is_null($key)){
+            $c = Courier::get();
+            self::$courier = $c;
+            return new self;
+        }else{
+            if($key == '_id'){
+                $val = new MongoId($val);
+            }
+            $c = Courier::where($key,'=',$val)->first();
+            self::$courier = $c;
+            return $c;
+        }
+    }
+
+    public function courierToSelection($value, $label, $all = true)
+    {
+        if($all){
+            $ret = array(''=>'All');
+        }else{
+            $ret = array();
+        }
+
+        foreach (self::$courier as $c) {
+            $ret[$c->{$value}] = $c->{$label};
+        }
+
+
+        return $ret;
+    }
+
+    public function CourierToArray()
+    {
+        return self::$courier;
+    }
+
+
+    //Device
+    public static function getDevice($key = null, $val=null){
+        if(is_null($key)){
+            $c = Device::get();
+            self::$device = $c;
+            return new self;
+        }else{
+            $c = Device::where($key,'=',$val)->first();
+            self::$device = $c;
+            return $c;
+        }
+    }
+
+    public function DeviceToSelection($value, $label, $all = true)
+    {
+        if($all){
+            $ret = array(''=>'All');
+        }else{
+            $ret = array();
+        }
+
+        foreach (self::$device as $c) {
+            $ret[$c->{$value}] = $c->{$label};
+        }
+
+
+        return $ret;
+    }
+
+    public function DeviceToArray()
+    {
+        return self::$device;
+    }
+
+    //Merchant
+    public static function getMerchant($key = null, $val = null, $order = null, $dir = null ){
+        if(is_null($key)){
+
+
+            $c = Merchant::where('group_id','=',4)
+                    ->orderBy('merchantname', 'asc')
+                    ->get();
+            self::$merchant = $c;
+            return new self;
+        }else{
+            $c = Merchant::where($key,'=',$val)->first();
+            self::$merchant = $c;
+            return $c;
+        }
+    }
+
+    public function merchantToSelection($value, $label, $all = true)
+    {
+        if($all){
+            $ret = array(''=>'All');
+        }else{
+            $ret = array();
+        }
+
+        foreach (self::$merchant as $c) {
+            $ret[$c->{$value}] = $c->{$label};
+        }
+
+
+        return $ret;
+    }
+
+    public function merchantToArray()
+    {
+        return self::$merchant;
+    }
+
+
+    //Logistics
+    public static function getLogistic($key = null, $val = null){
+        if(is_null($key)){
+            $c = Logistic::get();
+            self::$logistic = $c;
+            return new self;
+        }else{
+            $c = Logistic::where($key,'=',$val)->first();
+            self::$logistic = $c;
+            return $c;
+        }
+    }
+
+    public function LogisticToSelection($value, $label, $all = true)
+    {
+        if($all){
+            $ret = array(''=>'All');
+        }else{
+            $ret = array();
+        }
+
+        foreach (self::$logistic as $c) {
+            $ret[$c->{$value}] = $c->{$label};
+        }
+
+
+        return $ret;
+    }
+
+    public function LogisticToArray()
+    {
+        return self::$logistic;
+    }
+
+    //Disposition
+    public static function getPosition(){
+        $c = Position::get();
+
+        self::$position = $c;
+        return new self;
+    }
+
+    public function PositionToSelection($value, $label, $all = true)
+    {
+        if($all){
+            $ret = array(''=>'Select Position');
+        }else{
+            $ret = array();
+        }
+
+        foreach (self::$position as $c) {
+            $ret[$c->{$value}] = $c->{$label};
+        }
+
+
+        return $ret;
+    }
+
+    public function PositionToArray()
+    {
+        return self::$position;
+    }
+
+
+
+    public static function getNode(){
+        $s = Position::get();
+
+        self::$node = $s;
+        return new self;
+    }
+
+    public function nodeToSelection($value, $label, $all = true)
+    {
+        if($all){
+            $ret = array(''=>'All');
+        }else{
+            $ret = array();
+        }
+
+        foreach (self::$node as $s) {
+            $ret[$s->{$value}] = $s->{$label};
+        }
+
+        return $ret;
     }
 
     public static function getShopCategory(){

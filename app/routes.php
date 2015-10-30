@@ -71,7 +71,12 @@ Route::controller('access', 'AccessController');
 Route::controller('apiaccess', 'ApiaccessController');
 
 //report routes
+Route::controller('docs', 'DocsController');
 Route::controller('approvalreport', 'ApprovalreportController');
+Route::controller('manifest', 'ManifestController');
+Route::controller('devmanifest', 'DevmanifestController');
+Route::controller('deliverytime', 'DeliverytimeController');
+Route::controller('deliverybydate', 'DeliverybydateController');
 
 
 Route::controller('upload', 'UploadController');

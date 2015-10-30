@@ -28,13 +28,32 @@
                 <li><a href="{{ URL::to('parsedevice') }}"> Parse Devices</a></li>
               </ul>
             </li>
-            <li class="nav-parent {{ hsa( array('gl','coa') ) }} ">
+
+            @if(Ks::can('view','reports'))
+            <li class="nav-parent {{ hsa( array('manifest','devmanifest') ) }} ">
               <a href=""><i class="fa fa-table"></i><span>Reports</span><span class="fa arrow"></span></a>
               <ul class="children collapse">
-                <li class="{{ sa('gl') }}" ><a href="{{ URL::to('gl') }}"> General Ledger</a></li>
+                <li class="{{ sa('manifest') }}" ><a href="{{ URL::to('manifest') }}"> Manifest To Hub</a></li>
+                <li class="{{ sa('devmanifest') }}" ><a href="{{ URL::to('devmanifest') }}"> Manifest To Device</a></li>
+                {{--
                 <li class="{{ sa('coa') }}" ><a href="{{ URL::to('coa') }}"> Chart Of Accounts</a></li>
+                --}}
               </ul>
             </li>
+            @endif
+            @if(Ks::can('view','reports'))
+            <li class="nav-parent {{ hsa( array('docs') ) }} ">
+              <a href=""><i class="fa fa-table"></i><span>Released Documents</span><span class="fa arrow"></span></a>
+              <ul class="children collapse">
+                <li class="{{ sa('docs') }}" ><a href="{{ URL::to('docs') }}"> Manifests</a></li>
+                {{--
+                <li class="{{ sa('devmanifest') }}" ><a href="{{ URL::to('devmanifest') }}"> Manifest To Device</a></li>
+                <li class="{{ sa('coa') }}" ><a href="{{ URL::to('coa') }}"> Chart Of Accounts</a></li>
+                --}}
+              </ul>
+            </li>
+            @endif
+
             <li class="nav-parent">
               <a href=""><i class="fa fa-cogs"></i><span>System </span><span class="fa arrow"></span></a>
 

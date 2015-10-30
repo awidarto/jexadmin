@@ -76,6 +76,7 @@ $config['trans_status_archived'] = 'archived';
 $config['trans_status_confirmed'] = 'confirmed';
 $config['trans_status_canceled'] = 'canceled';
 $config['trans_status_rescheduled'] = 'rescheduled';
+$config['trans_status_inprogress'] = 'inprogress';
 
 $config['trans_status_mobile_pending'] = 'pending';
 $config['trans_status_mobile_dispatched'] = 'dispatched';
@@ -100,6 +101,7 @@ $config['trans_status_admin_dispatched'] = 'dispatched';
 
 $config['trans_status_tobepickup'] = 'akan diambil';
 $config['trans_status_pickup'] = 'sudah diambil';
+$config['trans_status_pickup_canceled'] = 'canceled';
 
 $config['trans_status_atmerchant'] = 'belum di gudang';
 $config['trans_status_pu2wh'] = 'diterima di gudang';
@@ -107,6 +109,145 @@ $config['trans_status_inwh'] = 'di gudang';
 $config['trans_status_wh2ds'] = 'di delivery';
 $config['trans_status_ds2wh'] = 'kembali di gudang';
 $config['trans_status_return2merchant'] = 'kembali ke merchant';
+
+$config['trans_wh_atmerchant'] = 'at_initial_node';
+$config['trans_wh_pu2wh'] = 'accepted_warehouse';
+$config['trans_wh_inwh'] = 'in_warehouse';
+$config['trans_wh_inwh_partial'] = 'in_warehouse_partial';
+$config['trans_wh_wh2ds'] = 'on_delivery';
+$config['trans_wh_ds2wh'] = 'back_to_warehouse';
+$config['trans_wh_return2merchant'] = 'return_to_node';
+$config['trans_wh_canceled'] = 'canceled';
+
+
+$config['trans_cr_atmerchant'] = 'at_initial_node';
+$config['trans_cr_inwh'] = 'in_warehouse';
+$config['trans_cr_offcr'] = 'off_courier';
+$config['trans_cr_oncr'] = 'on_courier';
+$config['trans_cr_oncr_partial'] = 'on_courier_partial';
+$config['trans_cr_return2wh'] = 'return_to_warehouse';
+$config['trans_cr_return2merchant'] = 'return_to_node';
+$config['trans_cr_canceled'] = 'canceled';
+
+
+
+
+$config['dispatcher_status'] = array(
+    $config['trans_status_admin_zoned'] => 'Zone Assigned',
+    $config['trans_status_admin_dated'] => 'Date Assigned',
+    $config['trans_status_admin_devassigned'] => 'Device Assigned',
+    $config['trans_status_admin_courierassigned'] => '',
+    $config['trans_status_admin_dispatched'] => 'Dispatched',
+);
+
+
+$config['delivery_status'] = array(
+    $config['trans_status_new'] => 'Siap Kirim',
+    $config['trans_status_tobeconfirmed'] => 'Belum Konfirm',
+    $config['trans_status_purged'] => 'Hapus',
+    $config['trans_status_archived'] => 'Arsipkan',
+    $config['trans_status_confirmed'] => 'Konfirm',
+    $config['trans_status_canceled'] => 'Data Batal',
+    $config['trans_status_rescheduled'] => 'Jadwal Ulang',
+    $config['trans_status_inprogress'] => 'Dalam Proses Pengiriman',
+
+    $config['trans_status_mobile_delivered'] => 'Delivered',
+    $config['trans_status_mobile_revoked'] => 'Retur',
+    $config['trans_status_mobile_departure'] => 'Berangkat',
+    $config['trans_status_admin_zoned'] => 'Zone Assigned',
+    $config['trans_status_admin_dated'] => 'Date Assigned',
+    $config['trans_status_admin_devassigned'] => 'Device Assigned',
+    $config['trans_status_admin_courierassigned'] => 'Courier Assigned',
+    $config['trans_status_admin_dispatched'] => 'Dalam Proses Pengiriman'
+
+);
+
+$config['pickup_status'] = array(
+    $config['trans_status_tobepickup'] => 'Belum Diambil',
+    $config['trans_status_pickup'] => 'Sudah Diambil',
+    $config['trans_status_pickup_canceled'] => 'Batal',
+);
+
+$config['warehouse_status'] = array(
+    $config['trans_wh_atmerchant'] => 'In Transit',
+    $config['trans_wh_pu2wh'] => 'Diterima di Gudang',
+    $config['trans_wh_inwh'] => 'Di Gudang',
+    $config['trans_wh_wh2ds'] => 'Dalam Pengiriman',
+    $config['trans_wh_ds2wh'] => 'Kembali ke Gudang',
+    $config['trans_wh_return2merchant'] => 'Kembali ke Lokasi Awal',
+    $config['trans_wh_canceled'] => 'Batal',
+);
+
+
+$config['courier_status'] = array(
+    $config['trans_cr_atmerchant'] => 'In Transit',
+    $config['trans_cr_inwh'] => 'Di Gudang',
+    $config['trans_cr_offcr'] => 'Belum di Kurir',
+    $config['trans_cr_oncr'] => 'Di Kurir',
+    $config['trans_cr_oncr_partial'] => 'Di Kurir Sebagian',
+    $config['trans_cr_return2wh'] => 'Kembali ke Gudang',
+    $config['trans_cr_return2merchant'] => 'Kembali ke Lokasi Awal',
+    $config['trans_cr_canceled'] => 'Batal',
+);
+
+
+// manifest default status
+$config['manifest_default_status'] = array(
+    $config['trans_status_new'],
+    $config['trans_status_confirmed'],
+    $config['trans_status_admin_zoned'],
+    $config['trans_status_admin_dated'],
+    $config['trans_status_admin_devassigned'],
+    $config['trans_status_admin_courierassigned']
+);
+
+$config['manifest_default_courier_status'] = array(
+);
+
+$config['manifest_default_excl_status'] = array(
+    $config['trans_status_tobeconfirmed'],
+    $config['trans_status_purged'],
+    $config['trans_status_archived'],
+    $config['trans_status_canceled'],
+    $config['trans_status_rescheduled'],
+    $config['trans_status_inprogress'],
+    $config['trans_status_mobile_delivered'],
+    $config['trans_status_mobile_revoked'],
+    $config['trans_status_mobile_departure']
+);
+
+$config['manifest_default_excl_courier_status'] = array(
+);
+
+//dev manifest default status
+$config['devmanifest_default_status'] = array(
+    $config['trans_status_confirmed'],
+    $config['trans_status_admin_courierassigned']
+);
+
+$config['devmanifest_default_courier_status'] = array(
+    $config['trans_cr_atmerchant'],
+    $config['trans_cr_inwh'],
+    $config['trans_cr_offcr'],
+    $config['trans_cr_oncr'],
+    $config['trans_cr_oncr_partial']
+);
+
+$config['devmanifest_default_excl_status'] = array(
+    $config['trans_status_tobeconfirmed'],
+    $config['trans_status_purged'],
+    $config['trans_status_archived'],
+    $config['trans_status_canceled'],
+    $config['trans_status_rescheduled'],
+    $config['trans_status_inprogress'],
+    $config['trans_status_mobile_delivered'],
+    $config['trans_status_mobile_revoked'],
+    $config['trans_status_mobile_departure']
+);
+
+$config['devmanifest_default_excl_courier_status'] = array(
+);
+
 
 $config['status_list'] = array(
     'pending'=>'Pending',

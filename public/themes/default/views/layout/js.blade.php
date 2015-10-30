@@ -25,7 +25,7 @@
 
     {{ HTML::script('js/js-load-image/load-image.min.js') }}
 
-    {{ HTML::script('js/jquery.slimscroll.min.js') }}
+    {{-- HTML::script('js/jquery.slimscroll.min.js') --}}
 
     {{ HTML::script('js/js-canvas-to-blob/canvas-to-blob.min.js') }}
 

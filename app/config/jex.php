@@ -23,7 +23,7 @@ return array(
             array('PU Time',array('search'=>true,'sort'=>true, 'style'=>'min-width:100px;','daterange'=>true)),
             array('PU Person & Device',array('search'=>true,'style'=>'min-width:100px;','sort'=>true)),
             array('Box',array('search'=>true,'style'=>'','sort'=>true)),
-            array('Delivery Date',array('search'=>true,'style'=>'min-width:125px;','sort'=>true, 'daterange'=>true )),
+            array('Requested Delivery Date',array('search'=>true,'style'=>'min-width:125px;','sort'=>true, 'daterange'=>true )),
             array('Slot',array('search'=>true,'sort'=>true)),
             array('Zone',array('search'=>true,'sort'=>true)),
             array('City',array('search'=>true,'sort'=>true)),
