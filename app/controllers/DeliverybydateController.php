@@ -144,7 +144,21 @@ class DeliverybydateController extends AdminController {
             ->leftJoin('devices as d',Config::get('jayon.assigned_delivery_table').'.device_id','=','d.id')
             ->leftJoin('couriers as c',Config::get('jayon.assigned_delivery_table').'.courier_id','=','c.id');
 
+
+
         $model = $model
+            ->where(function($query){
+                $query->where('status','=', Config::get('jayon.trans_status_admin_courierassigned') )
+                    ->orWhere('status','=', Config::get('jayon.trans_status_mobile_pickedup') )
+                    ->orWhere('status','=', Config::get('jayon.trans_status_mobile_enroute') )
+                    ->orWhere(function($q){
+                            $q->where('status', Config::get('jayon.trans_status_new'))
+                                ->where(Config::get('jayon.incoming_delivery_table').'.pending_count', '>', 0);
+                    });
+
+            });
+
+            /*
             ->where(function($q){
                 $q->where('status',Config::get('jayon.trans_status_mobile_delivered'))
                     //->where('status',Config::get('jayon.trans_status_admin_courierassigned'))
@@ -153,6 +167,7 @@ class DeliverybydateController extends AdminController {
                     ->orWhere('status',Config::get('jayon.trans_status_mobile_return'));
 
             });
+            */
 
         if($status == '' || is_null($status) ){
             $status = Config::get('jayon.devmanifest_default_status');
