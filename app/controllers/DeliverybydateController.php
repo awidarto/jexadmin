@@ -145,7 +145,7 @@ class DeliverybydateController extends AdminController {
             ->leftJoin('couriers as c',Config::get('jayon.assigned_delivery_table').'.courier_id','=','c.id');
 
 
-
+        /*
         $model = $model
             ->where(function($query){
                 $query->where('status','=', Config::get('jayon.trans_status_admin_courierassigned') )
@@ -157,17 +157,7 @@ class DeliverybydateController extends AdminController {
                     });
 
             });
-
-            /*
-            ->where(function($q){
-                $q->where('status',Config::get('jayon.trans_status_mobile_delivered'))
-                    //->where('status',Config::get('jayon.trans_status_admin_courierassigned'))
-                    ->orWhere('status',Config::get('jayon.trans_status_new'))
-                    ->orWhere('status',Config::get('jayon.trans_status_rescheduled'))
-                    ->orWhere('status',Config::get('jayon.trans_status_mobile_return'));
-
-            });
-            */
+        */
 
         if($status == '' || is_null($status) ){
             $status = Config::get('jayon.devmanifest_default_status');
@@ -175,7 +165,7 @@ class DeliverybydateController extends AdminController {
             $status = explode(',', $status);
         }
 
-        /*
+
         if(empty($status)){
             $exstatus = Config::get('jayon.devmanifest_default_excl_status');
 
@@ -186,7 +176,7 @@ class DeliverybydateController extends AdminController {
             $model = $model->whereIn('status', $status);
         }
 
-
+        /*
         if($courierstatus == '' || is_null($courierstatus) ){
             $courierstatus = Config::get('jayon.devmanifest_default_courier_status');
         }else{
@@ -242,6 +232,15 @@ class DeliverybydateController extends AdminController {
         }else{
             $model = $model->where('logistic','=', $logistic);
         }
+
+        $model = $model
+            //->where('status',Config::get('jayon.trans_status_admin_courierassigned'))
+            //->orWhere('status',Config::get('jayon.trans_status_mobile_pickedup'))
+            //->orWhere('status',Config::get('jayon.trans_status_mobile_enroute'))
+            ->orWhere(function($q){
+                $q->where('status',Config::get('jayon.trans_status_new'))
+                  ->where('pending_count','>', 0);
+            });
 
         $model->orderBy('device_name','asc')
                 ->orderBy('buyerdeliverycity','asc')
