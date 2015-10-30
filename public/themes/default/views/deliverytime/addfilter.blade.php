@@ -8,33 +8,45 @@
                     ->selected(Input::get('device'))
                     ->options(Prefs::getDevice()->deviceToSelection('key','identifier'))
                 }}
-        </div>
-        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
             {{ Former::select('courier','Courier')
                     ->selected(Input::get('courier'))
-                    ->options(Prefs::getCourier()->courierToSelection('_id','name'))
+                    ->options(Prefs::getCourier()->courierToSelection('id','fullname'))
                 }}
         </div>
         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+            {{ Former::select('merchant','Merchant')
+                    ->selected(Input::get('merchant'))
+                    ->options(Prefs::getMerchant()->merchantToSelection('id','merchantname' ))
+                }}
+
             {{ Former::select('logistic','Logistic')
                     ->selected(Input::get('logistic'))
                     ->options(Prefs::getLogistic()->logisticToSelection('logistic_code','name'))
                 }}
+
         </div>
         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-            {{ Former::text('date-from', 'Delivery Date')
+            {{ Former::text('date-from', 'From Date')
                     ->value(Input::get('date-from',$dperiod))
                     ->class('form-control input-sm p-datepicker')
                     ->id('date-from');
             }}
         </div>
         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-            {{ Former::text('manifest-date', 'Manifest Publish Date')
+            {{ Former::text('date-to', 'To Date')
+                    ->value(Input::get('date-to',$dperiod))
+                    ->class('form-control input-sm p-datepicker')
+                    ->id('date-to');
+            }}
+        </div>
+        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+            {{ Former::text('manifest-date', 'Publish Date')
                     ->value(Input::get('manifest-date',$dperiod))
                     ->class('form-control input-sm p-datepicker')
                     ->id('manifest-date');
             }}
-            {{-- Former::text('date-to', 'To')
+            {{--
+                Former::text('date-to', 'To')
                     ->value(Input::get('date-to',$dperiod))
                     ->class('form-control input-sm p-datepicker')
                     ->id('date-to');
@@ -117,7 +129,8 @@ button#label_default{
     $(document).ready(function(){
 
         $('.p-datepicker').datepicker({
-            format: 'yyyy-mm-dd'
+            format: 'yyyy-mm-dd',
+            forceParse:false
         });
 
         $('#company-code').on('change',function(){

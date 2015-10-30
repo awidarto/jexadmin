@@ -97,7 +97,7 @@ class DeliverytimeController extends AdminController {
 
         Breadcrumbs::addCrumb('Manifest',URL::to( strtolower($this->controller_name) ));
 
-        $this->additional_filter = View::make('shared.addfilter')->with('submit_url','deliverytime')->render();
+        $this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','deliverytime')->render();
 
 
         $db = Config::get('lundin.main_db');
@@ -107,7 +107,7 @@ class DeliverytimeController extends AdminController {
 //device=&courier=&logistic=&date-from=2015-10-24
 
         $period_from = Input::get('date-from');
-        $period_to = Input::get('acc-period-to');
+        $period_to = Input::get('date-to');
 
         $device = Input::get('device');
         $courier = Input::get('courier');
@@ -119,7 +119,7 @@ class DeliverytimeController extends AdminController {
         $courierstatus = Input::get('courier-status');
 
         if($period_to == '' || is_null($period_to) ){
-            $period_to = date('Y0m',time());
+            $period_to = date('Y-m-d',time());
         }
 
         if($period_from == '' || is_null($period_from) ){
@@ -189,13 +189,13 @@ class DeliverytimeController extends AdminController {
         */
 
         if($period_from == '' || is_null($period_from) ){
-            $datefrom = date( 'Y-m-d 00:00:00', strtotime($period_from) );
-            $dateto = date( 'Y-m-d 23:59:59', strtotime($period_from) );
+            $datefrom = date( 'Y-m-d 00:00:00', time() );
+            $dateto = date( 'Y-m-d 23:59:59', time() );
 
         }else{
 
             $datefrom = date( 'Y-m-d 00:00:00', strtotime($period_from) );
-            $dateto = date( 'Y-m-d 23:59:59', strtotime($period_from) );
+            $dateto = date( 'Y-m-d 23:59:59', strtotime($period_to) );
 
             $model = $model->where(function($q) use($datefrom,$dateto){
                 $q->whereBetween('ordertime',array($datefrom,$dateto));
