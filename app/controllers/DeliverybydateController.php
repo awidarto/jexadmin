@@ -349,26 +349,34 @@ class DeliverybydateController extends AdminController {
                     if(isset($bydc[$d][$ct][$z])){
                         $mv = $bydc[$d][$ct][$z];
 
-                        foreach($mv as $mo){
+                        foreach($bymc as $mcx=>$mcv){
+
+
                             $cod = 0;
                             $do = 0;
                             $p = 0;
+                            foreach($mv as $mo){
 
-                            if($mo->delivery_type == 'COD' || $mo->delivery_type == 'CCOD' ){
-                                $cod++;
-                            }
-                            if($mo->delivery_type == 'Delivery Only' || $mo->delivery_type == 'DO' ){
-                                $do++;
-                            }
-                            if($mo->status == 'pending'){
-                                $p++;
-                            }
+                                //print $mo->merchant_name.' '.$mcx."/r/n";
 
+                                if($mo->merchant_name == $mcx){
+                                    if($mo->delivery_type == 'COD' || $mo->delivery_type == 'CCOD' ){
+                                        $cod++;
+                                    }
+                                    if($mo->delivery_type == 'Delivery Only' || $mo->delivery_type == 'DO' ){
+                                        $do++;
+                                    }
+                                    if($mo->status == 'pending'){
+                                        $p++;
+                                    }
+                                }
+
+                            }
                             $row[] = array('value'=>$cod,'attr'=>'');
                             $row[] = array('value'=>$do,'attr'=>'');
                             $row[] = array('value'=>$p,'attr'=>'');
-
                         }
+
                     }
 
                     $tabdata[] = $row;
@@ -480,7 +488,7 @@ class DeliverybydateController extends AdminController {
 
         $this->report_entity = false;
         $sequencer = new Sequence();
-        $doc_number = $sequencer->getNewId('devmanifest');
+        $doc_number = $sequencer->getNewId('deliverybydate');
 
         $this->additional_filter = View::make(strtolower($this->controller_name).'.addhead')
                                             ->with('doc_number',$doc_number)
@@ -488,11 +496,11 @@ class DeliverybydateController extends AdminController {
                                             ->render();
 
         $this->report_file_name = 'MDL-'.str_pad($doc_number, 5, '0', STR_PAD_LEFT).'.html';
-        $this->report_file_path = realpath('storage/docs').'/devmanifest/';
+        $this->report_file_path = realpath('storage/docs').'/deliverybydate/';
 
-        $this->title = 'DELIVERY TIME';
+        $this->title = 'DELIVERY BY DATE';
 
-        $this->report_type = 'deliverytime';
+        $this->report_type = 'deliverybydate';
 
         return parent::printReport();
     }
@@ -515,11 +523,11 @@ class DeliverybydateController extends AdminController {
                                             ->render();
 
         $this->report_file_name = 'MDL-'.str_pad($doc_number, 5, '0', STR_PAD_LEFT).'.html';
-        $this->report_file_path = realpath('storage/docs').'/devmanifest/';
+        $this->report_file_path = realpath('storage/docs').'/deliverybydate/';
 
-        $this->title = 'DELIVERY TIME';
+        $this->title = 'DELIVERY BY DATE';
 
-        $this->report_type = 'deliverytime';
+        $this->report_type = 'deliverybydate';
 
         return parent::printReport();
     }
