@@ -221,8 +221,9 @@ $config['manifest_default_excl_courier_status'] = array(
 
 //dev manifest default status
 $config['devmanifest_default_status'] = array(
-    $config['trans_status_confirmed'],
-    $config['trans_status_admin_courierassigned']
+    $config['trans_status_admin_courierassigned'],
+    $config['trans_status_mobile_pickedup'],
+    $config['trans_status_mobile_enroute'],
 );
 
 $config['devmanifest_default_courier_status'] = array(
