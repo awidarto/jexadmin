@@ -322,6 +322,7 @@ class DeliverybydateController extends AdminController {
             $dids[] = $ar->delivery_id;
         }
 
+        /*
         $details = Deliverylog::whereIn('delivery_id',$dids)
 
                         ->where(function($q){
@@ -339,7 +340,7 @@ class DeliverybydateController extends AdminController {
         foreach ($details as $dt) {
             $dlist[$dt['delivery_id']][] = $dt;
         }
-
+        */
         //print_r($dlist);
         $tabdata = array();
 
