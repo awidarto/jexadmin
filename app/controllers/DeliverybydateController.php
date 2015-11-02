@@ -284,7 +284,7 @@ class DeliverybydateController extends AdminController {
         );
 
         foreach(array_keys($bymc) as $mctitle){
-            $headvar1[] = array('value'=>'<span class="vtext">'.$mctitle.'</span>','attr'=>'colspan="3" class="vtext"');
+            $headvar1[] = array('value'=>$mctitle,'attr'=>'colspan="3" class="vtext" style="min-height:100px;"');
             $headvar2[] = array('value'=>'COD','attr'=>'');
             $headvar2[] = array('value'=>'DO','attr'=>'');
             $headvar2[] = array('value'=>'P','attr'=>'');

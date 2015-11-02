@@ -1,4 +1,4 @@
-@extends('layout.fixedstatic')
+@extends('layout.yukonstatic')
 
 @section('left')
     <dl>

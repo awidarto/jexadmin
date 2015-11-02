@@ -1,4 +1,4 @@
-@extends('layout.maketwo')
+@extends('layout.yukontwo')
 
 @section('left')
         {{ Former::hidden('_id')->value($formdata['_id']) }}

@@ -1,59 +1,23 @@
-@extends('layout.maketwo')
+@extends('layout.yukontwo')
 
 @section('left')
-        <h5>Account Information</h5>
-
-        {{ Former::text('username','Username') }}
-        {{ Former::text('email','Email') }}
-
-        {{ Former::password('pass','Password')->help('Leave blank for no changes') }}
-        {{ Former::password('repass','Repeat Password') }}
-
-
-        <h5>Owner / Personal Info</h5>
         {{ Former::hidden('_id')->value($formdata['_id']) }}
 
-        {{ Former::text('fullname','Full Name') }}
+        <h5>Device Information</h5>
+
+        {{ Former::text('identifier','Device Identifier') }}
+        {{ Former::text('devname','Device Name') }}
+        {{ Former::text('descriptor','Description') }}
+        {{ Former::text('mobile','Number') }}
 
         <div class="row">
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('phone','Phone') }}
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                {{ Former::text('color','Color')->class('form-control') }}
             </div>
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('mobile','Mobile 1') }}
-            </div>
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('mobile1','Mobile 2') }}
-            </div>
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('mobile2','Mobile 3') }}
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                {{ Former::select('is_on','Active')->options(array('1'=>'Yes','0'=>'No'))->class('form-control input-sm') }}
             </div>
         </div>
-
-
-        {{ Former::text('street','Address') }}
-
-        <div class="row">
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('district','Kecamatan') }}
-            </div>
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('city','City') }}
-            </div>
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('zip','ZIP / Kode Pos') }}
-            </div>
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('province','Province') }}
-            </div>
-        </div>
-
-
-
-
-        {{ Former::select('country')->id('country')->options(Config::get('country.countries'))->label('Country of Origin') }}
-
-        {{ Former::select('status')->options(array('inactive'=>'Inactive','active'=>'Active'))->label('Status') }}
 
         {{ Form::submit('Save',array('class'=>'btn btn-primary'))}}&nbsp;&nbsp;
         {{ HTML::link($back,'Cancel',array('class'=>'btn'))}}
@@ -61,69 +25,14 @@
 @stop
 
 @section('right')
-        <h5>Shop Information</h5>
-        {{ Former::select('shopcategoryLink')->options(Prefs::getShopCategory()->shopcatToSelection('slug', 'name' ))->label('Shop Category') }}
+        <h5>Default Node</h5>
+        {{ Former::select('node_id','Node ID')->options(Prefs::getNode()->nodeToSelection('node_code','name',false) )->class('form-control input-sm') }}
+        <h5>Device Coverage</h5>
 
-        {{ Former::text('merchantname','Shop Name')->class('form-control') }}
+        {{ Former::text('city','City Coverage')->class('form-control tag_city') }}
 
-        {{ Former::text('mc_url','Website URL')->class('form-control') }}
+        {{ Former::text('district','Area Coverage')->class('form-control tag_district') }}
 
-        <div class="row">
-            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                {{ Former::text('bank','Bank')->class('form-control') }}
-            </div>
-            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                {{ Former::text('account_number','Account Number')->class('form-control') }}
-            </div>
-            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                {{ Former::text('account_name','Account Name')->class('form-control') }}
-            </div>
-        </div>
-
-        {{ Former::text('mc_street','Address')->class('form-control') }}
-
-        <div class="row">
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('mc_district','Kecamatan') }}
-            </div>
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('mc_city','City') }}
-            </div>
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('mc_zip','ZIP / Kode Pos') }}
-            </div>
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('mc_province','Province') }}
-            </div>
-        </div>
-
-        {{ Former::select('mc_country')->id('mc_country')->options(Config::get('country.countries'))->label('Country of Origin') }}
-
-        <div class="row">
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('mc_phone','Phone') }}
-            </div>
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('mc_mobile','Mobile 1') }}
-            </div>
-            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                {{ Former::text('mc_email','Shop Email')->class('form-control') }}
-            </div>
-        </div>
-
-        {{ Former::text('tags','Tags / Keywords')->class('tag_keyword') }}
-
-        {{ Former::textarea('shopDescription','Shop Description or Promotion')->class('editor')->rows(10)->columns(20) }}
-
-        <h6>Upload Cover Image</h6>
-        <?php
-            $fupload = new Fupload();
-        ?>
-        {{ $fupload->id('imageupload')->title('Select Picture')->label('Upload Picture')
-            ->url('upload/asset')
-            ->singlefile(true)
-            ->prefix('asset')
-            ->multi(false)->make($formdata) }}
 
 
 @stop
@@ -144,7 +53,7 @@
 $(document).ready(function() {
 
 
-    $('.pick-a-color').pickAColor();
+    //$('.pick-a-color').pickAColor();
 
     $('#name').keyup(function(){
         var title = $('#name').val();
@@ -176,6 +85,13 @@ $(document).ready(function() {
         source: base + 'ajax/merchant',
         select: function(event, ui){
             $('#merchant-id').val(ui.item.id);
+        }
+    });
+
+    $('.auto_node_id').autocomplete({
+        source: '{{ URL::to('ajax/nodeid' ) }}',
+        select: function(event, ui){
+            //$('#merchant-id').val(ui.item.id);
         }
     });
 

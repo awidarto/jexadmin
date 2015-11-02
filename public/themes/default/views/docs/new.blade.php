@@ -1,4 +1,4 @@
-@extends('layout.maketwo')
+@extends('layout.yukontwo')
 
 @section('left')
         <h5>Logistic Information</h5>

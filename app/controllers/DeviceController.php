@@ -514,105 +514,18 @@ class DeviceController extends AdminController {
 
     public function beforeSave($data)
     {
-
-        if( isset($data['file_id']) && count($data['file_id'])){
-
-            $mediaindex = 0;
-
-            for($i = 0 ; $i < count($data['thumbnail_url']);$i++ ){
-
-                $index = $mediaindex;
-
-                $data['files'][ $data['file_id'][$i] ]['ns'] = $data['ns'][$i];
-                $data['files'][ $data['file_id'][$i] ]['role'] = $data['role'][$i];
-                $data['files'][ $data['file_id'][$i] ]['thumbnail_url'] = $data['thumbnail_url'][$i];
-                $data['files'][ $data['file_id'][$i] ]['large_url'] = $data['large_url'][$i];
-                $data['files'][ $data['file_id'][$i] ]['medium_url'] = $data['medium_url'][$i];
-                $data['files'][ $data['file_id'][$i] ]['full_url'] = $data['full_url'][$i];
-                $data['files'][ $data['file_id'][$i] ]['delete_type'] = $data['delete_type'][$i];
-                $data['files'][ $data['file_id'][$i] ]['delete_url'] = $data['delete_url'][$i];
-                $data['files'][ $data['file_id'][$i] ]['filename'] = $data['filename'][$i];
-                $data['files'][ $data['file_id'][$i] ]['filesize'] = $data['filesize'][$i];
-                $data['files'][ $data['file_id'][$i] ]['temp_dir'] = $data['temp_dir'][$i];
-                $data['files'][ $data['file_id'][$i] ]['filetype'] = $data['filetype'][$i];
-                $data['files'][ $data['file_id'][$i] ]['is_image'] = $data['is_image'][$i];
-                $data['files'][ $data['file_id'][$i] ]['is_audio'] = $data['is_audio'][$i];
-                $data['files'][ $data['file_id'][$i] ]['is_video'] = $data['is_video'][$i];
-                $data['files'][ $data['file_id'][$i] ]['fileurl'] = $data['fileurl'][$i];
-                $data['files'][ $data['file_id'][$i] ]['file_id'] = $data['file_id'][$i];
-                $data['files'][ $data['file_id'][$i] ]['sequence'] = $mediaindex;
-
-                $mediaindex++;
-
-                $data['defaultpic'] = $data['file_id'][0];
-                $data['defaultpictures'] = $data['files'][$data['file_id'][0]];
-
-            }
-
-        }else{
-
-            $data['defaultpic'] = '';
-            $data['defaultpictures'] = '';
-        }
-
-        $cats = Prefs::getShopCategory()->shopcatToSelection('slug', 'name', false);
-        $data['shopcategory'] = $cats[$data['shopcategoryLink']];
-
-            $data['shortcode'] = str_random(5);
+        unset($data['_token']);
+        unset($data['createdDate']);
+        unset($data['updated_at']);
 
         return $data;
     }
 
     public function beforeUpdate($id,$data)
     {
-
-        if( isset($data['file_id']) && count($data['file_id'])){
-
-            $mediaindex = 0;
-
-            for($i = 0 ; $i < count($data['thumbnail_url']);$i++ ){
-
-                $index = $mediaindex;
-
-                $data['files'][ $data['file_id'][$i] ]['ns'] = $data['ns'][$i];
-                $data['files'][ $data['file_id'][$i] ]['role'] = $data['role'][$i];
-                $data['files'][ $data['file_id'][$i] ]['thumbnail_url'] = $data['thumbnail_url'][$i];
-                $data['files'][ $data['file_id'][$i] ]['large_url'] = $data['large_url'][$i];
-                $data['files'][ $data['file_id'][$i] ]['medium_url'] = $data['medium_url'][$i];
-                $data['files'][ $data['file_id'][$i] ]['full_url'] = $data['full_url'][$i];
-                $data['files'][ $data['file_id'][$i] ]['delete_type'] = $data['delete_type'][$i];
-                $data['files'][ $data['file_id'][$i] ]['delete_url'] = $data['delete_url'][$i];
-                $data['files'][ $data['file_id'][$i] ]['filename'] = $data['filename'][$i];
-                $data['files'][ $data['file_id'][$i] ]['filesize'] = $data['filesize'][$i];
-                $data['files'][ $data['file_id'][$i] ]['temp_dir'] = $data['temp_dir'][$i];
-                $data['files'][ $data['file_id'][$i] ]['filetype'] = $data['filetype'][$i];
-                $data['files'][ $data['file_id'][$i] ]['is_image'] = $data['is_image'][$i];
-                $data['files'][ $data['file_id'][$i] ]['is_audio'] = $data['is_audio'][$i];
-                $data['files'][ $data['file_id'][$i] ]['is_video'] = $data['is_video'][$i];
-                $data['files'][ $data['file_id'][$i] ]['fileurl'] = $data['fileurl'][$i];
-                $data['files'][ $data['file_id'][$i] ]['file_id'] = $data['file_id'][$i];
-                $data['files'][ $data['file_id'][$i] ]['sequence'] = $mediaindex;
-
-                $mediaindex++;
-
-                $data['defaultpic'] = $data['file_id'][0];
-                $data['defaultpictures'] = $data['files'][$data['file_id'][0]];
-
-            }
-
-        }else{
-
-            $data['defaultpic'] = '';
-            $data['defaultpictures'] = '';
-        }
-
-        if(!isset($data['shortcode']) || $data['shortcode'] == ''){
-            $data['shortcode'] = str_random(5);
-        }
-
-        $cats = Prefs::getShopCategory()->shopcatToSelection('slug', 'name', false);
-        $data['shopcategory'] = $cats[$data['shopcategoryLink']];
-
+        unset($data['_token']);
+        unset($data['lastUpdate']);
+        unset($data['updated_at']);
 
         return $data;
     }
@@ -641,7 +554,7 @@ class DeviceController extends AdminController {
 
     public function afterUpdate($id,$data = null)
     {
-        $data['_id'] = new MongoId($id);
+        //$data['_id'] = new MongoId($id);
 
 
         $hdata = array();
@@ -660,7 +573,6 @@ class DeviceController extends AdminController {
     public function postAdd($data = null)
     {
         $this->validator = array(
-            'shopDescription' => 'required'
         );
 
         return parent::postAdd($data);
@@ -669,7 +581,6 @@ class DeviceController extends AdminController {
     public function postEdit($id,$data = null)
     {
         $this->validator = array(
-            'shopDescription' => 'required'
         );
 
         //exit();
@@ -781,32 +692,6 @@ class DeviceController extends AdminController {
         return Response::json(array('result'=>'OK','html'=>$racks, 'options'=>$options ));
     }
 
-    public function makeActions($data)
-    {
-        /*
-        if(!is_array($data)){
-            $d = array();
-            foreach( $data as $k->$v ){
-                $d[$k]=>$v;
-            }
-            $data = $d;
-        }
-
-        $delete = '<span class="del" id="'.$data['_id'].'" ><i class="fa fa-times-circle"></i> Delete</span>';
-        $edit = '<a href="'.URL::to('advertiser/edit/'.$data['_id']).'"><i class="fa fa-edit"></i> Update</a>';
-        $dl = '<a href="'.URL::to('brochure/dl/'.$data['_id']).'" target="new"><i class="fa fa-download"></i> Download</a>';
-        $print = '<a href="'.URL::to('brochure/print/'.$data['_id']).'" target="new"><i class="fa fa-print"></i> Print</a>';
-        $upload = '<span class="upload" id="'.$data['_id'].'" rel="'.$data['SKU'].'" ><i class="fa fa-upload"></i> Upload Picture</span>';
-        $inv = '<span class="upinv" id="'.$data['_id'].'" rel="'.$data['SKU'].'" ><i class="fa fa-upload"></i> Update Inventory</span>';
-        $stat = '<a href="'.URL::to('stats/merchant/'.$data['id']).'"><i class="fa fa-line-chart"></i> Stats</a>';
-
-        $history = '<a href="'.URL::to('advertiser/history/'.$data['_id']).'"><i class="fa fa-clock-o"></i> History</a>';
-
-        $actions = $stat.'<br />'.$edit.'<br />'.$delete;
-        */
-        $actions = '';
-        return $actions;
-    }
 
     public function accountDesc($data)
     {

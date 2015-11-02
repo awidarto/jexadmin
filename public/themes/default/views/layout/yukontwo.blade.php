@@ -22,6 +22,8 @@
             <!-- scrollbar -->
                 <link rel="stylesheet" href="{{ URL::to('yukon')}}/assets/lib/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css">
 
+            <link href="{{ URL::to('yukon')}}/assets/lib/gridforms/gf-forms.min.css" rel="stylesheet" media="screen">
+
         @include('layout.css')
 
         {{ HTML::style('css/typography.css')}}
@@ -92,15 +94,16 @@
               }
 
                 .vtext{
-                    /*
-                    -webkit-transform: rotate(270deg);
-                    -moz-transform: rotate(270deg);
-                    -o-transform: rotate(270deg);
-                    */
-                    writing-mode: rl-tb;
+                    -ms-writing-mode: tb-rl;
+                    -webkit-writing-mode: vertical-tb;
+                    -moz-writing-mode: vertical-tb;
+                    -ms-writing-mode: vertical-tb;
+                    writing-mode: vertical-tb;
                 }
 
-
+                .col-md-6 .btn{
+                    margin-top: 20px;
+                }
         </style>
 
     </head>
@@ -219,11 +222,19 @@
             <!-- main content -->
             <div id="main_wrapper">
                 <div class="container-fluid">
+                    {{Former::open_for_files_vertical($submit,'POST',array('class'=>'container'))}}
                     <div class="row">
-                          @yield('content')
+                        <div class="col-md-6">
+                          @yield('left')
+                        </div>
+                        <div class="col-md-6">
+                          @yield('right')
+                        </div>
                     </div>
+                    {{ Former::close() }}
                 </div>
             </div>
+            @yield('modals')
 
             <!-- main menu -->
 
@@ -273,6 +284,8 @@
             <script src="{{ URL::to('yukon')}}/assets/lib/DataTables/media/js/jquery.dataTables.min.js"></script>
             <script src="{{ URL::to('yukon')}}/assets/lib/DataTables/extensions/FixedHeader/js/dataTables.fixedHeader.min.js"></script>
             <script src="{{ URL::to('yukon')}}/assets/lib/DataTables/media/js/dataTables.bootstrap.js"></script>
+
+            <script src="{{ URL::to('yukon')}}/assets/lib/gridforms/gf-forms.min.js"></script>
 
             <script>
                 $(function() {

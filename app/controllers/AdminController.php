@@ -1938,14 +1938,23 @@ class AdminController extends Controller {
 		//$this->crumb->add(strtolower($this->controller_name).'/edit','Edit',false);
 
 		//$model = $this->model;
-
-		$_id = new MongoId($id);
+        if($this->model instanceof Jenssegers\Mongodb\Model){
+            $_id = new MongoId($id);
+        }else{
+            $_id = $id;
+        }
 
 		//$population = $model->where('_id',$_id)->first();
 
         $population = $this->model->find($id)->toArray();
 
 		$population = $this->beforeUpdateForm($population);
+
+        if($this->model instanceof Jenssegers\Mongodb\Model){
+
+        }else{
+            $population['_id'] = $id;
+        }
 
 		foreach ($population as $key=>$val) {
 			if($val instanceof MongoDate){
@@ -1975,6 +1984,12 @@ class AdminController extends Controller {
 
 	public function postEdit($_id,$data = null){
 
+        $is_mongo = false;
+
+        if($this->model instanceof Jenssegers\Mongodb\Model){
+            $is_mongo = true;
+        }
+
 		$controller_name = strtolower($this->controller_name);
 		//print_r(Session::get('permission'));
 
@@ -1996,10 +2011,17 @@ class AdminController extends Controller {
 				$data = Input::get();
 	    	}
 
-			$id = new MongoId($_id);
-			$data['lastUpdate'] = new MongoDate();
+            if($is_mongo){
+                $id = new MongoId($_id);
+                $data['lastUpdate'] = new MongoDate();
+            }else{
+                $id = $_id;
+                $data['lastUpdate'] = date('Y-m-d H:i:s', time());
+            }
 
-			unset($data['csrf_token']);
+//`_token` = 6UZKgUN9JxzDN5MDQcgDMJmN5l2kHoCyIggGfsT0, `lastUpdate` = 2015-10-31 16:41:19, `updated_at` = 2015-10-31 16:41:19
+
+            unset($data['csrf_token']);
 			unset($data['_id']);
 
 
@@ -2014,7 +2036,13 @@ class AdminController extends Controller {
 
 			$data = $this->beforeUpdate($id,$data);
 
-			if($obj = $model->where('_id',$id)->update($data)){
+            if($is_mongo){
+                $obj = $model->where('_id',$id)->update($data);
+            }else{
+                $obj = $model->where('id',$id)->update($data);
+            }
+
+			if($obj){
 
 				$obj = $this->afterUpdate($id,$data);
 				if($obj != false){
@@ -2047,9 +2075,15 @@ class AdminController extends Controller {
 			$result = array('status'=>'ERR','data'=>'NOID');
 		}else{
 
-			$id = new MongoId($id);
+            if($this->is_mongo()){
+                $id = new MongoId($id);
+                $res = $model->where('_id',$id)->delete();
+            }else{
+                $id = $id;
+                $res = $model->where('id',$id)->delete();
+            }
 
-			if($model->where('_id',$id)->delete()){
+			if($res){
 				Event::fire($controller_name.'.delete',array('id'=>$id,'result'=>'OK'));
 				$result = array('status'=>'OK','data'=>'CONTENTDELETED');
 			}else{
@@ -2072,8 +2106,14 @@ class AdminController extends Controller {
 	}
 
 	public function makeActions($data){
-        $delete = '<span class="del" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete item" id="'.$data['_id'].'" ><i class="fa fa-trash"></i> Del</span>';
-        $edit = '<a href="'.URL::to( strtolower($this->controller_name).'/edit/'.$data['_id']).'" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit item" ><i class="fa fa-edit"></i> Edit</a>';
+        if(isset($data['_id'])){
+            $id = $data['_id'];
+        }else{
+            $id = $data['id'];
+        }
+
+        $delete = '<span class="del" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete item" id="'.$id.'" ><i class="fa fa-trash"></i> Del</span>';
+        $edit = '<a href="'.URL::to( strtolower($this->controller_name).'/edit/'.$id).'" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit item" ><i class="fa fa-edit"></i> Edit</a>';
         $actions = $edit.'<br />'.$delete;
 
 		return $actions;
@@ -3328,6 +3368,17 @@ class AdminController extends Controller {
 	public function get_action_sample(){
 		\Laravel\CLI\Command::run(array('notify'));
 	}
+
+    public function is_mongo()
+    {
+        $is_mongo = false;
+
+        if($this->model instanceof Jenssegers\Mongodb\Model){
+            $is_mongo = true;
+        }
+
+        return $is_mongo;
+    }
 
     public function missingMethod($param = array())
     {

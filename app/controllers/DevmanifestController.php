@@ -140,10 +140,10 @@ class DevmanifestController extends AdminController {
             $exstatus = Config::get('jayon.devmanifest_default_excl_status');
 
             if(!empty($exstatus)){
-                $model = $model->whereNotIn('status', $exstatus);
+                //$model = $model->whereNotIn('status', $exstatus);
             }
         }else{
-            $model = $model->whereIn('status', $status);
+            //$model = $model->whereIn('status', $status);
         }
 
 
@@ -192,15 +192,27 @@ class DevmanifestController extends AdminController {
         }else{
             $model = $model->where('logistic','=', $logistic);
         }
+            /*
+            ->where('status',$this->config->item('trans_status_admin_courierassigned'))
+            ->or_where('status',$this->config->item('trans_status_mobile_pickedup'))
+            ->or_where('status',$this->config->item('trans_status_mobile_enroute'))
+            ->or_()
+                ->group_start()
+                    ->where('status',$this->config->item('trans_status_new'))
+                    ->where('pending_count >', 0)
+                ->group_end()
+            */
 
-        $model = $model
-            //->where('status',Config::get('jayon.trans_status_admin_courierassigned'))
-            //->orWhere('status',Config::get('jayon.trans_status_mobile_pickedup'))
-            //->orWhere('status',Config::get('jayon.trans_status_mobile_enroute'))
+        $model = $model->where(function($qr){
+            $qr->where('status',Config::get('jayon.trans_status_admin_courierassigned'))
+            ->orWhere('status',Config::get('jayon.trans_status_mobile_pickedup'))
+            ->orWhere('status',Config::get('jayon.trans_status_mobile_enroute'))
             ->orWhere(function($q){
                 $q->where('status',Config::get('jayon.trans_status_new'))
                   ->where('pending_count','>', 0);
             });
+
+        });
 
         $actualresult = $model->get();
 

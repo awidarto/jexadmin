@@ -2,6 +2,7 @@
 
 
 @section('left')
+    {{--
         {{ Former::hidden('id')->value($formdata['_id']) }}
 
         <h4>Employee Info</h4>
@@ -16,6 +17,7 @@
         {{ Former::text('costControl','Cost Control')->class('form-control form-white') }}
         {{ Former::text('allocControl','Alloc. Control') }}
 
+    --}}
 
         <h4>User Info</h4>
 
@@ -47,18 +49,32 @@
 
         {{ Former::select('roleId')->options(Prefs::getRole()->RoleToSelection('_id','rolename' ) )->label('Role')}}
 
-        {{ Former::select('roleId')->options(Prefs::getRole()->RoleToSelection('_id','rolename' ) )->label('Role')}}
-
         <h5>Avatar</h5>
         <?php
-            $fupload = new Fupload();
+            $fupload = new Wupload();
         ?>
-
-        {{ $fupload->id('photoupload')->title('Select Photo')->label('Upload Photo')
+        {{ $fupload->id('photoupload')
+            ->ns('photo')
+            ->parentid($formdata['_id'])
+            ->parentclass('user')
+            ->title('Select Picture')
+            ->label('Upload Picture')
             ->url('upload/avatar')
             ->singlefile(true)
             ->prefix('photo')
-            ->multi(false)->make($formdata) }}
+            ->multi(false)
+            ->make($formdata) }}
+
+
+        <?php
+            //$fupload = new Fupload();
+        ?>
+
+        {{-- $fupload->id('photoupload')->title('Select Photo')->label('Upload Photo')
+            ->url('upload/avatar')
+            ->singlefile(true)
+            ->prefix('photo')
+            ->multi(false)->make($formdata) --}}
 
 @stop
 

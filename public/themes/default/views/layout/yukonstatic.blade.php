@@ -92,12 +92,11 @@
               }
 
                 .vtext{
-                    /*
-                    -webkit-transform: rotate(270deg);
-                    -moz-transform: rotate(270deg);
-                    -o-transform: rotate(270deg);
-                    */
-                    writing-mode: rl-tb;
+                    -ms-writing-mode: tb-rl;
+                    -webkit-writing-mode: vertical-tb;
+                    -moz-writing-mode: vertical-tb;
+                    -ms-writing-mode: vertical-tb;
+                    writing-mode: vertical-tb;
                 }
 
 
@@ -220,7 +219,12 @@
             <div id="main_wrapper">
                 <div class="container-fluid">
                     <div class="row">
-                          @yield('content')
+                        <div class="col-md-6">
+                          @yield('left')
+                        </div>
+                        <div class="col-md-6">
+                          @yield('right')
+                        </div>
                     </div>
                 </div>
             </div>

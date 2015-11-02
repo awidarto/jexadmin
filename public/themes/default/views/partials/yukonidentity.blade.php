@@ -7,7 +7,7 @@
                 <span class="caret"></span>
             </div>
             <ul class="dropdown-menu dropdown-menu-right">
-                <li><a href="pages-user_profile.html">User Profile</a></li>
+                <li><a href="{{ URL::to('profile')}}">User Profile</a></li>
                 <li><a href="{{ URL::to('logout')}}">Logout</a></li>
             </ul>
         </div>

@@ -87,7 +87,7 @@
                                   <a href="{{ URL::to('usergroup') }}" class="{{ sa('usergroup') }}" ><span class="fa fa-group"></span>
                                    Roles</a>
                                 </li>
-                                <li class="{{ sa('holiday') }}"><a href="{{ URL::to('holiday') }}"> Holidays</a></li>
+                                <li class="{{ sa('holiday') }}"><a href="{{ URL::to('holiday') }}"><span class="fa fa-calendar"></span> Holidays</a></li>
                                 <li class="{{ sa('option') }}">
                                   <a href="{{ URL::to('option') }}" class="{{ sa('option') }}" ><span class="fa fa-wrench"></span>
                                    Options</a>

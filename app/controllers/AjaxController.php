@@ -1242,7 +1242,7 @@ class AjaxController extends BaseController {
         $result = array();
 
         foreach($devices as $d){
-            $result[] = array('id'=>$d->key,'value'=>$d->district,'name'=>$d->district,'label'=>$d->district);
+            $result[] = array('id'=>$d->id,'value'=>$d->district,'name'=>$d->district,'label'=>$d->district);
         }
 
         return Response::json($result);
@@ -1260,8 +1260,12 @@ class AjaxController extends BaseController {
 
         $result = array();
 
+        $city = '';
         foreach($devices as $d){
-            $result[] = array('id'=>$d,'value'=>$d,'name'=>$d,'label'=>$d);
+            if($city != $d->city){
+                $result[] = array('id'=>$d->id,'value'=>$d->city,'name'=>$d->city,'label'=>$d->city);
+                $city = $d->city;
+            }
         }
 
         return Response::json($result);
