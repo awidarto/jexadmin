@@ -26,8 +26,20 @@
 
         </div>
         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-
+            {{ Former::text('date-from', 'From Date')
+                    ->value(Input::get('date-from',$dperiod))
+                    ->class('form-control input-sm p-datepicker')
+                    ->id('date-from');
+            }}
         </div>
+        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+            {{ Former::text('date-to', 'To Date')
+                    ->value(Input::get('date-to',$dperiod))
+                    ->class('form-control input-sm p-datepicker')
+                    ->id('date-to');
+            }}
+        </div>
+        {{--
         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
             {{ Former::text('date-from', 'Delivery Date')
                     ->value(Input::get('date-from',$dperiod))
@@ -35,6 +47,7 @@
                     ->id('date-from');
             }}
         </div>
+        --}}
         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
             {{ Former::text('manifest-date', 'Publish Date')
                     ->value(Input::get('manifest-date',$dperiod))

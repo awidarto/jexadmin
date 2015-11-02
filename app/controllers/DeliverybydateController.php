@@ -196,12 +196,12 @@ class DeliverybydateController extends AdminController {
 
         if($period_from == '' || is_null($period_from) ){
             $datefrom = date( 'Y-m-d 00:00:00', strtotime($period_from) );
-            $dateto = date( 'Y-m-d 23:59:59', strtotime($period_from) );
+            $dateto = date( 'Y-m-d 23:59:59', strtotime($period_to) );
 
         }else{
 
             $datefrom = date( 'Y-m-d 00:00:00', strtotime($period_from) );
-            $dateto = date( 'Y-m-d 23:59:59', strtotime($period_from) );
+            $dateto = date( 'Y-m-d 23:59:59', strtotime($period_to) );
 
             $model = $model->where(function($q) use($datefrom,$dateto){
                 $q->whereBetween('assignment_date',array($datefrom,$dateto));

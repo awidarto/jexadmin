@@ -117,7 +117,11 @@ class DevmanifestController extends AdminController {
         $courierstatus = Input::get('courier-status');
 
         if($period_to == '' || is_null($period_to) ){
-            $period_to = date('Y0m',time());
+            $period_to = date('Y-m-d',time());
+        }
+
+        if($period_from == '' || is_null($period_from) ){
+            $period_from = date('Y-m-d',time());
         }
 
 
@@ -166,13 +170,18 @@ class DevmanifestController extends AdminController {
         */
 
         if($period_from == '' || is_null($period_from) ){
+            $datefrom = date( 'Y-m-d 00:00:00', strtotime($period_from) );
+            $dateto = date( 'Y-m-d 23:59:59', strtotime($period_to) );
 
         }else{
 
             $datefrom = date( 'Y-m-d 00:00:00', strtotime($period_from) );
-            $dateto = date( 'Y-m-d 23:59:59', strtotime($period_from) );
+            $dateto = date( 'Y-m-d 23:59:59', strtotime($period_to) );
 
-            $model = $model->whereBetween('assignment_date',array($datefrom,$dateto));
+            $model = $model->where(function($q) use($datefrom,$dateto){
+                $q->whereBetween('assignment_date',array($datefrom,$dateto));
+            });
+
         }
 
         if($device == '' || is_null($device) ){
