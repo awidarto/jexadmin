@@ -107,7 +107,7 @@ class DeliverybydateController extends AdminController {
 //device=&courier=&logistic=&date-from=2015-10-24
 
         $period_from = Input::get('date-from');
-        $period_to = Input::get('acc-period-to');
+        $period_to = Input::get('date-to');
 
         $device = Input::get('device');
         $courier = Input::get('courier');
@@ -562,15 +562,6 @@ class DeliverybydateController extends AdminController {
     public function SQL_additional_query($model)
     {
         $in = Input::get();
-
-        $period_from = Input::get('acc-period-from');
-        $period_to = Input::get('acc-period-to');
-
-        $db = Config::get('lundin.main_db');
-
-        $company = Input::get('acc-company');
-
-        $company = strtolower($company);
 
         $txtab = Config::get('jayon.incoming_delivery_table');
 
