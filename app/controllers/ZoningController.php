@@ -86,32 +86,7 @@ class ZoningController extends AdminController {
     {
 
 
-        $this->heads = array(
-            array('Timestamp',array('search'=>true,'sort'=>true, 'style'=>'min-width:90px;','daterange'=>true)),
-            array('Status',array('search'=>true,'sort'=>true)),
-            array('PU Time',array('search'=>true,'sort'=>true, 'style'=>'min-width:100px;','daterange'=>true)),
-            array('PU Pic',array('search'=>true,'sort'=>true, 'style'=>'min-width:120px;')),
-            array('PU Person & Device',array('search'=>true,'style'=>'min-width:100px;','sort'=>true)),
-            array('Delivery Date',array('search'=>true,'style'=>'min-width:125px;','sort'=>true, 'daterange'=>true )),
-            array('Slot',array('search'=>true,'sort'=>true)),
-            array('Zone',array('search'=>true,'sort'=>true)),
-            array('City',array('search'=>true,'sort'=>true)),
-            array('Shipping Address',array('search'=>true,'sort'=>true, 'style'=>'max-width:200px;width:200px;' )),
-            array('No Kode Penjualan Toko',array('search'=>true,'sort'=>true)),
-            array('Type',array('search'=>true,'sort'=>true,'select'=>Config::get('jayon.deliverytype_selector_legacy') )),
-            array('Merchant & Shop Name',array('search'=>true,'sort'=>true)),
-            array('Delivery ID',array('search'=>true,'sort'=>true)),
-            array('Directions',array('search'=>true,'sort'=>true)),
-            array('TTD Toko',array('search'=>true,'sort'=>true)),
-            array('Delivery Charge',array('search'=>true,'sort'=>true)),
-            array('COD Surcharge',array('search'=>true,'sort'=>true)),
-            array('COD Value',array('search'=>true,'sort'=>true)),
-            array('Buyer',array('search'=>true,'sort'=>true)),
-            array('ZIP',array('search'=>true,'sort'=>true)),
-            array('Phone',array('search'=>true,'sort'=>true)),
-            array('W x H x L = V',array('search'=>true,'sort'=>true)),
-            array('Weight Range',array('search'=>true,'sort'=>true)),
-        );
+        $this->heads = Config::get('jex.default_zoning_heads');
 
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
@@ -140,32 +115,7 @@ class ZoningController extends AdminController {
     public function postIndex()
     {
 
-        $this->fields = array(
-            array('ordertime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('status',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true, 'callback'=>'statusList')),
-            array('pickuptime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('buyerdeliverytime',array('kind'=>'daterange','query'=>'like','pos'=>'both','show'=>true)),
-            array('buyerdeliveryslot',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-            array('buyerdeliveryzone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('buyerdeliverycity',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('shipping_address',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('merchant_trans_id',array('kind'=>'text','callback'=>'dispBar' ,'query'=>'like','pos'=>'both','show'=>true)),
-            array('delivery_type',array('kind'=>'text','callback'=>'colorizetype' ,'query'=>'like','pos'=>'both','show'=>true)),
-            array(Config::get('jayon.jayon_members_table').'.merchantname',array('kind'=>'text','alias'=>'merchant_name','query'=>'like','callback'=>'merchantInfo','pos'=>'both','show'=>true)),
-            array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('directions',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('delivery_cost',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('cod_cost',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('total_price',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('buyer_name',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('shipping_zip',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('phone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('volume',array('kind'=>'numeric','query'=>'like','pos'=>'both','show'=>true)),
-            array('weight',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-        );
+        $this->fields = Config::get('jex.default_zoning_fields');
 
         /*
         $categoryFilter = Input::get('categoryFilter');
@@ -422,7 +372,8 @@ class ZoningController extends AdminController {
             ->leftJoin(Config::get('jayon.jayon_members_table'), Config::get('jayon.incoming_delivery_table').'.merchant_id', '=', Config::get('jayon.jayon_members_table').'.id' )
             ->leftJoin(Config::get('jayon.applications_table'), Config::get('jayon.incoming_delivery_table').'.application_id', '=', Config::get('jayon.applications_table').'.id' )
             ->where('status','=', Config::get('jayon.trans_status_admin_dated') )
-            ->orderBy('ordertime','desc');
+            ->orderBy('buyerdeliverycity','desc')
+            ->orderBy('buyerdeliveryzone','desc');
 
         //print_r($in);
 
@@ -452,8 +403,39 @@ class ZoningController extends AdminController {
 
     public function rows_post_process($rows, $aux = null){
 
+        $date = '';
+        $city = '';
+
+        //print_r($rows);
+
+        if(count($rows) > 0){
+
+            for($i = 0; $i < count($rows); $i++){
+                if($rows[$i][3] != $date){
+                    $city = '';
+                    $date = $rows[$i][3];
+                    $rows[$i][3] = '<input type="radio" name="date_select" value="'.$rows[$i][3].'" class="date_select form-control" /> '.$rows[$i][3];
+                }else{
+                    $rows[$i][3] = '';
+                }
+
+
+                if($rows[$i][4] != $city){
+                    $city = $rows[$i][4];
+                    $rows[$i][4] = '<input type="radio" name="city_select" value="'.$rows[$i][4].'" class="city_select form-control" /> '.$rows[$i][4];
+                }else{
+                    $rows[$i][4] = '';
+                }
+
+            }
+
+
+        }
+
+
         //print_r($this->aux_data);
         /*
+
         $total_base = 0;
         $total_converted = 0;
         $end = 0;
@@ -813,39 +795,6 @@ class ZoningController extends AdminController {
         unset($data['isHead']);
 
         return $data;
-    }
-
-    public function makeActions($data)
-    {
-        /*
-        if(!is_array($data)){
-            $d = array();
-            foreach( $data as $k->$v ){
-                $d[$k]=>$v;
-            }
-            $data = $d;
-        }
-
-        $delete = '<span class="del" id="'.$data['_id'].'" ><i class="fa fa-times-circle"></i> Delete</span>';
-        $edit = '<a href="'.URL::to('advertiser/edit/'.$data['_id']).'"><i class="fa fa-edit"></i> Update</a>';
-        $dl = '<a href="'.URL::to('brochure/dl/'.$data['_id']).'" target="new"><i class="fa fa-download"></i> Download</a>';
-        $print = '<a href="'.URL::to('brochure/print/'.$data['_id']).'" target="new"><i class="fa fa-print"></i> Print</a>';
-        $upload = '<span class="upload" id="'.$data['_id'].'" rel="'.$data['SKU'].'" ><i class="fa fa-upload"></i> Upload Picture</span>';
-        $inv = '<span class="upinv" id="'.$data['_id'].'" rel="'.$data['SKU'].'" ><i class="fa fa-upload"></i> Update Inventory</span>';
-        $stat = '<a href="'.URL::to('stats/merchant/'.$data['id']).'"><i class="fa fa-line-chart"></i> Stats</a>';
-
-        $history = '<a href="'.URL::to('advertiser/history/'.$data['_id']).'"><i class="fa fa-clock-o"></i> History</a>';
-
-        $actions = $stat.'<br />'.$edit.'<br />'.$delete;
-        */
-        $delete = '<span class="del action" id="'.$data['delivery_id'].'" >Delete</span>';
-        $edit = '<a href="'.URL::to('advertiser/edit/'.$data['delivery_id']).'">Update</a>';
-        $dl = '<a href="'.URL::to('brochure/dl/'.$data['delivery_id']).'" target="new">Download</a>';
-
-        $actions = View::make('shared.action')
-                        ->with('actions',array($dl))
-                        ->render();
-        return $actions;
     }
 
     public function accountDesc($data)

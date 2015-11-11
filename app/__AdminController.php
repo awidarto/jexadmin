@@ -54,8 +54,6 @@ class AdminController extends Controller {
 
     public $pdflink = '';
 
-    public $xlslink = '';
-
     public $makeActions = 'makeActions';
 
     public $can_add = true;
@@ -122,6 +120,8 @@ class AdminController extends Controller {
 
     public $report_entity = false;
 
+    public $report_header_data = false;
+
     public $doc_number = false;
 
     public $additional_table_param = array();
@@ -148,8 +148,6 @@ class AdminController extends Controller {
     public $print = false;
 
     public $pdf = false;
-
-    public $xls = false;
 
     public $import_main_form = 'shared.importinput';
 
@@ -204,45 +202,6 @@ class AdminController extends Controller {
 
         return $this->pageGenerator();
     }
-
-    public function getPrintfile($_id)
-    {
-        $file = Document::find($_id);
-        if($file){
-            $body = file_get_contents($file->fullpath);
-            $controller_name = strtolower($this->controller_name);
-            $actor = (isset(Auth::user()->email))?Auth::user()->fullname.' - '.Auth::user()->email:'guest';
-            Event::fire('log.a',array($controller_name, 'print file content' ,$actor,'OK'));
-            print $body;
-        }else{
-            return $this->get_not_found_page();
-        }
-
-    }
-
-    public function getPdffile($_id)
-    {
-
-        $file = Document::find($_id);
-        if($file){
-            $body = file_get_contents($file->fullpath);
-            $controller_name = strtolower($this->controller_name);
-            $actor = (isset(Auth::user()->email))?Auth::user()->fullname.' - '.Auth::user()->email:'guest';
-            Event::fire('log.a',array($controller_name, 'print file content' ,$actor,'OK'));
-
-            return PDF::loadHTML($body)->setPaper('a4')
-                     ->setOrientation('landscape')
-                     ->setOption('margin-bottom', 0)
-                     ->stream( str_replace('html', 'pdf', $file->filename ) );
-
-        }else{
-            return $this->get_not_found_page();
-        }
-
-
-        //return $this->printPage();
-    }
-
 
     public function getPrint()
     {
@@ -320,23 +279,6 @@ class AdminController extends Controller {
         //print_r($table);
 
         return $this->pageGenerator();
-    }
-
-    public function printThrough($_id)
-    {
-
-        $doc = Document::find($_id);
-
-
-        $actor = (isset(Auth::user()->email))?Auth::user()->fullname.' - '.Auth::user()->email:'guest';
-        Event::fire('log.a',array($controller_name, 'print through document' ,$actor,'OK'));
-
-        if($doc){
-            $content = file_get_contents($doc->fullpath);
-            print $content;
-        }else{
-            return View::make('shared.notfound');
-        }
     }
 
     public function printReport()
@@ -537,7 +479,6 @@ class AdminController extends Controller {
 
         $this->pdflink = (is_null($this->pdflink) || $this->pdflink == '')? strtolower($this->controller_name).'/genpdf': $this->pdflink;
 
-        $this->xlslink = (is_null($this->xlslink) || $this->xlslink == '')? strtolower($this->controller_name).'/genxls': $this->xlslink;
         /*
         if($this->report_entity == false){
 
@@ -564,7 +505,6 @@ class AdminController extends Controller {
                 ->with('crumb',$this->crumb )
                 ->with('printlink', $this->printlink )
                 ->with('pdflink', $this->pdflink )
-                ->with('xlslink', $this->xlslink )
                 ->with('can_add', $this->can_add )
                 ->with('is_report',$this->is_report)
                 ->with('report_action',$this->report_action)
@@ -619,40 +559,18 @@ class AdminController extends Controller {
 
         if($this->pdf == true){
 
-            $html->render();
+                $html->render();
 
-            $snappy = App::make('snappy.pdf');
+                $snappy = App::make('snappy.pdf');
 
-            return PDF::loadHTML($html)->setPaper('a4')
-                     ->setOrientation('landscape')->setOption('margin-bottom', 0)->stream($this->report_file_name);
-
-        }
-
-        if($this->xls == true){
-
-            $tables = $this->table_raw;
-
-            $heads = $this->additional_filter;
-
-            Excel::create($this->report_file_name, function($excel) use($tables, $heads){
-
-                $excel->sheet('New sheet', function($sheet) use($tables, $heads){
-
-                    $xls_view = 'tables.xls';
-
-                    $sheet->loadView($xls_view)
-                        ->with('heads',$heads )
-                        ->with('tables',$tables);
-
-                });
-
-            })->download('xls');
+                return PDF::loadHTML($html)->setPaper('a4')
+                         ->setOrientation('landscape')->setOption('margin-bottom', 0)->stream($this->report_file_name);
 
         }else{
 
             return $html;
-
         }
+
 
     }
 
@@ -695,8 +613,6 @@ class AdminController extends Controller {
         //$table = $emodel->getTable();
 
         $model = $this->model;
-
-        $count_all = $this->model->count();
 
         $model = $this->SQL_additional_query($model);
 
@@ -741,6 +657,7 @@ class AdminController extends Controller {
 
 
 
+        $count_all = $this->model->count();
         $count_display_all = $this->model->count();
 
         $this->aux_data = $this->SQL_before_paging($model);
@@ -760,7 +677,7 @@ class AdminController extends Controller {
 		$counter = 1 + $pagestart;
 
 
-        //$count_display_all = count($results);
+        $count_display_all = count($results);
 
 
 		foreach ($results as $doc) {
@@ -2021,14 +1938,23 @@ class AdminController extends Controller {
 		//$this->crumb->add(strtolower($this->controller_name).'/edit','Edit',false);
 
 		//$model = $this->model;
-
-		$_id = new MongoId($id);
+        if($this->model instanceof Jenssegers\Mongodb\Model){
+            $_id = new MongoId($id);
+        }else{
+            $_id = $id;
+        }
 
 		//$population = $model->where('_id',$_id)->first();
 
         $population = $this->model->find($id)->toArray();
 
 		$population = $this->beforeUpdateForm($population);
+
+        if($this->model instanceof Jenssegers\Mongodb\Model){
+
+        }else{
+            $population['_id'] = $id;
+        }
 
 		foreach ($population as $key=>$val) {
 			if($val instanceof MongoDate){
@@ -2058,6 +1984,12 @@ class AdminController extends Controller {
 
 	public function postEdit($_id,$data = null){
 
+        $is_mongo = false;
+
+        if($this->model instanceof Jenssegers\Mongodb\Model){
+            $is_mongo = true;
+        }
+
 		$controller_name = strtolower($this->controller_name);
 		//print_r(Session::get('permission'));
 
@@ -2079,10 +2011,17 @@ class AdminController extends Controller {
 				$data = Input::get();
 	    	}
 
-			$id = new MongoId($_id);
-			$data['lastUpdate'] = new MongoDate();
+            if($is_mongo){
+                $id = new MongoId($_id);
+                $data['lastUpdate'] = new MongoDate();
+            }else{
+                $id = $_id;
+                $data['lastUpdate'] = date('Y-m-d H:i:s', time());
+            }
 
-			unset($data['csrf_token']);
+//`_token` = 6UZKgUN9JxzDN5MDQcgDMJmN5l2kHoCyIggGfsT0, `lastUpdate` = 2015-10-31 16:41:19, `updated_at` = 2015-10-31 16:41:19
+
+            unset($data['csrf_token']);
 			unset($data['_id']);
 
 
@@ -2097,7 +2036,13 @@ class AdminController extends Controller {
 
 			$data = $this->beforeUpdate($id,$data);
 
-			if($obj = $model->where('_id',$id)->update($data)){
+            if($is_mongo){
+                $obj = $model->where('_id',$id)->update($data);
+            }else{
+                $obj = $model->where('id',$id)->update($data);
+            }
+
+			if($obj){
 
 				$obj = $this->afterUpdate($id,$data);
 				if($obj != false){
@@ -2130,9 +2075,15 @@ class AdminController extends Controller {
 			$result = array('status'=>'ERR','data'=>'NOID');
 		}else{
 
-			$id = new MongoId($id);
+            if($this->is_mongo()){
+                $id = new MongoId($id);
+                $res = $model->where('_id',$id)->delete();
+            }else{
+                $id = $id;
+                $res = $model->where('id',$id)->delete();
+            }
 
-			if($model->where('_id',$id)->delete()){
+			if($res){
 				Event::fire($controller_name.'.delete',array('id'=>$id,'result'=>'OK'));
 				$result = array('status'=>'OK','data'=>'CONTENTDELETED');
 			}else{
@@ -2155,15 +2106,14 @@ class AdminController extends Controller {
 	}
 
 	public function makeActions($data){
-
-        if(isset($data['_id']) && $data['_id'] instanceOf MongoId){
+        if(isset($data['_id'])){
             $id = $data['_id'];
         }else{
-            $id = (isset($data['id']))?$data['id']:'0';
+            $id = $data['id'];
         }
 
-        $delete = '<span class="del" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="left" title="" data-original-title="Delete item" id="'.$id.'" ><i class="fa fa-trash"></i> Del</span>';
-        $edit = '<a href="'.URL::to( strtolower($this->controller_name).'/edit/'.$id).'" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="left" title="" data-original-title="Edit item" ><i class="fa fa-edit"></i> Edit</a>';
+        $delete = '<span class="del" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete item" id="'.$id.'" ><i class="fa fa-trash"></i> Del</span>';
+        $edit = '<a href="'.URL::to( strtolower($this->controller_name).'/edit/'.$id).'" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit item" ><i class="fa fa-edit"></i> Edit</a>';
         $actions = $edit.'<br />'.$delete;
 
 		return $actions;
@@ -2498,58 +2448,6 @@ class AdminController extends Controller {
             ->with($sdata)
             ->save('xls',public_path().'/storage/dled');
         */
-
-        $path = Excel::create( $fname, function($excel) use ($sdata){
-                $excel->sheet('sheet1', function($sheet) use ($sdata){
-                    $sheet->fromArray($sdata);
-                });
-                    //->with($sdata);
-            })->store('xls',public_path().'/storage/dled',true);
-
-        //print_r($path);
-
-        $fp = fopen(public_path().'/storage/dled/'.$fname.'.csv', 'w');
-
-        foreach ($sdata as $fields) {
-            fputcsv($fp, $fields, ',' , '"');
-        }
-
-        fclose($fp);
-
-
-        $result = array(
-            'status'=>'OK',
-            'filename'=>$fname,
-            'urlxls'=>URL::to(strtolower($this->controller_name).'/dl/'.$path['file']),
-            'urlcsv'=>URL::to(strtolower($this->controller_name).'/csv/'.$fname.'.csv'),
-            'q'=>$lastQuery
-        );
-
-        print json_encode($result);
-
-    }
-
-    public function postReportdlxl()
-    {
-
-
-        $fname =  $this->controller_name.'_'.date('d-m-Y-H-m-s',time());
-
-        if(!is_null($this->export_output_fields) && count($this->export_output_fields) > 0){
-            $tempdata = array();
-            $sfields = $sdata[1];
-            foreach ($sdata as $sd) {
-                $temprow = array();
-                for($i = 0; $i < count($sd); $i++){
-                    if( in_array($sfields[$i], $this->export_output_fields) ){
-                        $temprow[] = $sd[$i];
-                    }
-                }
-                $tempdata[] = $temprow;
-            }
-
-            $sdata = $tempdata;
-        }
 
         $path = Excel::create( $fname, function($excel) use ($sdata){
                 $excel->sheet('sheet1', function($sheet) use ($sdata){
@@ -3248,10 +3146,7 @@ class AdminController extends Controller {
             $sessobj->sessId = $rstring;
             $sessobj->save();
 
-
             for($i = $firstdata; $i < count($imp);$i++){
-
-                $check = '';
 
                 $rowitem = $imp[$i];
 
@@ -3262,10 +3157,8 @@ class AdminController extends Controller {
                 $rowtemp = array();
                 foreach($rowitem as $k=>$v){
                     $hkey = strtolower($headrow[$k]);
-                    $v = trim($v);
                     $sessobj->{ $hkey } = $this->prepImportItem($headrow[$k],$v,$rowitem);
                     $rowtemp[$hkey] = $v;
-                    $check .= $v;
                 }
 
                 if(count($aux_form_data) > 0){
@@ -3279,12 +3172,7 @@ class AdminController extends Controller {
 
                 $sessobj->sessId = $rstring;
                 $sessobj->isHead = 0;
-
-                if(trim($check) == ''){
-
-                }else{
-                    $sessobj->save();
-                }
+                $sessobj->save();
 
             }
 
@@ -3407,9 +3295,7 @@ class AdminController extends Controller {
 
                     $rowitem = $this->beforeImportCommit($rowitem);
 
-                    if($rowitem){
-                        $this->model->insert($rowitem);
-                    }
+                    $this->model->insert($rowitem);
                 }
 
 
@@ -3423,9 +3309,8 @@ class AdminController extends Controller {
 
                 $rowitem = $this->beforeImportCommit($rowitem);
 
-                if($rowitem){
-                    $this->model->insert($rowitem);
-                }
+
+                $this->model->insert($rowitem);
 
             }
 
@@ -3480,21 +3365,20 @@ class AdminController extends Controller {
         return $sql['query'];
     }
 
-    public function get_not_found_page($backlink = null)
-    {
-        if(is_null($backlink)){
-            $backlink = strtolower($this->controller_name);
-        }
-
-        return View::make('shared.notfound')
-            ->with('backlink',$backlink)
-            ->with('title','Not Found');
-
-    }
-
 	public function get_action_sample(){
 		\Laravel\CLI\Command::run(array('notify'));
 	}
+
+    public function is_mongo()
+    {
+        $is_mongo = false;
+
+        if($this->model instanceof Jenssegers\Mongodb\Model){
+            $is_mongo = true;
+        }
+
+        return $is_mongo;
+    }
 
     public function missingMethod($param = array())
     {

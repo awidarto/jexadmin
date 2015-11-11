@@ -86,32 +86,7 @@ class CourierassignController extends AdminController {
     {
 
 
-        $this->heads = array(
-            array('Timestamp',array('search'=>true,'sort'=>true, 'style'=>'min-width:90px;','daterange'=>true)),
-            array('Status',array('search'=>true,'sort'=>true)),
-            array('PU Time',array('search'=>true,'sort'=>true, 'style'=>'min-width:100px;','daterange'=>true)),
-            array('PU Pic',array('search'=>true,'sort'=>true, 'style'=>'min-width:120px;')),
-            array('PU Person & Device',array('search'=>true,'style'=>'min-width:100px;','sort'=>true)),
-            array('Delivery Date',array('search'=>true,'style'=>'min-width:125px;','sort'=>true, 'daterange'=>true )),
-            array('Slot',array('search'=>true,'sort'=>true)),
-            array('Zone',array('search'=>true,'sort'=>true)),
-            array('City',array('search'=>true,'sort'=>true)),
-            array('Shipping Address',array('search'=>true,'sort'=>true, 'style'=>'max-width:200px;width:200px;' )),
-            array('No Kode Penjualan Toko',array('search'=>true,'sort'=>true)),
-            array('Type',array('search'=>true,'sort'=>true,'select'=>Config::get('jayon.deliverytype_selector_legacy') )),
-            array('Merchant & Shop Name',array('search'=>true,'sort'=>true)),
-            array('Delivery ID',array('search'=>true,'sort'=>true)),
-            array('Directions',array('search'=>true,'sort'=>true)),
-            array('TTD Toko',array('search'=>true,'sort'=>true)),
-            array('Delivery Charge',array('search'=>true,'sort'=>true)),
-            array('COD Surcharge',array('search'=>true,'sort'=>true)),
-            array('COD Value',array('search'=>true,'sort'=>true)),
-            array('Buyer',array('search'=>true,'sort'=>true)),
-            array('ZIP',array('search'=>true,'sort'=>true)),
-            array('Phone',array('search'=>true,'sort'=>true)),
-            array('W x H x L = V',array('search'=>true,'sort'=>true)),
-            array('Weight Range',array('search'=>true,'sort'=>true)),
-        );
+        $this->heads = Config::get('jex.default_courier_heads');
 
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
@@ -140,39 +115,7 @@ class CourierassignController extends AdminController {
     public function postIndex()
     {
 
-        $this->fields = array(
-            array('ordertime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('status',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true, 'callback'=>'statusList')),
-            array('pickuptime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('buyerdeliverytime',array('kind'=>'daterange','query'=>'like','pos'=>'both','show'=>true)),
-            array('buyerdeliveryslot',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-            array('buyerdeliveryzone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('buyerdeliverycity',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('shipping_address',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('merchant_trans_id',array('kind'=>'text','callback'=>'dispBar' ,'query'=>'like','pos'=>'both','show'=>true)),
-            array('delivery_type',array('kind'=>'text','callback'=>'colorizetype' ,'query'=>'like','pos'=>'both','show'=>true)),
-            array(Config::get('jayon.jayon_members_table').'.merchantname',array('kind'=>'text','alias'=>'merchant_name','query'=>'like','callback'=>'merchantInfo','pos'=>'both','show'=>true)),
-            array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('directions',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('delivery_cost',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('cod_cost',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('total_price',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('buyer_name',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('shipping_zip',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('phone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('volume',array('kind'=>'numeric','query'=>'like','pos'=>'both','show'=>true)),
-            array('weight',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-        );
-
-        /*
-        $categoryFilter = Input::get('categoryFilter');
-        if($categoryFilter != ''){
-            $this->additional_query = array('shopcategoryLink'=>$categoryFilter, 'group_id'=>4);
-        }
-        */
+        $this->fields = Config::get('jex.default_courier_fields');
 
         $db = Config::get('jayon.main_db');
 
@@ -416,11 +359,13 @@ class CourierassignController extends AdminController {
                     Config::get('jayon.incoming_delivery_table').'.* ,'.
                     Config::get('jayon.jayon_members_table').'.merchantname as merchant_name ,'.
                     Config::get('jayon.applications_table').'.application_name as app_name ,'.
+                    Config::get('jayon.jayon_devices_table').'.identifier as device_name ,'.
                     '('.$txtab.'.width * '.$txtab.'.height * '.$txtab.'.length ) as volume'
                 )
             )
             ->leftJoin(Config::get('jayon.jayon_members_table'), Config::get('jayon.incoming_delivery_table').'.merchant_id', '=', Config::get('jayon.jayon_members_table').'.id' )
             ->leftJoin(Config::get('jayon.applications_table'), Config::get('jayon.incoming_delivery_table').'.application_id', '=', Config::get('jayon.applications_table').'.id' )
+            ->leftJoin(Config::get('jayon.jayon_devices_table'), Config::get('jayon.incoming_delivery_table').'.device_id', '=', Config::get('jayon.jayon_devices_table').'.id' )
             ->where('status','=', Config::get('jayon.trans_status_admin_devassigned') )
             ->orderBy('ordertime','desc');
 
@@ -450,121 +395,43 @@ class CourierassignController extends AdminController {
 
     }
 
+
     public function rows_post_process($rows, $aux = null){
 
-        //print_r($this->aux_data);
-        /*
-        $total_base = 0;
-        $total_converted = 0;
-        $end = 0;
+        $date = '';
+        $device = '';
 
-        $br = array_fill(0, $this->column_count(), '');
-
-
-        $nrows = array();
-
-        $subhead1 = '';
-        $subhead2 = '';
-        $subhead3 = '';
-
-        $seq = 0;
-
-        $subamount1 = 0;
-        $subamount2 = 0;
+        $date_index = 3;
+        $device_index = 4;
+        //print_r($rows);
 
         if(count($rows) > 0){
 
-            for($i = 0; $i < count($rows);$i++){
+            for($i = 0; $i < count($rows); $i++){
 
-                //print_r($rows[$i]['extra']);
+                $extra = (is_array($rows[$i]['extra']))?$rows[$i]['extra']:$rows[$i]['extra']->toArray();
 
-                if($subhead1 == '' || $subhead1 != $rows[$i][1] || $subhead2 != $rows[$i][4] ){
-
-                    $headline = $br;
-                    if($subhead1 != $rows[$i][1]){
-                        $headline[1] = '<b>'.$rows[$i]['extra']['PERIOD'].'</b>';
-                    }else{
-                        $headline[1] = '';
-                    }
-
-                    $headline[4] = '<b>'.$rows[$i]['extra']['ACCNT_CODE'].'</b>';
-                    $headline['extra']['rowclass'] = 'row-underline';
-
-                    if($subhead1 != ''){
-                        $amtline = $br;
-                        $amtline[8] = '<b>'.Ks::idr($subamount1).'</b>';
-                        $amtline[10] = '<b>'.Ks::idr($subamount2).'</b>';
-                        $amtline['extra']['rowclass'] = 'row-doubleunderline row-overline';
-
-                        $nrows[] = $amtline;
-                        $subamount1 = 0;
-                        $subamount2 = 0;
-                    }
-
-                    $subamount1 += $rows[$i]['extra']['OTHER_AMT'];
-                    $subamount2 += $rows[$i]['extra']['AMOUNT'];
-
-                    $nrows[] = $headline;
-
-                    $seq = 1;
-                    $rows[$i][0] = $seq;
-
-                    $rows[$i][8] = ($rows[$i]['extra']['CONV_CODE'] == 'IDR')?Ks::idr($rows[$i][8]):'';
-                    $rows[$i][9] = ($rows[$i]['extra']['CONV_CODE'] == 'IDR')?Ks::dec2($rows[$i][9]):'';
-                    $rows[$i][10] = Ks::usd($rows[$i][10]);
-
-                    $nrows[] = $rows[$i];
+                if($rows[$i][$date_index] != $date){
+                    $date = $rows[$i][$date_index];
+                    $rows[$i][$date_index] = '<input type="radio" name="date_select" value="'.$rows[$i][$date_index].'" class="date_select form-control" /> '.$rows[$i][$date_index];
                 }else{
-                    $seq++;
-                    $rows[$i][0] = $seq;
-
-                    $rows[$i][8] = ($rows[$i]['extra']['CONV_CODE'] == 'IDR')?Ks::idr($rows[$i][8]):'';
-                    $rows[$i][9] = ($rows[$i]['extra']['CONV_CODE'] == 'IDR')?Ks::dec2($rows[$i][9]):'';
-                    $rows[$i][10] = Ks::usd($rows[$i][10]);
-
-                    $nrows[] = $rows[$i];
-
-
+                    $rows[$i][$date_index] = '';
                 }
 
-                $total_base += doubleval( $rows[$i][8] );
-                $total_converted += doubleval($rows[$i][10]);
-                $end = $i;
 
-                $subhead1 = $rows[$i][1];
-                $subhead2 = $rows[$i][4];
-            }
 
-            // show total Page
-            if($this->column_count() > 0){
-
-                $tb = $br;
-                $tb[1] = 'Total Page';
-                $tb[8] = Ks::idr($total_base);
-                $tb[10] = Ks::usd($total_converted);
-
-                $nrows[] = $tb;
-
-                if(!is_null($this->aux_data)){
-                    $td = $br;
-                    $td[1] = 'Total';
-                    $td[8] = Ks::idr($aux['total_data_base']);
-                    $td[10] = Ks::usd($aux['total_data_converted']);
-                    $nrows[] = $td;
+                if($rows[$i][$device_index] != $device){
+                    $device_key = (isset($extra['device_id']))?$extra['device_id']:$rows[$i][$device_index];
+                    $device = $rows[$i][$device_index];
+                    $rows[$i][$device_index] = '<input type="radio" name="device_select" value="'.$device_key.'" data-name="'.$device.'" class="device_select form-control" /> '.$rows[$i][$device_index];
+                }else{
+                    $rows[$i][$device_index] = '';
                 }
 
             }
 
-            return $nrows;
-
-        }else{
-
-            return $rows;
 
         }
-        */
-
-        // show total queried
 
         return $rows;
 
@@ -815,58 +682,6 @@ class CourierassignController extends AdminController {
         return $data;
     }
 
-    public function makeActions($data)
-    {
-        /*
-        if(!is_array($data)){
-            $d = array();
-            foreach( $data as $k->$v ){
-                $d[$k]=>$v;
-            }
-            $data = $d;
-        }
-
-        $delete = '<span class="del" id="'.$data['_id'].'" ><i class="fa fa-times-circle"></i> Delete</span>';
-        $edit = '<a href="'.URL::to('advertiser/edit/'.$data['_id']).'"><i class="fa fa-edit"></i> Update</a>';
-        $dl = '<a href="'.URL::to('brochure/dl/'.$data['_id']).'" target="new"><i class="fa fa-download"></i> Download</a>';
-        $print = '<a href="'.URL::to('brochure/print/'.$data['_id']).'" target="new"><i class="fa fa-print"></i> Print</a>';
-        $upload = '<span class="upload" id="'.$data['_id'].'" rel="'.$data['SKU'].'" ><i class="fa fa-upload"></i> Upload Picture</span>';
-        $inv = '<span class="upinv" id="'.$data['_id'].'" rel="'.$data['SKU'].'" ><i class="fa fa-upload"></i> Update Inventory</span>';
-        $stat = '<a href="'.URL::to('stats/merchant/'.$data['id']).'"><i class="fa fa-line-chart"></i> Stats</a>';
-
-        $history = '<a href="'.URL::to('advertiser/history/'.$data['_id']).'"><i class="fa fa-clock-o"></i> History</a>';
-
-        $actions = $stat.'<br />'.$edit.'<br />'.$delete;
-        */
-        $delete = '<span class="del action" id="'.$data['delivery_id'].'" >Delete</span>';
-        $edit = '<a href="'.URL::to('advertiser/edit/'.$data['delivery_id']).'">Update</a>';
-        $dl = '<a href="'.URL::to('brochure/dl/'.$data['delivery_id']).'" target="new">Download</a>';
-
-        $actions = View::make('shared.action')
-                        ->with('actions',array($dl))
-                        ->render();
-        return $actions;
-    }
-
-    public function accountDesc($data)
-    {
-
-        return $data['ACCNT_CODE'];
-    }
-
-    public function extractCategory()
-    {
-        $category = Product::distinct('category')->get()->toArray();
-        $cats = array(''=>'All');
-
-        //print_r($category);
-        foreach($category as $cat){
-            $cats[$cat[0]] = $cat[0];
-        }
-
-        return $cats;
-    }
-
     public function splitTag($data){
         $tags = explode(',',$data['tags']);
         if(is_array($tags) && count($tags) > 0 && $data['tags'] != ''){
@@ -1034,6 +849,16 @@ class CourierassignController extends AdminController {
         }else{
             return $data['SKU'];
         }
+    }
+
+    public function weightRange($data)
+    {
+        return Prefs::getWeightRange($data['weight'],$data['application_id']);
+    }
+
+    public function showWHL($data)
+    {
+        return $data['width'].'x'.$data['height'].'x'.$data['length'];
     }
 
     public function dispBar($data)

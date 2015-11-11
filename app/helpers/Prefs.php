@@ -21,6 +21,27 @@ class Prefs {
     }
 
 
+    public static function getWeightRange($tariff,$application_id)
+    {
+
+        if($tariff > 0){
+
+            $model = Deliveryfee::where('total',$tariff);
+            if(!is_null($application_id)){
+                $model = $model->where('app_id',$application_id);
+            }
+            $row = $model->first();
+            if($row){
+                return $row->kg_from.' kg - '.$row->kg_to.' kg';
+            }else{
+                return 0;
+            }
+        }else{
+            return 0;
+        }
+
+    }
+
     public static function getTypeselect()
     {
         return Config::get('jex.logistic_type_select');

@@ -645,7 +645,9 @@ class DocsController extends AdminController {
 //<button data-rel="tooltip" type="button" class="btn btn-primary m-b-10 f-left" data-toggle="tooltip" data-placement="left" title="" data-original-title="Tooltip on left">Left</button>
         $delete = '<span class="del" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete" id="'.$data['_id'].'" ><i class="fa fa-trash"></i></span>';
         $edit = '<a href="'.URL::to( strtolower($this->controller_name).'/edit/'.$data['_id']).'" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Update" ><i class="fa fa-edit"></i></a>';
-        $actions = $edit.'<br />'.$delete;
+
+        $print = '<a href="'.URL::to( strtolower($this->controller_name).'/print/'.$data['_id']).'" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Update" ><i class="fa fa-print"></i></a>';
+        $actions = $print;
 
         /*
         if(!is_array($data)){
