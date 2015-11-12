@@ -876,6 +876,16 @@ class IncomingController extends AdminController {
         return $data['pickup_person'].'<br />'.$data['pickup_dev_id'];
     }
 
+    public function weightRange($data)
+    {
+        return Prefs::getWeightRange($data['weight'],$data['application_id']);
+    }
+
+    public function showWHL($data)
+    {
+        return $data['width'].'x'.$data['height'].'x'.$data['length'];
+    }
+
     public function dispFBar($data)
 
     {
@@ -883,6 +893,7 @@ class IncomingController extends AdminController {
         //$display = '<a href="'.URL::to('barcode/dl/'.urlencode($data['SKU'])).'">'.$display.'</a>';
         return $display.'<br />'. '<a href="'.URL::to('incoming/detail/'.$data['delivery_id']).'" >'.$data['fulfillment_code'].' ('.$data['box_count'].' box)</a>';
     }
+
 
     public function dispBar($data)
 
