@@ -50,7 +50,6 @@ return array(
 
         'default_incoming_fields'=>array(
             array('ordertime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('status',array('kind'=>'text','callback'=>'statusList','query'=>'like','pos'=>'both','show'=>true, 'multi'=>array('status','warehouse_status','pickup_status'), 'multirel'=>'OR'  )),
             array('pickuptime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
             array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true, 'multi'=>array('pickup_dev_id','pickup_person'), 'multirel'=>'OR' )),
             array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true, 'multi'=>array('pickup_dev_id','pickup_person'), 'multirel'=>'OR' )),
@@ -65,6 +64,7 @@ return array(
             array('delivery_type',array('kind'=>'text','callback'=>'colorizetype' ,'query'=>'like','pos'=>'both','show'=>true)),
             array(Config::get('jayon.jayon_members_table').'.merchantname',array('kind'=>'text','alias'=>'merchant_name','query'=>'like','callback'=>'merchantInfo','pos'=>'both','show'=>true)),
             array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('status',array('kind'=>'text','callback'=>'statusList','query'=>'like','pos'=>'both','show'=>true, 'multi'=>array('status','warehouse_status','pickup_status'), 'multirel'=>'OR'  )),
             array('directions',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('delivery_cost',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
@@ -104,10 +104,10 @@ return array(
             array('delivery_id',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true, 'multi'=>array('pickup_dev_id','pickup_person'), 'multirel'=>'OR' )),
             array('delivery_type',array('kind'=>'text','callback'=>'colorizetype', 'query'=>'like','pos'=>'both','show'=>true)),
             array('buyer_name',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('width',array('kind'=>'text' ,'query'=>'like', 'pos'=>'both','show'=>true)),
+            array('width',array('kind'=>'text' ,'query'=>'like','callback'=>'showWHL' ,'pos'=>'both','show'=>true)),
             array('width',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('weight',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('merchant_name',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('weight',array('kind'=>'text','query'=>'like','callback'=>'weightRange' ,'pos'=>'both','show'=>true)),
+            array(Config::get('jayon.jayon_members_table').'.merchantname',array('kind'=>'text','alias'=>'merchant_name','callback'=>'merchantInfo' ,'query'=>'like','pos'=>'both','show'=>true)),
             array('merchant_trans_id',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('fulfillment_code',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('shipping_address',array('kind'=>'text' ,'query'=>'like','pos'=>'both','show'=>true)),
@@ -217,7 +217,7 @@ return array(
 
         'default_dispatched_heads'=>array(
             array('Delivery Date',array('search'=>true,'sort'=>true, 'style'=>'min-width:90px;','daterange'=>true)),
-            array('Device',array('search'=>true,'sort'=>true, 'style'=>'min-width:100px;')),
+            array('Device',array('search'=>true,'sort'=>true)),
             array('Courier',array('search'=>true,'style'=>'min-width:100px;','sort'=>true)),
             array('Type',array('search'=>true,'sort'=>true,'select'=>Config::get('jayon.deliverytype_selector_legacy') )),
             array('COD Value',array('search'=>true,'sort'=>true)),

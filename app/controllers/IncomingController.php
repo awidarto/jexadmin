@@ -104,9 +104,9 @@ class IncomingController extends AdminController {
 
         $this->product_info_url = strtolower($this->controller_name).'/info';
 
-        $this->column_styles = '{ "sClass": "column-amt", "aTargets": [ 8 ] },
-                    { "sClass": "column-amt", "aTargets": [ 9 ] },
-                    { "sClass": "column-amt", "aTargets": [ 10 ] }';
+        $this->column_styles = '{ "sClass": "column-amt", "aTargets": [ 21 ] },
+                    { "sClass": "column-amt", "aTargets": [ 22 ] },
+                    { "sClass": "column-amt", "aTargets": [ 23 ] }';
 
         return parent::getIndex();
 

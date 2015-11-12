@@ -985,6 +985,17 @@ class ZoningController extends AdminController {
         }
     }
 
+    public function weightRange($data)
+    {
+        return Prefs::getWeightRange($data['weight'],$data['application_id']);
+    }
+
+    public function showWHL($data)
+    {
+        return $data['width'].'x'.$data['height'].'x'.$data['length'];
+    }
+
+
     public function dispBar($data)
 
     {

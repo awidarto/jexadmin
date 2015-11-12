@@ -104,9 +104,9 @@ class CanceledController extends AdminController {
 
         $this->product_info_url = strtolower($this->controller_name).'/info';
 
-        $this->column_styles = '{ "sClass": "column-amt", "aTargets": [ 8 ] },
-                    { "sClass": "column-amt", "aTargets": [ 9 ] },
-                    { "sClass": "column-amt", "aTargets": [ 10 ] }';
+        $this->column_styles = '{ "sClass": "column-amt", "aTargets": [ 21 ] },
+                    { "sClass": "column-amt", "aTargets": [ 22 ] },
+                    { "sClass": "column-amt", "aTargets": [ 23 ] }';
 
         return parent::getIndex();
 
@@ -768,38 +768,6 @@ class CanceledController extends AdminController {
         return $data;
     }
 
-    public function makeActions($data)
-    {
-        /*
-        if(!is_array($data)){
-            $d = array();
-            foreach( $data as $k->$v ){
-                $d[$k]=>$v;
-            }
-            $data = $d;
-        }
-
-        $delete = '<span class="del" id="'.$data['_id'].'" ><i class="fa fa-times-circle"></i> Delete</span>';
-        $edit = '<a href="'.URL::to('advertiser/edit/'.$data['_id']).'"><i class="fa fa-edit"></i> Update</a>';
-        $dl = '<a href="'.URL::to('brochure/dl/'.$data['_id']).'" target="new"><i class="fa fa-download"></i> Download</a>';
-        $print = '<a href="'.URL::to('brochure/print/'.$data['_id']).'" target="new"><i class="fa fa-print"></i> Print</a>';
-        $upload = '<span class="upload" id="'.$data['_id'].'" rel="'.$data['SKU'].'" ><i class="fa fa-upload"></i> Upload Picture</span>';
-        $inv = '<span class="upinv" id="'.$data['_id'].'" rel="'.$data['SKU'].'" ><i class="fa fa-upload"></i> Update Inventory</span>';
-        $stat = '<a href="'.URL::to('stats/merchant/'.$data['id']).'"><i class="fa fa-line-chart"></i> Stats</a>';
-
-        $history = '<a href="'.URL::to('advertiser/history/'.$data['_id']).'"><i class="fa fa-clock-o"></i> History</a>';
-
-        $actions = $stat.'<br />'.$edit.'<br />'.$delete;
-        */
-        $delete = '<span class="del action" id="'.$data['delivery_id'].'" >Delete</span>';
-        $edit = '<a href="'.URL::to('advertiser/edit/'.$data['delivery_id']).'">Update</a>';
-        $dl = '<a href="'.URL::to('brochure/dl/'.$data['delivery_id']).'" target="new">Download</a>';
-
-        $actions = View::make('shared.action')
-                        ->with('actions',array($dl))
-                        ->render();
-        return $actions;
-    }
 
     public function accountDesc($data)
     {
