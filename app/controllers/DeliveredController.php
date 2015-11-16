@@ -86,33 +86,7 @@ class DeliveredController extends AdminController {
     {
 
 
-        $this->heads = array(
-            array('Timestamp',array('search'=>true,'sort'=>true, 'style'=>'min-width:90px;','daterange'=>true)),
-            array('Status',array('search'=>true,'sort'=>true)),
-            array('PU Time',array('search'=>true,'sort'=>true, 'style'=>'min-width:100px;','daterange'=>true)),
-            array('PU Pic',array('search'=>true,'sort'=>true, 'style'=>'min-width:120px;')),
-            array('PU Person & Device',array('search'=>true,'style'=>'min-width:100px;','sort'=>true)),
-            array('Delivery Date',array('search'=>true,'style'=>'min-width:125px;','sort'=>true, 'daterange'=>true )),
-            array('Slot',array('search'=>true,'sort'=>true)),
-            array('Zone',array('search'=>true,'sort'=>true)),
-            array('City',array('search'=>true,'sort'=>true)),
-            array('Shipping Address',array('search'=>true,'sort'=>true, 'style'=>'max-width:200px;width:200px;' )),
-            array('No Kode Penjualan Toko',array('search'=>true,'sort'=>true)),
-            array('Type',array('search'=>true,'sort'=>true,'select'=>Config::get('jayon.deliverytype_selector_legacy') )),
-            array('Merchant & Shop Name',array('search'=>true,'sort'=>true)),
-            array('Delivery ID',array('search'=>true,'sort'=>true)),
-            array('Directions',array('search'=>true,'sort'=>true)),
-            array('TTD Toko',array('search'=>true,'sort'=>true)),
-            array('Delivery Charge',array('search'=>true,'sort'=>true)),
-            array('COD Surcharge',array('search'=>true,'sort'=>true)),
-            array('COD Value',array('search'=>true,'sort'=>true)),
-            array('Buyer',array('search'=>true,'sort'=>true)),
-            array('ZIP',array('search'=>true,'sort'=>true)),
-            array('Phone',array('search'=>true,'sort'=>true)),
-            array('W x H x L = V',array('search'=>true,'sort'=>true)),
-            array('Weight Range',array('search'=>true,'sort'=>true)),
-        );
-
+        $this->heads = Config::get('jex.default_delivered_heads');
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
         $this->title = 'Delivery Status';
@@ -140,32 +114,7 @@ class DeliveredController extends AdminController {
     public function postIndex()
     {
 
-        $this->fields = array(
-            array('ordertime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('status',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true, 'callback'=>'statusList' )),
-            array('pickuptime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('deliverytime',array('kind'=>'daterange','query'=>'like','pos'=>'both','show'=>true)),
-            array('buyerdeliveryslot',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-            array('buyerdeliveryzone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('buyerdeliverycity',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('shipping_address',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('merchant_trans_id',array('kind'=>'text','callback'=>'dispBar' ,'query'=>'like','pos'=>'both','show'=>true)),
-            array('delivery_type',array('kind'=>'text','callback'=>'colorizetype' ,'query'=>'like','pos'=>'both','show'=>true)),
-            array(Config::get('jayon.jayon_members_table').'.merchantname',array('kind'=>'text','alias'=>'merchant_name','query'=>'like','callback'=>'merchantInfo','pos'=>'both','show'=>true)),
-            array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('directions',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('delivery_cost',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('cod_cost',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('total_price',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('buyer_name',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('shipping_zip',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('phone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('volume',array('kind'=>'numeric','query'=>'like','pos'=>'both','show'=>true)),
-            array('weight',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-        );
+        $this->fields = Config::get('jex.default_delivered_fields');
 
         /*
         $categoryFilter = Input::get('categoryFilter');
@@ -414,11 +363,15 @@ class DeliveredController extends AdminController {
         $model = $model->select(
                 DB::raw(
                     Config::get('jayon.incoming_delivery_table').'.* ,'.
+                    Config::get('jayon.jayon_couriers_table').'.fullname as courier ,'.
+                    Config::get('jayon.jayon_devices_table').'.identifier as device ,'.
                     Config::get('jayon.jayon_members_table').'.merchantname as merchant_name ,'.
                     Config::get('jayon.applications_table').'.application_name as app_name ,'.
                     '('.$txtab.'.width * '.$txtab.'.height * '.$txtab.'.length ) as volume'
                 )
             )
+            ->leftJoin(Config::get('jayon.jayon_couriers_table'), Config::get('jayon.incoming_delivery_table').'.courier_id', '=', Config::get('jayon.jayon_couriers_table').'.id' )
+            ->leftJoin(Config::get('jayon.jayon_devices_table'), Config::get('jayon.incoming_delivery_table').'.device_id', '=', Config::get('jayon.jayon_devices_table').'.id' )
             ->leftJoin(Config::get('jayon.jayon_members_table'), Config::get('jayon.incoming_delivery_table').'.merchant_id', '=', Config::get('jayon.jayon_members_table').'.id' )
             ->leftJoin(Config::get('jayon.applications_table'), Config::get('jayon.incoming_delivery_table').'.application_id', '=', Config::get('jayon.applications_table').'.id' )
             ->where(function($query){
@@ -822,38 +775,6 @@ class DeliveredController extends AdminController {
         return $data;
     }
 
-    public function makeActions($data)
-    {
-        /*
-        if(!is_array($data)){
-            $d = array();
-            foreach( $data as $k->$v ){
-                $d[$k]=>$v;
-            }
-            $data = $d;
-        }
-
-        $delete = '<span class="del" id="'.$data['_id'].'" ><i class="fa fa-times-circle"></i> Delete</span>';
-        $edit = '<a href="'.URL::to('advertiser/edit/'.$data['_id']).'"><i class="fa fa-edit"></i> Update</a>';
-        $dl = '<a href="'.URL::to('brochure/dl/'.$data['_id']).'" target="new"><i class="fa fa-download"></i> Download</a>';
-        $print = '<a href="'.URL::to('brochure/print/'.$data['_id']).'" target="new"><i class="fa fa-print"></i> Print</a>';
-        $upload = '<span class="upload" id="'.$data['_id'].'" rel="'.$data['SKU'].'" ><i class="fa fa-upload"></i> Upload Picture</span>';
-        $inv = '<span class="upinv" id="'.$data['_id'].'" rel="'.$data['SKU'].'" ><i class="fa fa-upload"></i> Update Inventory</span>';
-        $stat = '<a href="'.URL::to('stats/merchant/'.$data['id']).'"><i class="fa fa-line-chart"></i> Stats</a>';
-
-        $history = '<a href="'.URL::to('advertiser/history/'.$data['_id']).'"><i class="fa fa-clock-o"></i> History</a>';
-
-        $actions = $stat.'<br />'.$edit.'<br />'.$delete;
-        */
-        $delete = '<span class="del action" id="'.$data['delivery_id'].'" >Delete</span>';
-        $edit = '<a href="'.URL::to('advertiser/edit/'.$data['delivery_id']).'">Update</a>';
-        $dl = '<a href="'.URL::to('brochure/dl/'.$data['delivery_id']).'" target="new">Download</a>';
-
-        $actions = View::make('shared.action')
-                        ->with('actions',array($dl))
-                        ->render();
-        return $actions;
-    }
 
     public function accountDesc($data)
     {
@@ -1042,6 +963,41 @@ class DeliveredController extends AdminController {
             return $data['SKU'];
         }
     }
+
+    public function picStats($data)
+    {
+        $pic_stat = Prefs::getPicStat($data['delivery_id']);
+
+        return $pic_stat['pic'].' pictures, '.$pic_stat['sign'].' signature';
+    }
+
+    public function allNotes($data)
+    {
+        $notes = ($data['delivery_note'] != '')?'<span class="green">Delivery Note:</span><br />'.$data['delivery_note']:'';
+        $notes .= ($data['pickup_note'] != '')?'<br /><span class="brown">PU Note:</span><br />'.$data['pickup_note']:'';
+        $notes .= ($data['warehouse_note'] != '')?'<br /><span class="orange">WH Note:</span><br />'.$data['warehouse_note']:'';
+
+        return $notes;
+    }
+
+    public function weightRange($data)
+    {
+        return Prefs::getWeightRange($data['weight'],$data['application_id']);
+    }
+
+    public function showWHL($data)
+    {
+        return $data['width'].'x'.$data['height'].'x'.$data['length'];
+    }
+
+    public function dispFBar($data)
+
+    {
+        $display = HTML::image(URL::to('qr/'.urlencode(base64_encode($data['delivery_id'].'|'.$data['merchant_trans_id'].'|'.$data['fulfillment_code'].'|box:1' ))), $data['merchant_trans_id'], array('id' => $data['delivery_id'], 'style'=>'width:100px;height:auto;' ));
+        //$display = '<a href="'.URL::to('barcode/dl/'.urlencode($data['SKU'])).'">'.$display.'</a>';
+        return $display.'<br />'. '<a href="'.URL::to('incoming/detail/'.$data['delivery_id']).'" >'.$data['fulfillment_code'].' ('.$data['box_count'].' box)</a>';
+    }
+
 
     public function dispBar($data)
 

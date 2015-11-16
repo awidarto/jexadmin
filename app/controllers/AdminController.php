@@ -696,7 +696,7 @@ class AdminController extends Controller {
 
         $model = $this->model;
 
-        $count_all = $this->model->count();
+        $count_all = $model->count();
 
         $model = $this->SQL_additional_query($model);
 
@@ -741,7 +741,7 @@ class AdminController extends Controller {
 
 
 
-        $count_display_all = $this->model->count();
+        $count_display_all = $model->count();
 
         $this->aux_data = $this->SQL_before_paging($model);
 
@@ -1399,6 +1399,8 @@ class AdminController extends Controller {
 
         $model = DB::connection($this->sql_connection)->table($this->sql_table_name);
 
+        $count_all = $model->count();
+
         $model = $this->SQL_additional_query($model);
 
         //$model = $this->SQL_make_join($model);
@@ -1439,9 +1441,8 @@ class AdminController extends Controller {
 
         //$model->where('docFormat','picture');
 
-        $count_all = $model->count();
         //$count_display_all = $model->count();
-        $count_display_all = $count_all;
+        $count_display_all = $model->count();
 
         $this->aux_data = $this->SQL_before_paging($model);
 
@@ -2021,8 +2022,11 @@ class AdminController extends Controller {
 		//$this->crumb->add(strtolower($this->controller_name).'/edit','Edit',false);
 
 		//$model = $this->model;
+        if($this->model instanceOf Jenssegers\Mongodb\Model ){
+            $_id = new MongoId($id);
+        }else{
 
-		$_id = new MongoId($id);
+        }
 
 		//$population = $model->where('_id',$_id)->first();
 
@@ -2035,6 +2039,12 @@ class AdminController extends Controller {
 				$population[$key] = date('d-m-Y H:i:s',$val->sec);
 			}
 		}
+
+        if($this->model instanceOf Jenssegers\Mongodb\Model ){
+
+        }else{
+            $population['_id'] = $id;
+        }
 
 		//print_r($population);
 
@@ -2079,14 +2089,17 @@ class AdminController extends Controller {
 				$data = Input::get();
 	    	}
 
-			$id = new MongoId($_id);
-			$data['lastUpdate'] = new MongoDate();
+            if($this->model instanceOf Jenssegers\Mongodb\Model ){
+                $id = new MongoId($_id);
+                $data['lastUpdate'] = new MongoDate();
+            }else{
+                $id = $_id;
+                $data['lastUpdate'] = date('Y-m-d H:i:s',time());
+            }
 
 			unset($data['csrf_token']);
 			unset($data['_id']);
 
-
-            // process tags by default
             if(isset($data['tags'])){
                 $tags = $this->tagToArray($data['tags']);
                 $data['tagArray'] = $tags;
@@ -2097,7 +2110,14 @@ class AdminController extends Controller {
 
 			$data = $this->beforeUpdate($id,$data);
 
-			if($obj = $model->where('_id',$id)->update($data)){
+            if($this->model instanceOf Jenssegers\Mongodb\Model ){
+                $obj = $model->where('_id',$id)->update($data);
+            }else{
+                $obj = $model->where('id',$id)->update($data);
+            }
+
+
+			if($obj){
 
 				$obj = $this->afterUpdate($id,$data);
 				if($obj != false){
@@ -2130,7 +2150,12 @@ class AdminController extends Controller {
 			$result = array('status'=>'ERR','data'=>'NOID');
 		}else{
 
-			$id = new MongoId($id);
+
+            if($this->model instanceOf Jenssegers\Mongodb\Model ){
+                $id = new MongoId($id);
+            }else{
+
+            }
 
 			if($model->where('_id',$id)->delete()){
 				Event::fire($controller_name.'.delete',array('id'=>$id,'result'=>'OK'));
