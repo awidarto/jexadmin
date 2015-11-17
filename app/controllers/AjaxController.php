@@ -287,9 +287,165 @@ class AjaxController extends BaseController {
 
     }
 
+    public function postMark(){
+        $in = Input::get();
+
+        $action = $in['action'];
+
+        $results = Shipment::whereIn('delivery_id', $in['ids'])->get();
+
+        date_default_timezone_set('Asia/Jakarta');
+
+        //print_r($results->toArray());
+
+        //if($results){
+            $res = false;
+        //}else{
+
+            $ts = new MongoDate();
+
+            foreach($results as $sh){
+
+                if($action == 'mark_email'){
+                    $sh->same_email = 1;
+                }else if($action == 'mark_phone'){
+                    $sh->same_phone = 1;
+                }
+
+                if($action == 'unmark_email'){
+                    $sh->same_email = 0;
+                }else if($action == 'unmark_phone'){
+                    $sh->same_phone = 0;
+                }
+
+                $sh->save();
+
+                //print_r($sh);
+                //print_r(Auth::user());
+
+                $hdata = array();
+                $hdata['historyTimestamp'] = $ts;
+                $hdata['historyAction'] = $action;
+                $hdata['historySequence'] = 1;
+                $hdata['historyObjectType'] = 'shipment';
+                $hdata['historyObject'] = $sh->toArray();
+                $hdata['actor'] = Auth::user()->fullname;
+                $hdata['actor_id'] = (isset(Auth::user()->_id))?Auth::user()->_id:Auth::user()->id;
+
+                //print_r($hdata);
+
+                History::insert($hdata);
+                /*
+                $sdata = array();
+                $sdata['timestamp'] = $ts;
+                $sdata['action'] = 'confirm_data';
+                $sdata['reason'] = $in['reason'];
+                $sdata['objectType'] = 'shipment';
+                $sdata['object'] = $sh->toArray();
+                $sdata['actor'] = Auth::user()->fullname;
+                $sdata['actor_id'] = (isset(Auth::user()->_id))?Auth::user()->_id:Auth::user()->id;
+                Shipmentlog::insert($sdata);
+                */
+                $res = true;
+
+            }
+        //}
+
+        if($res){
+            return Response::json(array('result'=>'OK' ));
+        }else{
+            return Response::json(array('result'=>'ERR:MARKINGFAILED' ));
+        }
+
+    }
+
+    public function postUnmark(){
+        $ids = Input::get('ids');
+        $action = Input::get('action');
+
+        if($action == 'mark_email'){
+            $dataset = array('same_email'=>0);
+        }else{
+            $dataset = array('same_phone'=>0);
+        }
+
+
+
+        if($this->db->where_in('delivery_id', $ids)->update($this->config->item('incoming_delivery_table'),$dataset) == TRUE){
+            $result = json_encode(array('status'=>'OK','timestamp'=>now()));
+        }else{
+            $result = json_encode(array('status'=>'ERR:NODUPE','timestamp'=>now() ));
+        }
+
+        print $result;
+
+    }
+
+
+    public function postConfirmdata(){
+        $in = Input::get();
+        $results = Shipment::whereIn('delivery_id', $in['ids'])->get();
+
+        date_default_timezone_set('Asia/Jakarta');
+
+        //print_r($results->toArray());
+
+        //if($results){
+            $res = false;
+        //}else{
+
+            $ts = new MongoDate();
+
+            foreach($results as $sh){
+                $sh->status = Config::get('jayon.trans_status_confirmed') ;
+
+                //$sh->last_action_ts = $ts;
+                //$sh->last_action = 'Cancel Data';
+                $sh->delivery_note = $in['reason'];
+                $sh->save();
+
+                //print_r($sh);
+                //print_r(Auth::user());
+
+                $hdata = array();
+                $hdata['historyTimestamp'] = $ts;
+                $hdata['historyAction'] = 'confirm_data';
+                $hdata['historySequence'] = 1;
+                $hdata['historyObjectType'] = 'shipment';
+                $hdata['historyObject'] = $sh->toArray();
+                $hdata['actor'] = Auth::user()->fullname;
+                $hdata['actor_id'] = (isset(Auth::user()->_id))?Auth::user()->_id:Auth::user()->id;
+
+                //print_r($hdata);
+
+                History::insert($hdata);
+
+                $sdata = array();
+                $sdata['timestamp'] = $ts;
+                $sdata['action'] = 'confirm_data';
+                $sdata['reason'] = $in['reason'];
+                $sdata['objectType'] = 'shipment';
+                $sdata['object'] = $sh->toArray();
+                $sdata['actor'] = Auth::user()->fullname;
+                $sdata['actor_id'] = (isset(Auth::user()->_id))?Auth::user()->_id:Auth::user()->id;
+                Shipmentlog::insert($sdata);
+
+                $res = true;
+
+            }
+        //}
+
+        if($res){
+            return Response::json(array('result'=>'OK' ));
+        }else{
+            return Response::json(array('result'=>'ERR:CONFIRMFAILED' ));
+        }
+
+    }
+
     public function postCanceldata(){
         $in = Input::get();
-        $results = Shipment::whereIn('_id', $in['ids'])->get();
+        $results = Shipment::whereIn('delivery_id', $in['ids'])->get();
 
         date_default_timezone_set('Asia/Jakarta');
 
@@ -304,11 +460,12 @@ class AjaxController extends BaseController {
             foreach($results as $sh){
                 $sh->status = Config::get('jayon.trans_status_canceled') ;
 
-                $sh->last_action_ts = $ts;
-                $sh->last_action = 'Cancel Data';
-                $sh->last_reason = $in['reason'];
+                //$sh->last_action_ts = $ts;
+                //$sh->last_action = 'Cancel Data';
+                $sh->delivery_note = $in['reason'];
                 $sh->save();
 
+                //print_r($sh);
                 //print_r(Auth::user());
 
                 $hdata = array();
@@ -318,7 +475,7 @@ class AjaxController extends BaseController {
                 $hdata['historyObjectType'] = 'shipment';
                 $hdata['historyObject'] = $sh->toArray();
                 $hdata['actor'] = Auth::user()->fullname;
-                $hdata['actor_id'] = Auth::user()->_id;
+                $hdata['actor_id'] = (isset(Auth::user()->_id))?Auth::user()->_id:Auth::user()->id;
 
                 //print_r($hdata);
 
@@ -331,18 +488,18 @@ class AjaxController extends BaseController {
                 $sdata['objectType'] = 'shipment';
                 $sdata['object'] = $sh->toArray();
                 $sdata['actor'] = Auth::user()->fullname;
-                $sdata['actor_id'] = Auth::user()->_id;
+                $sdata['actor_id'] = (isset(Auth::user()->_id))?Auth::user()->_id:Auth::user()->id;
                 Shipmentlog::insert($sdata);
 
+                $res = true;
 
             }
-            $res = true;
         //}
 
         if($res){
-            return Response::json(array('result'=>'OK:RESCHED' ));
+            return Response::json(array('result'=>'OK' ));
         }else{
-            return Response::json(array('result'=>'ERR:RESCHEDFAILED' ));
+            return Response::json(array('result'=>'ERR:CANCELFAILED' ));
         }
 
     }

@@ -1,4 +1,45 @@
-<a class="btn btn-info btn-sm" id="print_barcodes"><i class="fa fa-print"></i> Print Selected Barcodes</a>
+<a class="btn btn-transparent btn-info btn-sm" id="print_barcodes"><i class="fa fa-print"></i> Print QR Label</a>
+{{--
+<a class="btn btn-transparent btn-info btn-sm" id="move_orders"><i class="fa fa-arrows"></i> Move Selected to</a>
+    --}}
+
+<a class="btn btn-transparent btn-info btn-sm" id="set_pickup"><i class="fa fa-calendar"></i> Assign Delivery Date</a>
+
+{{--
+<a class="btn btn-sm btn-info btn-transparent" id="download-awb-xls"><i class="fa fa-download"></i> Download AWB Template</a>
+
+<a href="{{ URL::to($importawburl) }}" class="btn btn-sm btn-transparent btn-primary"><i class="fa fa-upload"></i> Update AWB</a>
+--}}
+
+
+<div id="move-order-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Move Selected</span></h3>
+    </div>
+    <div class="modal-body" >
+        {{ Former::select('status', 'To' )->id('move-to')->options(Config::get('jex.buckets')) }}
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        <button class="btn btn-primary" id="do-move">Move</button>
+    </div>
+</div>
+
+<div id="set-pickup-date-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Set Pick Up Date</span></h3>
+    </div>
+    <div class="modal-body" >
+        {{ Former::text('pickup_date', 'Set Pick Up Date' )->id('pickup-date')->class('form-control p-datepicker') }}
+        {{ Former::select('trip', 'Trip' )->id('trip')->options( Prefs::getTrip() ) }}
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        <button class="btn btn-primary" id="do-set-date">Set</button>
+    </div>
+</div>
 
 <div id="print-modal" class="modal fade large" tabindex="-1" role="dialog" aria-labelledby="myPrintModalLabel" aria-hidden="true">
     <div class="modal-header">
@@ -9,12 +50,12 @@
         <h6>Print options</h6>
         <div style="border-bottom:thin solid #ccc;" class="row clearfix">
             <div class="col-md-2">
-                {{ Former::text('label_columns','Number of columns')->value('2')->id('label_columns')->class('form-control input-sm') }}
+                {{ Former::text('label_columns','Number of columns')->value('4')->id('label_columns')->class('form-control input-sm') }}
                 {{ Former::text('label_res','Resolution')->value('150')->id('label_res')->class('form-control input-sm') }}
             </div>
             <div class="col-md-2">
-                {{ Former::text('label_cell_height','Label height')->value('90')->id('label_cell_height')->class('form-control input-sm') }}
-                {{ Former::text('label_cell_width','Label width')->value('120')->id('label_cell_width')->class('form-control input-sm') }}
+                {{ Former::text('label_cell_height','Label height')->value('230')->id('label_cell_height')->class('form-control input-sm') }}
+                {{ Former::text('label_cell_width','Label width')->value('200')->id('label_cell_width')->class('form-control input-sm') }}
             </div>
             <div class="col-md-2">
                 {{ Former::text('label_margin_right','Label margin right')->value('8')->id('label_margin_right')->class('form-control input-sm') }}
@@ -25,7 +66,7 @@
                 {{ Former::text('label_offset_bottom','Page top offset')->value('20')->id('label_offset_bottom')->class('form-control input-sm') }}
             </div>
             <div class="col-md-2">
-                {{ Former::text('font_size','Font size')->value('8')->id('font_size')->class('form-control input-sm') }}
+                {{ Former::text('font_size','Font size')->value('12')->id('font_size')->class('form-control input-sm') }}
                 {{ Former::select('code_type','Code type')->id('code_type')->options(array('qr'=>'QR','barcode'=>'Barcode') )}}
             </div>
             <div class="col-md-2">
@@ -62,20 +103,39 @@
     overflow: auto;
 }
 
+#ui-datepicker-div{
+    z-index: 100000 !important;
+}
+
+.datepicker{
+    z-index: 100000 !important;
+}
 </style>
 
 <script type="text/javascript">
     $(document).ready(function(){
+
+        $('.p-datepicker').datepicker({
+            format: 'yyyy-mm-dd',
+            forceParse:false,
+            zIndexOffset:10000
+        });
+
         $('#refresh_filter').on('click',function(){
-            oTable.fnDraw();
+            oTable.draw();
         });
 
         $('#outlet_filter').on('change',function(){
-            oTable.fnDraw();
+            oTable.draw();
         });
 
-        $('#move_outlets').on('click',function(e){
-            $('#assign-modal').modal();
+        $('#move_orders').on('click',function(e){
+            $('#move-order-modal').modal();
+            e.preventDefault();
+        });
+
+        $('#set_pickup').on('click',function(e){
+            $('#set-pickup-date-modal').modal();
             e.preventDefault();
         });
 
@@ -139,7 +199,7 @@
                     ,'json');
 
             }else{
-                alert('No product selected.');
+                alert('No item selected.');
                 $('#print-modal').modal('hide');
             }
 
@@ -152,6 +212,35 @@
             pframeWindow.print();
 
         });
+
+        $('#download-awb-xls').on('click',function(){
+            var flt = $('thead td input, thead td select');
+            var dlfilter = [];
+
+            flt.each(function(){
+                if($(this).hasClass('datetimeinput') || $(this).hasClass('dateinput')){
+                    console.log(this.parentNode);
+                    dlfilter[parseInt(this.parentNode.id)] = this.value ;
+                }else{
+                    dlfilter[parseInt(this.id)] = this.value ;
+                }
+            });
+            console.log(dlfilter);
+
+            //var sort = oTable.fnSettings().aaSorting;
+            var sort = oTable.order();
+            console.log(sort);
+            $.post('{{ URL::to($ajaxawbdlxl) }}',{'filter' : dlfilter, 'sort':sort[0], 'sortdir' : sort[1] }, function(data) {
+                if(data.status == 'OK'){
+
+                    window.location.href = data.urlxls;
+
+                }
+            },'json');
+
+            return false;
+        });
+
 
         $('#label_default').on('click',function(){
             var col = $('#label_columns').val();
@@ -190,8 +279,7 @@
 
         });
 
-
-        $('#do-assign').on('click',function(){
+        $('#do-move').on('click',function(){
             var props = $('.selector:checked');
             var ids = [];
             $.each(props, function(index){
@@ -201,23 +289,54 @@
             console.log(ids);
 
             if(ids.length > 0){
-                $.post('{{ URL::to('ajax/assignoutlet')}}',
+                $.post('{{ URL::to('ajax/moveorder')}}',
                     {
-                        outlet : $('#assigned-category').val(),
-                        product_ids : ids
+                        bucket : $('#move-to').val(),
+                        ids : ids
                     },
                     function(data){
-                        $('#assign-modal').modal('hide');
-                        oTable.fnDraw();
+                        $('#move-order-modal').modal('hide');
+                        oTable.draw();
                     }
                     ,'json');
 
             }else{
-                alert('No product selected.');
+                alert('No shipment selected.');
+                $('#move-order-modal').modal('hide');
+            }
+
+        });
+
+
+        $('#do-set-date').on('click',function(){
+            var props = $('.selector:checked');
+            var ids = [];
+            $.each(props, function(index){
+                ids.push( $(this).val() );
+            });
+
+            console.log(ids);
+
+            if(ids.length > 0){
+                $.post('{{ URL::to('incoming/assigndate')}}',
+                    {
+                        date : $('#pickup-date').val(),
+                        trip : $('#trip').val(),
+                        ids : ids
+                    },
+                    function(data){
+                        $('#set-pickup-date-modal').modal('hide');
+                        oTable.draw();
+                    }
+                    ,'json');
+
+            }else{
+                alert('No item selected.');
                 $('#assign-modal').modal('hide');
             }
 
         });
+
 
         $('#unassign-prop').on('click',function(){
             var props = $('.selector:checked');
@@ -240,7 +359,8 @@
                     prop_ids : ids
                 },
                 function(data){
-                    oTable.fnDraw();
+                    oTable.draw();
+                    $('#cancel-data-modal').hide();
                 }
                 ,'json');
 

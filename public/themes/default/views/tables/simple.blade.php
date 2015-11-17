@@ -190,6 +190,16 @@ select.input-sm {
       background-image: none;
 }
 
+.btn{
+    margin-bottom: 5px;
+}
+
+.dupe{
+    font-weight: bolder;
+    background-color: yellow;
+    padding: 2px 4px;
+    display: inline-block;
+}
 </style>
 
 {{ HTML::style('css/syscolors.css') }}
@@ -200,7 +210,7 @@ select.input-sm {
         <table class="table table-condensed dataTable">
 <div class="container" style="padding-top:40px;">--}}
     <div class="row">
-        <div class="col-md-6 command-bar">
+        <div class="col-md-12 command-bar">
 
             @if(isset($can_add) && $can_add == true)
                 <a href="{{ URL::to($addurl) }}" class="btn btn-sm btn-transparent btn-primary"><i class="fa fa-plus"></i> Add</a>
@@ -230,9 +240,6 @@ select.input-sm {
                 }
             ?>
             <a href="{{ URL::to($print_url) }}" class="btn btn-sm btn-transparent btn-primary"><i class="fa fa-print"></i> Print Preview</a>
-
-         </div>
-         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 command-bar">
 
             {{ $additional_filter }}
 

@@ -98,7 +98,18 @@ class IncomingController extends AdminController {
 
         Breadcrumbs::addCrumb('Shipment Order',URL::to( strtolower($this->controller_name) ));
 
-        $this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','gl')->render();
+        $this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')
+                        ->with('submit_url','gl')
+                        ->with('ajaxawbdlxl','incoming/awbdlxl')
+                        ->with('importawburl','incoming/importawb')
+                        ->render();
+
+        $this->additional_filter .= View::make('shared.cancelaction')->render();
+
+        $this->additional_filter .= View::make('shared.confirmaction')->render();
+
+        $this->additional_filter .= '<br />';
+        $this->additional_filter .= View::make('shared.markaction')->render();
 
         //$this->js_additional_param = "aoData.push( { 'name':'acc-period-to', 'value': $('#acc-period-to').val() }, { 'name':'acc-period-from', 'value': $('#acc-period-from').val() }, { 'name':'acc-code-from', 'value': $('#acc-code-from').val() }, { 'name':'acc-code-to', 'value': $('#acc-code-to').val() }, { 'name':'acc-company', 'value': $('#acc-company').val() } );";
 
@@ -137,6 +148,102 @@ class IncomingController extends AdminController {
 
         return parent::SQLtableResponder();
     }
+
+    public function postAssigndate(){
+
+        $in = Input::get();
+        $results = Shipment::whereIn('delivery_id', $in['ids'])->get();
+
+        date_default_timezone_set('Asia/Jakarta');
+
+        if(is_null($in['trip']) || $in['trip'] == ''){
+            $trip = 1;
+        }else{
+            $trip =  $in['trip'];
+        }
+
+        $assignment_date = $in['date'];
+
+
+        $ts = new MongoDate();
+        //print_r($results->toArray());
+            $reason = (isset($in['reason']))?$in['reason']:'initial';
+        //if($results){
+            $res = false;
+        //}else{
+            foreach($results as $r){
+
+                $pre = clone $r;
+
+
+                /*
+                if(is_null($in['date']) || $in['date'] == ''){
+
+                }else{
+                    //$newdate = strtotime($in['date']);
+                    //$r->pick_up_date = new MongoDate($newdate) ;
+                }
+                */
+
+                $r->buyerdeliveryslot = $trip;
+
+                $r->status = Config::get('jayon.trans_status_admin_dated');
+                $r->assigntime = date('Y-m-d H:i:s',time());
+                $r->assignment_date = $assignment_date;
+
+
+                /*
+                if($r->logistic_type == 'internal'){
+                    if($r->cod == 0 || $r->cod == ''){
+                        $r->awb = $r->delivery_id;
+                        $r->bucket = Config::get('jayon.bucket_dispatcher');
+                        $r->status = Config::get('jayon.trans_status_admin_dated');
+                    }
+                }else{
+                    if($r->awb != ''){
+                        $r->bucket = Config::get('jayon.bucket_tracker');
+                        $r->status = Config::get('jayon.trans_status_admin_dated');
+                    }
+                }
+                */
+
+                $r->save();
+
+                $hdata = array();
+                $hdata['historyTimestamp'] = $ts;
+                $hdata['historyAction'] = 'assign_date';
+                $hdata['historySequence'] = 1;
+                $hdata['historyObjectType'] = 'shipment';
+                $hdata['historyObject'] = $r->toArray();
+                $hdata['actor'] = Auth::user()->fullname;
+                $hdata['actor_id'] = (isset(Auth::user()->_id))?Auth::user()->_id:Auth::user()->id;
+
+                History::insert($hdata);
+
+                $sdata = array();
+                $sdata['timestamp'] = $ts;
+                $sdata['action'] = 'assign_date';
+                $sdata['reason'] = $reason;
+                $sdata['objectType'] = 'shipment';
+                $sdata['object'] = $r->toArray();
+                $sdata['preObject'] = $pre->toArray();
+                $sdata['actor'] = Auth::user()->fullname;
+                $sdata['actor_id'] = (isset(Auth::user()->_id))?Auth::user()->_id:Auth::user()->id;
+                Shipmentlog::insert($sdata);
+
+
+            }
+            $res = true;
+        //}
+
+        if($res){
+            return Response::json(array('result'=>'OK' ));
+        }else{
+            return Response::json(array('result'=>'ERR:MOVEFAILED' ));
+        }
+
+    }
+
 
     public function getStatic()
     {
@@ -583,6 +690,29 @@ class IncomingController extends AdminController {
         return $id;
     }
 
+    public function makeActions($data){
+
+        if(isset($data['_id']) && $data['_id'] instanceOf MongoId){
+            $id = $data['_id'];
+        }else{
+            $id = (isset($data['id']))?$data['id']:'0';
+        }
+
+        $printslip = '<span class="printslip action" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="left" title="" data-original-title="Print Slip" id="'.$id.'" ><i class="fa fa-print"></i> Print Slip</span>';
+
+        $detailview = '<span class="detailview action" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="left" title="" data-original-title="Order Detail" id="'.$id.'" ><i class="fa fa-eye"></i> View Order</span>';
+
+        $delete = '<span class="del" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="left" title="" data-original-title="Delete item" id="'.$id.'" ><i class="fa fa-trash"></i> Del</span>';
+
+        $edit = '<a href="'.URL::to( strtolower($this->controller_name).'/edit/'.$id).'" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="left" title="" data-original-title="Edit item" ><i class="fa fa-edit"></i> Edit</a>';
+        //$actions = $edit.'<br />'.$delete;
+
+        $actions = $printslip.'<br />'.$detailview;
+
+        return $actions;
+    }
+
+
 
     public function postAdd($data = null)
     {
@@ -894,6 +1024,27 @@ class IncomingController extends AdminController {
         return $display.'<br />'. '<a href="'.URL::to('incoming/detail/'.$data['delivery_id']).'" >'.$data['fulfillment_code'].' ('.$data['box_count'].' box)</a>';
     }
 
+    public function sameEmail($data)
+    {
+        if($data['same_email'] == 1){
+            return '<span class="dupe">'.$data['email'].'</span>';
+        }else{
+            return $data['email'];
+        }
+    }
+
+    public function phoneList($data)
+    {
+        $phones = array($data['phone'],$data['mobile1'],$data['mobile2']);
+        $phones = array_filter($phones);
+        $phones = implode('<br />', $phones);
+
+        if($data['same_phone'] == 1){
+            return '<span class="dupe">'.$phones.'</span>';
+        }else{
+            return $phones;
+        }
+    }
 
     public function dispBar($data)
 

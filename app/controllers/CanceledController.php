@@ -967,6 +967,35 @@ class CanceledController extends AdminController {
         return $data['width'].'x'.$data['height'].'x'.$data['length'];
     }
 
+    public function sameEmail($data)
+    {
+        if($data['same_email'] == 1){
+            return '<span class="dupe">'.$data['email'].'</span>';
+        }else{
+            return $data['email'];
+        }
+    }
+
+    public function phoneList($data)
+    {
+        $phones = array($data['phone'],$data['mobile1'],$data['mobile2']);
+        $phones = array_filter($phones);
+        $phones = implode('<br />', $phones);
+
+        if($data['same_phone'] == 1){
+            return '<span class="dupe">'.$phones.'</span>';
+        }else{
+            return $phones;
+        }
+    }
+
+    public function dispFBar($data)
+
+    {
+        $display = HTML::image(URL::to('qr/'.urlencode(base64_encode($data['delivery_id'].'|'.$data['merchant_trans_id'].'|'.$data['fulfillment_code'].'|box:1' ))), $data['merchant_trans_id'], array('id' => $data['delivery_id'], 'style'=>'width:100px;height:auto;' ));
+        //$display = '<a href="'.URL::to('barcode/dl/'.urlencode($data['SKU'])).'">'.$display.'</a>';
+        return $display.'<br />'. '<a href="'.URL::to('incoming/detail/'.$data['delivery_id']).'" >'.$data['fulfillment_code'].' ('.$data['box_count'].' box)</a>';
+    }
 
     public function dispBar($data)
 

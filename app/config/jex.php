@@ -72,7 +72,7 @@ return array(
             array('total_price',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('buyer_name',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('shipping_zip',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('phone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('phone',array('kind'=>'text','callback'=>'phoneList','query'=>'like','pos'=>'both','show'=>true)),
             array('width',array('kind'=>'text' ,'query'=>'like','callback'=>'showWHL' ,'pos'=>'both','show'=>true)),
             array('box_count',array('kind'=>'numeric', 'query'=>'like','pos'=>'both','show'=>true)),
             array('weight',array('kind'=>'text','query'=>'like','callback'=>'weightRange' ,'pos'=>'both','show'=>true)),
@@ -111,7 +111,7 @@ return array(
             array('merchant_trans_id',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('fulfillment_code',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('shipping_address',array('kind'=>'text' ,'query'=>'like','pos'=>'both','show'=>true)),
-            array('phone',array('kind'=>'text' ,'query'=>'like','pos'=>'both','show'=>true)),
+            array('phone',array('kind'=>'text' ,'callback'=>'phoneList' ,'query'=>'like','pos'=>'both','show'=>true)),
             array('status',array('kind'=>'text','callback'=>'statusList','query'=>'like','pos'=>'both','show'=>true, 'multi'=>array('status','warehouse_status','pickup_status'), 'multirel'=>'OR'  )),
         ),
 
@@ -153,7 +153,7 @@ return array(
             array('merchant_trans_id',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('fulfillment_code',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('shipping_address',array('kind'=>'text' ,'query'=>'like','pos'=>'both','show'=>true)),
-            array('phone',array('kind'=>'text' ,'query'=>'like','pos'=>'both','show'=>true)),
+            array('phone',array('kind'=>'text' ,'callback'=>'phoneList' ,'query'=>'like','pos'=>'both','show'=>true)),
             array('status',array('kind'=>'text','callback'=>'statusList','query'=>'like','pos'=>'both','show'=>true, 'multi'=>array('status','warehouse_status','pickup_status'), 'multirel'=>'OR'  )),
         ),
 

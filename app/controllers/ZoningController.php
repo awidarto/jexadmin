@@ -98,7 +98,15 @@ class ZoningController extends AdminController {
 
         Breadcrumbs::addCrumb('Shipment Order',URL::to( strtolower($this->controller_name) ));
 
+
         //$this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','gl')->render();
+
+        $this->additional_filter = View::make('shared.cancelaction')->render();
+
+        //$this->additional_filter .= View::make('shared.confirmaction')->render();
+
+        $this->additional_filter .= '<br />';
+        $this->additional_filter .= View::make('shared.markaction')->render();
 
         //$this->js_additional_param = "aoData.push( { 'name':'acc-period-to', 'value': $('#acc-period-to').val() }, { 'name':'acc-period-from', 'value': $('#acc-period-from').val() }, { 'name':'acc-code-from', 'value': $('#acc-code-from').val() }, { 'name':'acc-code-to', 'value': $('#acc-code-to').val() }, { 'name':'acc-company', 'value': $('#acc-company').val() } );";
 
@@ -995,6 +1003,27 @@ class ZoningController extends AdminController {
         return $data['width'].'x'.$data['height'].'x'.$data['length'];
     }
 
+    public function sameEmail($data)
+    {
+        if($data['same_email'] == 1){
+            return '<span class="dupe">'.$data['email'].'</span>';
+        }else{
+            return $data['email'];
+        }
+    }
+
+    public function phoneList($data)
+    {
+        $phones = array($data['phone'],$data['mobile1'],$data['mobile2']);
+        $phones = array_filter($phones);
+        $phones = implode('<br />', $phones);
+
+        if($data['same_phone'] == 1){
+            return '<span class="dupe">'.$phones.'</span>';
+        }else{
+            return $phones;
+        }
+    }
 
     public function dispBar($data)
 

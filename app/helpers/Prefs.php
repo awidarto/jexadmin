@@ -20,6 +20,48 @@ class Prefs {
 
     }
 
+    public static function getNotes($delivery_id, $as_array = true)
+    {
+        $notes = Deliverynote::where('deliveryId','=',$delivery_id)
+                    ->orderBy('mtimestamp','desc')
+                    ->get();
+
+        if($as_array){
+            return $notes->toArray();
+        }else{
+            $list = '<ul class="note_list">';
+            foreach($notes as $note){
+                $list .= '<li>';
+                $list .= '<b>'.$note->status.'</b><br />';
+                $list .= $note->datetimestamp.'<br />';
+                $list .= $note->note;
+                $list .= '</li>';
+            }
+
+            $list .= '</ul>';
+
+            return $list;
+        }
+
+    }
+
+
+    public static function getTrip($all = false)
+    {
+        $trip_count = Options::get('trip_per_day',1);
+        if($all){
+            $trips = array(''=>'All');
+        }else{
+            $trips = array();
+        }
+        for($t = 1; $t<= intval($trip_count);$t++ ){
+            $trips[$t] = 'Trip '.$t;
+        }
+
+        return $trips;
+    }
+
+
     public static function getPicStat($delivery_id)
     {
         $existingpic = glob(Config::get('jayon.picture_path').$delivery_id.'*.jpg');

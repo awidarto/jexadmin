@@ -945,6 +945,29 @@ class DispatchedController extends AdminController {
         }
     }
 
+    public function sameEmail($data)
+    {
+        if($data['same_email'] == 1){
+            return '<span class="dupe">'.$data['email'].'</span>';
+        }else{
+            return $data['email'];
+        }
+    }
+
+    public function phoneList($data)
+    {
+        $phones = array($data['phone'],$data['mobile1'],$data['mobile2']);
+        $phones = array_filter($phones);
+        $phones = implode('<br />', $phones);
+
+        if($data['same_phone'] == 1){
+            return '<span class="dupe">'.$phones.'</span>';
+        }else{
+            return $phones;
+        }
+    }
+
+
     public function dispFBar($data)
 
     {

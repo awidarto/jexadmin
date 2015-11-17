@@ -1,4 +1,4 @@
-@extends('layout.yukontwo')
+@extends('layout.maketwo')
 
 
 @section('left')
@@ -6,6 +6,9 @@
 <h5>Import {{ $title }}</h5>
 
 {{Former::open_for_files_vertical($submit,'POST',array('class'=>'custom addAttendeeForm'))}}
+
+        {{ $aux_form }}
+
         {{ Former::file('inputfile','Select file ( .xls, .xlsx )') }}
 
         {{ Former::hidden( 'controller',$back ) }}
