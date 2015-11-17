@@ -101,6 +101,9 @@ class DeliveredController extends AdminController {
 
         //$this->js_additional_param = "aoData.push( { 'name':'acc-period-to', 'value': $('#acc-period-to').val() }, { 'name':'acc-period-from', 'value': $('#acc-period-from').val() }, { 'name':'acc-code-from', 'value': $('#acc-code-from').val() }, { 'name':'acc-code-to', 'value': $('#acc-code-to').val() }, { 'name':'acc-company', 'value': $('#acc-company').val() } );";
 
+        $this->additional_filter .= '<br />';
+        $this->additional_filter .= View::make('shared.markaction')->render();
+
         $this->product_info_url = strtolower($this->controller_name).'/info';
 
         $this->column_styles = '{ "sClass": "column-amt", "aTargets": [ 8 ] },
