@@ -72,7 +72,12 @@ class AwbController extends \BaseController {
                             ->where('fulfillment_code','=',trim($ff_id))
                             ->where('application_key','=',trim($key))
                             ->first();
-            }else{
+            }elseif($order_id != '' && $ff_id == ''){
+                $order = \Shipment::where('merchant_trans_id','=',trim($order_id))
+                            //->where('fulfillment_code','=',trim($ff_id))
+                            ->where('application_key','=',trim($key))
+                            ->first();
+            {
                 $order = false;
             }
 
