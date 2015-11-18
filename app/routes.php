@@ -118,6 +118,11 @@ Route::group(array('prefix' => 'api/v1/mobile'), function (){
     Route::resource('delivery', 'Api\DeliveryapiController');
 });
 
+Route::group(array('prefix' => 'api/v1/service'), function (){
+    Route::resource('awb', 'Api\AwbController');
+    Route::resource('status', 'Api\StatusController');
+});
+
 Route::get('btest',function(){
     $model = new Merchant();
 
