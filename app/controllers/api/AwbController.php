@@ -39,23 +39,6 @@ class AwbController extends \BaseController {
         $order_id = Input::get('orderid');
         $ff_id = Input::get('ffid');
 
-        /*
-                    ->join('members as m','d.merchant_id=m.id','left')
-                    ->where('assignment_date',$indate)
-                    ->where('device_id',$dev->id)
-                    ->and_()
-                    ->group_start()
-                        ->where('status',$this->config->item('trans_status_admin_courierassigned'))
-                        ->or_()
-                        ->group_start()
-                            ->where('status',$this->config->item('trans_status_new'))
-                            ->where('pending_count >', 0)
-                        ->group_end()
-                    ->group_end()
-
-
-        */
-
         if( is_null($key) || $key == ''){
             $actor = 'no id : no name';
             \Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'empty key'));
@@ -86,7 +69,12 @@ class AwbController extends \BaseController {
                 $actor = 'merchant id :'.$app->merchant_id;
                 \Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'awb '.$order->delivery_id));
 
-                return \Response::json(array('status'=>'OK','awb'=>$order->delivery_id));
+                return \Response::json(array('status'=>'OK',
+                    'awb'=>$order->delivery_id,
+                        'timestamp'=>date('Y-m-d H:i:s',time()) ,
+                        'pending'=>$order->pending_count,
+                        'order_status'=>$order->status,
+                        'note'=>$order->delivery_note ));
             }else{
                 $actor = 'merchant id :'.$app->merchant_id;
                 \Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'order not found'));
@@ -193,7 +181,13 @@ class AwbController extends \BaseController {
 
             if($awbs){
                 foreach($awbs as $awb){
-                    $result[] = array('order_id'=>$awb->merchant_trans_id, 'ff_id'=>$awb->fulfillment_code,'awb'=>$awb->delivery_id);
+                    $result[] = array('order_id'=>$awb->merchant_trans_id,
+                        'ff_id'=>$awb->fulfillment_code,
+                        'awb'=>$awb->delivery_id,
+                        'timestamp'=>date('Y-m-d H:i:s',time()),
+                        'pending'=>$awb->pending_count,
+                        'status'=>$awb->status,'note'=>$awb->delivery_note
+                        );
                 }
             }
 

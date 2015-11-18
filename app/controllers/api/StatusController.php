@@ -65,7 +65,9 @@ class StatusController extends \BaseController {
                 $actor = 'merchant id :'.$app->merchant_id;
                 \Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'status awb: '.$awb));
 
-                $status = array('awb'=>$order->delivery_id,'timestamp'=>date('Y-m-d H:i:s',time()) ,'status'=>$order->status,'note'=>$order->delivery_note);
+                $status = array('awb'=>$order->delivery_id,'timestamp'=>date('Y-m-d H:i:s',time()) ,
+                    'pending'=>$order->pending_count,
+                    'status'=>$order->status,'note'=>$order->delivery_note);
 
                 return \Response::json(array('status'=>'OK','order_status'=>$status));
             }else{
@@ -174,7 +176,9 @@ class StatusController extends \BaseController {
 
             if($awbs){
                 foreach($awbs as $awb){
-                    $result[] = array('awb'=>$awb->delivery_id,'timestamp'=>date('Y-m-d H:i:s',time()) ,'status'=>$awb->status,'note'=>$awb->delivery_note);
+                    $result[] = array('awb'=>$awb->delivery_id,'timestamp'=>date('Y-m-d H:i:s',time()) ,
+                        'pending'=>$awb->pending_count,
+                        'status'=>$awb->status,'note'=>$awb->delivery_note);
                 }
             }
 
