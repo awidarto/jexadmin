@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Response;
 
-class AwbController extends \BaseController {
+class McconnectController extends \BaseController {
 
     public $controller_name = '';
 
