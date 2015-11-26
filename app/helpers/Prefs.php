@@ -203,6 +203,298 @@ class Prefs {
         return $d;
     }
 
+
+    public static function get_delivery_id($sequence,$merchant_id,$delivery_id = null){
+
+        if(is_null($delivery_id) || $delivery_id == ''){
+            $year_count = str_pad($sequence, Config::get('jayon.year_sequence_pad'), '0', STR_PAD_LEFT);
+            $merchant_id = str_pad($merchant_id, Config::get('jayon.merchant_id_pad'), '0', STR_PAD_LEFT);
+            $delivery_id = $merchant_id.'-'.date('d-mY',time()).'-'.$year_count;
+        }else{
+            $dr = Generatedawb::where('merchant_id','=',$merchant_id)
+                    ->where('awb_string','=',$delivery_id)
+                    ->where('is_used','=',0)
+                    ->first();
+
+            if($dr){
+
+                $delivery_id = $delivery_id;
+                $up = array('is_used'=>1, 'used_at'=>date('Y-m-d H:i:s', time() ) );
+
+                $dr->is_used = 1;
+                $dr->used_at = date('Y-m-d H:i:s', time() );
+                $dr->save();
+
+            }else{
+
+                $year_count = str_pad($sequence, Config::get('jayon.year_sequence_pad'), '0', STR_PAD_LEFT);
+                $merchant_id = str_pad($merchant_id, Config::get('jayon.merchant_id_pad'), '0', STR_PAD_LEFT);
+                $delivery_id = $merchant_id.'-'.date('d-mY',time()).'-'.$year_count;
+            }
+        }
+
+
+        return $delivery_id;
+    }
+
+    public static function generate_delivery_id($sequence,$merchant_id,$date = null){
+
+        $year_count = str_pad($sequence, Config::get('jayon.year_sequence_pad'), '0', STR_PAD_LEFT);
+        $merchant_id = str_pad($merchant_id, Config::get('jayon.merchant_id_pad'), '0', STR_PAD_LEFT);
+        if(is_null($date)){
+            $delivery_id = $merchant_id.'-'.date('d-mY',time()).'-'.$year_count;
+        }else{
+            $date = date('d-mY', strtotime($date) );
+            $delivery_id = $merchant_id.'-'.$date.'-'.$year_count;
+        }
+
+        return $delivery_id;
+    }
+
+    public static function get_key_info($key){
+        if(!is_null($key)){
+            $row = Application::where('key','=',$key)->first();
+            if($row){
+                return $row;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+
+
+    public static function save_box($delivery_id, $merchant_trans_id, $fulfillment_code,$count){
+
+        $affected = Box::where('delivery_id','=',$delivery_id)
+            ->where('merchant_trans_id','=',$merchant_trans_id)
+            ->where('fulfillment_code','=',$fulfillment_code)->delete();
+
+
+        for($i = 0; $i < $count;$i++){
+
+            $bd = new Box();
+            $bd->delivery_id = $delivery_id;
+            $bd->merchant_trans_id = $merchant_trans_id;
+            $bd->fulfillment_code = $fulfillment_code;
+            $bd->box_id = $i + 1;
+            $bd->save();
+
+            $bds = new Boxstatus();
+            $bds->delivery_id = $delivery_id;
+            $bds->merchant_trans_id = $merchant_trans_id;
+            $bds->fulfillment_code = $fulfillment_code;
+            $bds->box_id =  $i + 1;
+            $bds->timestamp = date('Y-m-d H:i:s',time());
+            $bds->save();
+        }
+
+    }
+
+    public static function save_buyer($ds){
+
+        $bd = array();
+
+        if(isset($ds['buyer_id']) && $ds['buyer_id'] != '' && $ds['buyer_id'] > 1){
+            if($pid = self::get_parent_buyer($ds['buyer_id'])){
+                $bd['is_child_of'] = $pid;
+                self::update_group_count($pid);
+            }
+        }
+
+        $bd['buyer_name']  =  $ds['buyer_name'];
+        $bd['buyerdeliveryzone']  =  $ds['buyerdeliveryzone'];
+        $bd['buyerdeliverycity']  =  $ds['buyerdeliverycity'];
+        $bd['shipping_address']  =  $ds['shipping_address'];
+        $bd['phone']  =  $ds['phone'];
+        $bd['mobile1']  =  $ds['mobile1'];
+        $bd['mobile2']  =  $ds['mobile2'];
+        $bd['recipient_name']  =  $ds['recipient_name'];
+        $bd['shipping_zip']  =  $ds['shipping_zip'];
+        $bd['email']  =  $ds['email'];
+        $bd['delivery_id']  =  $ds['delivery_id'];
+        $bd['delivery_cost']  =  $ds['delivery_cost'];
+        $bd['cod_cost']  =  $ds['cod_cost'];
+        $bd['delivery_type']  =  $ds['delivery_type'];
+        $bd['currency']  =  $ds['currency'];
+        $bd['total_price']  =  $ds['total_price'];
+        $bd['chargeable_amount']  =  $ds['chargeable_amount'];
+        $bd['delivery_bearer']  =  $ds['delivery_bearer'];
+        $bd['cod_bearer']  =  $ds['cod_bearer'];
+        $bd['cod_method']  =  $ds['cod_method'];
+        $bd['ccod_method']  =  $ds['ccod_method'];
+        $bd['application_id']  =  $ds['application_id'];
+        //$bd['buyer_id']  =  $ds['buyer_id'];
+        $bd['merchant_id']  =  $ds['merchant_id'];
+        $bd['merchant_trans_id']  =  $ds['merchant_trans_id'];
+        //$bd['courier_id']  =  $ds['courier_id'];
+        //$bd['device_id']  =  $ds['device_id'];
+        $bd['directions']  =  $ds['directions'];
+        //$bd['dir_lat']  =  $ds['dir_lat'];
+        //$bd['dir_lon']  =  $ds['dir_lon'];
+        //$bd['delivery_note']  =  $ds['delivery_note'];
+        //$bd['latitude']  =  $ds['latitude'];
+        //$bd['longitude']  =  $ds['longitude'];
+        $bd['created']  =  $ds['created'];
+
+        $bd['cluster_id'] = substr(md5(uniqid(rand(), true)), 0, 20 );
+
+        $buyer = new Buyer();
+
+        foreach($bd as $b=>$v){
+            $buyer->{$b} = $v;
+        }
+
+        $buyer->save();
+
+        if($buyer){
+            return $buyer->id;
+        }else{
+            return 0;
+        }
+    }
+
+
+    private static function get_parent_buyer($id){
+        $by = Buyer::where('id','=',$id)->first();
+
+        if($by){
+
+            $buyer = $by->toArray();
+            if($buyer['is_parent'] == 1){
+                $pid = $buyer['id'];
+            }elseif($buyer['is_child_of'] > 0 && $buyer['is_parent'] == 0){
+                $pid = $buyer['is_child_of'];
+            }else{
+                $pid = false;
+            }
+
+            return $pid;
+
+        }else{
+            return false;
+        }
+
+    }
+
+    private static function update_group_count($id){
+
+        $this->db->where('is_child_of',$id);
+        $groupcount = Buyer::where('is_child_of','=',$id)->count();
+
+        $dataup = array('group_count'=>($groupcount + 1) );
+
+        $par = Buyer::where('id','=',$id)->first();
+
+        if($par){
+            $par->group_count = $groupcount + 1;
+            $res = $par->save();
+            return $res;
+        }else{
+            return false;
+        }
+
+    }
+
+    public static function normalphone($number){
+        $numbers = explode('/',$number);
+        if(is_array($numbers)){
+            $nums = array();
+            foreach($numbers as $number){
+
+                $number = str_replace(array('-',' ','(',')','[',']','{','}'), '', $number);
+
+                if(preg_match('/^\+/', $number)){
+                    if( preg_match('/^\+62/', $number)){
+                        $number = preg_replace('/^\+62|^620/', '62', $number);
+                    }else{
+                        $number = preg_replace('/^\+/', '', $number);
+                    }
+                }else if(preg_match('/^62/', $number)){
+                    $number = preg_replace('/^620/', '62', $number);
+                }else if(preg_match('/^0/', $number)){
+                    $number = preg_replace('/^0/', '62', $number);
+                }
+
+                $nums[] = $number;
+            }
+            $number = implode('/',$nums);
+        }else{
+
+            $number = str_replace(array('-',' ','(',')'), '', $number);
+
+            if(preg_match('/^\+/', $number)){
+                if( preg_match('/^\+62/', $number)){
+                    $number = preg_replace('/^\+62|^620/', '62', $number);
+                }else{
+                    $number = preg_replace('/^\+/', '', $number);
+                }
+            }else if(preg_match('/^62/', $number)){
+                $number = preg_replace('/^620/', '62', $number);
+            }else if(preg_match('/^0/', $number)){
+                $number = preg_replace('/^0/', '62', $number);
+            }
+        }
+
+        return $number;
+    }
+
+    public static function check_email($email){
+
+        $em = Buyer::where('email','=',$email)->first();
+
+        //$em = $this->db->where('email',$email)->get($this->config->item('jayon_members_table'));
+        if($em){
+            return $em;
+        }else{
+            return false;
+        }
+    }
+
+    public static function check_phone($phone, $mobile1, $mobile2){
+        $em = Buyer::where('phone','like',$phone)
+                ->orWhere('mobile1','like',$mobile1)
+                ->orWhere('mobile2','like',$mobile2)->first();
+
+        if($em){
+            return $em;
+        }else{
+            return false;
+        }
+    }
+
+    public static function get_cod_tariff($total_price,$app_id = null){
+
+        $max = Codsurcharge::max('to_price');
+
+        if($total_price > $max){
+            $row = Codsurcharge::max('surcharge');
+        }else{
+
+            if(is_null($app_id)){
+                $sel = Codsurcharge::where('from_price','<=', doubleval($total_price) )
+                        ->where('to_price', '>=', doubleval($total_price) );
+            }else{
+                $sel = Codsurcharge::where('from_price','<=', doubleval($total_price) )
+                        ->where('app_id',$app_id)
+                        ->where('to_price', '>=', doubleval($total_price) );
+            }
+
+            if($sel){
+                if(isset($sel->surcharge)){
+                    $row = $sel->surcharge;
+                }else{
+                    $row = 0;
+                }
+            }
+
+        }
+
+        return $row;
+    }
+
+
     public static function hashcheck($in , $pass){
 
         $hash = hash("haval256,5", Config::get('kickstart.ci_key') . $in);
