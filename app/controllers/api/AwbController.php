@@ -88,6 +88,8 @@ class AwbController extends \BaseController {
 
     public function  __construct()
     {
+        date_default_timezone_set('Asia/Jakarta');
+
         //$this->model = "Member";
         $this->controller_name = strtolower( str_replace('Controller', '', get_class()) );
 
@@ -714,6 +716,9 @@ class AwbController extends \BaseController {
 
     public function order_save($indata,$api_key,$transaction_id)
     {
+
+        date_default_timezone_set('Asia/Jakarta');
+
         $args = '';
 
         //$api_key = $this->get('key');
