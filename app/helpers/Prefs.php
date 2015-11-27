@@ -466,27 +466,47 @@ class Prefs {
 
     public static function get_cod_tariff($total_price,$app_id = null){
 
-        $max = Codsurcharge::max('to_price');
+        $total_price = doubleval($total_price);
 
-        if($total_price > $max){
-            $row = Codsurcharge::max('surcharge');
-        }else{
+        $row = 0;
 
-            if(is_null($app_id)){
-                $sel = Codsurcharge::where('from_price','<=', doubleval($total_price) )
-                        ->where('to_price', '>=', doubleval($total_price) );
+        if(is_null($app_id)){
+            $max = Codsurcharge::max('to_price');
+
+            if($total_price > $max){
+                $row = Codsurcharge::max('surcharge');
             }else{
                 $sel = Codsurcharge::where('from_price','<=', doubleval($total_price) )
-                        ->where('app_id',$app_id)
-                        ->where('to_price', '>=', doubleval($total_price) );
+                        ->where('to_price', '>=', doubleval($total_price) )->first();
+
+                if($sel){
+                    if(isset($sel->surcharge)){
+                        $row = $sel->surcharge;
+                    }else{
+                        $row = 0;
+                    }
+                }
+
             }
 
-            if($sel){
-                if(isset($sel->surcharge)){
-                    $row = $sel->surcharge;
-                }else{
-                    $row = 0;
+        }else{
+            $max = Codsurcharge::where('app_id','=',$app_id)->max('to_price');
+
+            if($total_price > $max){
+                $row = Codsurcharge::where('app_id','=',$app_id)->max('surcharge');
+            }else{
+                $sel = Codsurcharge::where('from_price','<=', doubleval($total_price) )
+                        ->where('app_id','=',$app_id)
+                        ->where('to_price', '>=', doubleval($total_price) )->first();
+
+                if($sel){
+                    if(isset($sel->surcharge)){
+                        $row = $sel->surcharge;
+                    }else{
+                        $row = 0;
+                    }
                 }
+
             }
 
         }
