@@ -368,7 +368,7 @@ class AwbController extends \BaseController {
                 $order['buyerdeliverytime'] = $pick_up_date;
                 $order['fulfillment_code'] = $json['consignee_olshop_orderid'];
                 $order['box_count'] = $json['number_of_package'];
-                $order['delivery_type'] = $json['delivery_type'];
+                $order['delivery_type'] = trim($json['delivery_type']);
                 $order['total_price'] = $json['cod'];
                 $order['email'] = $json['email'];
                 $order['buyer_name'] = $json['consignee_olshop_name'];
@@ -379,6 +379,11 @@ class AwbController extends \BaseController {
                 $order['phone'] = $json['consignee_olshop_phone'];
 
                 $order['actual_weight'] = $json['w_v'];
+
+                $weight = $json['w_v'];
+                $delivery_type = trim($json['delivery_type']);
+
+                \Prefs::get_weight_tariff($weight, $delivery_type ,$app_id);
 
                 $order['merchant_id'] = $merchant_id;
                 $order['application_id'] = $app_id;

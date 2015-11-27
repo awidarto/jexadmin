@@ -494,6 +494,45 @@ class Prefs {
         return $row;
     }
 
+    public static function get_weight_tariff($weight, $delivery_type ,$app_id = null){
+
+        $weight = floatval($weight);
+
+        if($weight > 0){
+
+            if($delivery_type == 'PS'){
+                if(is_null($app_id)){
+                    return 0;
+                }else{
+                    $w = Psfee::where('app_id','=',$app_id)
+                        ->where('kg_from','<=', $weight )
+                        ->where('kg_to','>=', $weight )->first();
+                    if($w){
+                        return $w->total;
+                    }else{
+                        return 0;
+                    }
+                }
+            }else{
+                if(is_null($app_id)){
+                    return 0;
+                }else{
+                    $w = Deliveryfee::where('app_id','=',$app_id)
+                        ->where('kg_from','<=', $weight )
+                        ->where('kg_to','>=', $weight )->first();
+                    if($w){
+                        return $w->total;
+                    }else{
+                        return 0;
+                    }
+                }
+            }
+
+        }else{
+            return 0;
+        }
+    }
+
 
     public static function hashcheck($in , $pass){
 
