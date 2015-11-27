@@ -378,6 +378,9 @@ class AwbController extends \BaseController {
                 $order['shipping_zip'] = $json['consignee_olshop_zip'];
                 $order['phone'] = $json['consignee_olshop_phone'];
 
+                $order['delivery_bearer'] = 'merchant';
+                $order['cod_bearer'] = 'merchant';
+
                 $order['actual_weight'] = $json['w_v'];
 
                 $weight = $json['w_v'];
