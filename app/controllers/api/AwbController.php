@@ -383,7 +383,8 @@ class AwbController extends \BaseController {
                 $weight = $json['w_v'];
                 $delivery_type = trim($json['delivery_type']);
 
-                \Prefs::get_weight_tariff($weight, $delivery_type ,$app_id);
+                $order['weight'] = \Prefs::get_weight_tariff($weight, $delivery_type ,$app_id);
+                $order['weight'] = \Prefs::get_weight_tariff($weight, $delivery_type ,$app_id);
 
                 $order['merchant_id'] = $merchant_id;
                 $order['application_id'] = $app_id;
