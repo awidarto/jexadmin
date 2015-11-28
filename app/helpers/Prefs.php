@@ -203,6 +203,12 @@ class Prefs {
         return $d;
     }
 
+    public static function random_string($type, $length)
+    {
+
+        return str_random($length);
+
+    }
 
     public static function get_delivery_id($sequence,$merchant_id,$delivery_id = null){
 

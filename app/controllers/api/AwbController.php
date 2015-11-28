@@ -802,7 +802,10 @@ class AwbController extends \BaseController {
 
 
                 if($is_new){
-                    $buyer_username = substr(strtolower(str_replace(' ','',$in->buyer_name)),0,6).random_string('numeric', 4);
+
+                    $random_string = str_random(5);
+
+                    $buyer_username = substr(strtolower(str_replace(' ','',$in->buyer_name)),0,6).$random_string;
                     $dataset['username'] = $buyer_username;
                     $dataset['email'] = $in->email;
                     $dataset['phone'] = $in->phone;
