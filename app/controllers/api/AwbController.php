@@ -838,7 +838,7 @@ class AwbController extends \BaseController {
                     $dataset['mobile2'] = $in->mobile2;
                     $dataset['fullname'] = $in->buyer_name;
                     $password = str_random(8);
-                    $dataset['password'] = $this->ag_auth->salt($password);
+                    $dataset['password'] = $password;
                     $dataset['created'] = date('Y-m-d H:i:s',time());
 
                     /*
