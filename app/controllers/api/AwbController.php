@@ -404,7 +404,29 @@ class AwbController extends \BaseController {
                 $trx_id = $order['merchant_trans_id'];
 
                 $trx = json_encode($order);
-                $saved = $this->order_save($trx,$app_key,$trx_id);
+
+                $order['merchant_trans_id'] = $json['no_sales_order'];
+                $order['fulfillment_code'] = $json['consignee_olshop_orderid'];
+
+
+                $check = \Shipment::where('merchant_trans_id','=',$json['no_sales_order'])
+                                    ->where('fulfillment_code','=',$json['consignee_olshop_orderid'])
+                                    ->first();
+
+                if($check){
+
+                    $result[] = array(
+                        'order_id'=>$check->merchant_trans_id,
+                        'ff_id'=>$check->fulfillment_code,
+                        'awb'=>$check->delivery_id,
+                        'timestamp'=>$check->created,
+                        'pending'=>$check->pending_count,
+                        'status'=>$check->status,
+                        'note'=>$check->delivery_note
+                    );
+
+                }else{
+                    $saved = $this->order_save($trx,$app_key,$trx_id);
 
                     $result[] = array(
                         'order_id'=>$saved['merchant_trans_id'],
@@ -415,6 +437,9 @@ class AwbController extends \BaseController {
                         'status'=>$saved['status'],
                         'note'=>$saved['delivery_note']
                     );
+
+                }
+
 
 
                 //$order[] = [w_v] => 0.9
