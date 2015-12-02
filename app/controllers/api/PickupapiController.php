@@ -16,9 +16,83 @@ class PickupapiController extends \BaseController {
 
     public $sql_table_name;
 
+    public $order_unset = array(
+
+            'assignmentDate',
+            'assignmentTimeslot',
+            'assignmentZone',
+            'assignmentCity',
+            'assignmentSeq',
+            'paymentProvider',
+            'toscan',
+            'directions',
+            'phone',
+            'mobile1',
+            'mobile2',
+            'picAddress',
+            'pic1',
+            'pic2',
+            'pic3',
+            'undersign',
+            'rescheduleRef',
+            'revokeRef',
+            'sameEmail',
+            'samePhone',
+            'showMerchant',
+            'showShop',
+            'isPickup',
+            'isImport',
+            'isApi',
+            'courier',
+            'device',
+            'merchantName',
+            'appName',
+            'volume',
+
+        );
+
+    public $merchant_unset = array(
+            'username',
+            'email',
+            'password',
+            'fullname',
+            'created',
+            'updated',
+            'district',
+            'province',
+            'country',
+            'bank',
+            'account_number',
+            'account_name',
+            'same_as_personal_address',
+            'group_id',
+            'token',
+            'identifier',
+            'merchant_request',
+            'success',
+            'fail',
+            'mc_email',
+            'mc_street',
+            'mc_district',
+            'mc_city',
+            'mc_province',
+            'mc_country',
+            'mc_zip',
+            'mc_phone',
+            'mc_mobile',
+            'mc_first_order',
+            'mc_last_order',
+            'mc_unlimited_time',
+            'mc_toscan',
+            'mc_pickup_time',
+            'mc_pickup_cutoff',
+            'mc_delivery_bearer',
+            'mc_cod_bearer'
+        );
+
     public function  __construct()
     {
-        //$this->model = "Member";
+        //$this->model = 'Member';
         $this->controller_name = strtolower( str_replace('Controller', '', get_class()) );
 
         $this->sql_table_name =  \Config::get('jayon.incoming_delivery_table') ;
@@ -127,21 +201,27 @@ class PickupapiController extends \BaseController {
             ->orderBy('ordertime','desc')
             ->get();
 
-
+        $norders = array();
         for($n = 0; $n < count($orders);$n++){
             $or = new \stdClass();
             foreach( $orders[$n] as $k=>$v ){
                 $nk = $this->underscoreToCamelCase($k);
-                $or->$nk = (is_null($v))?'':$v;
+                if(in_array($nk, $this->order_unset)){
+
+                }else{
+                    $or->{$nk} = (is_null($v))?'':$v;
+                }
             }
 
             $or->extId = $or->id;
+
             unset($or->id);
 
             $or->boxList = $this->boxList('delivery_id',$or->deliveryId,$key);
             $or->boxObjects = $this->boxList('delivery_id',$or->deliveryId, $key , true);
             $or->merchantObject = $this->merchantObject($or->merchantId);
             $orders[$n] = $or;
+            //$norders[] = $or;
         }
 
 
@@ -255,7 +335,20 @@ class PickupapiController extends \BaseController {
     {
         $merchant = \Merchant::where('id','=',$merchant_id)->first();
         if($merchant){
-            return $merchant->toArray();
+
+            $merchant = $merchant->toArray();
+
+            $nm = array();
+            foreach ($merchant as $key => $value) {
+                if(in_array($key, $this->merchant_unset)){
+
+                }else{
+                    $nk = $this->underscoreToCamelCase($key);
+                    $nm[$nk] = (is_null($value))?'':$value;
+                }
+            }
+
+            return $nm;
         }else{
             return array();
         }
