@@ -348,6 +348,9 @@ class PickupapiController extends \BaseController {
                 }
             }
 
+            $nm['extId'] = $nm['id'];
+            unset($nm['id']);
+
             return $nm;
         }else{
             return array();
