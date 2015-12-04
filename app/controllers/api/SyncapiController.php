@@ -82,6 +82,8 @@ class SyncapiController extends \Controller {
 
         $key = \Input::get('key');
 
+        $appname = (\Input::has('app'))?\Input::get('app'):'app.name';
+
         //$user = \Apiauth::user($key);
 
         $user = \Device::where('key','=',$key)->first();
@@ -116,11 +118,132 @@ class SyncapiController extends \Controller {
                     foreach($j as $k=>$v){
                         $bs[$this->camel_to_underscore($k)] = $v;
                     }*/
-
+                    $j['appname'] = $appname;
                     \Boxstatus::insert($j);
                     $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'] );
                 }
             }
+        }
+
+        //print_r($result);
+
+        //die();
+        $actor = $user->identifier.' : '.$user->devname;
+
+        \Event::fire('log.api',array($this->controller_name, 'get' ,$actor,'sync scan log'));
+
+        return Response::json($result);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @return Response
+     */
+    public function postHubstatus()
+    {
+
+        $key = \Input::get('key');
+
+        //$user = \Apiauth::user($key);
+
+        $user = \Device::where('key','=',$key)->first();
+
+        if(!$user){
+            $actor = 'no id : no name';
+            \Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found, upload image failed'));
+
+            return \Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Device Unregistered' ));
+        }
+
+        $json = \Input::all();
+
+        $batch = \Input::get('batch');
+
+        $result = array();
+
+
+
+        foreach( $json as $j){
+
+            //$j['mtimestamp'] = new \MongoDate();
+
+            if(is_array($j)){
+
+
+                $olog = new \Orderstatuslog();
+
+                foreach ($j as $k=>$v) {
+                    $olog->{$k} = $v;
+                }
+
+                $olog->mtimestamp = new \MongoDate(time());
+
+                if($olog->disposition == $key && isset($user->node_id)){
+
+                    $olog->position = $user->node_id;
+                }
+
+                $r = $olog->save();
+
+                $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)->first();
+
+                if($shipment){
+
+                    $ts = new \MongoDate();
+                    $pre = clone $shipment;
+
+                    //$shipment->status = $olog->status;
+                    $shipment->warehouse_status = $olog->warehouseStatus;
+
+                    if($olog->disposition == $key && isset($user->node_id)){
+
+                        $shipment->position = $user->node_id;
+                    }
+
+                    $shipment->save();
+
+                    $hdata = array();
+                    $hdata['historyTimestamp'] = $ts;
+                    $hdata['historyAction'] = 'api_hub_change_status';
+                    $hdata['historySequence'] = 1;
+                    $hdata['historyObjectType'] = 'shipment';
+                    $hdata['historyObject'] = $shipment->toArray();
+                    $hdata['actor'] = $user->identifier;
+                    $hdata['actor_id'] = $user->key;
+
+                    \History::insert($hdata);
+
+                    $sdata = array();
+                    $sdata['timestamp'] = $ts;
+                    $sdata['action'] = 'api_hub_change_status';
+                    $sdata['reason'] = 'api_update';
+                    $sdata['objectType'] = 'shipment';
+                    $sdata['object'] = $shipment->toArray();
+                    $sdata['preObject'] = $pre->toArray();
+                    $sdata['actor'] = $user->identifier;
+                    $sdata['actor_id'] = $user->key;
+                    \Shipmentlog::insert($sdata);
+
+
+                }
+
+                if( $r ){
+                    $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>'log inserted' );
+                }else{
+                    $result[] = array('status'=>'NOK', 'timestamp'=>time(), 'message'=>'insertion failed' );
+                }
+
+            }
+
+            /*
+            if( \Orderstatuslog::insert($j) ){
+                $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>'log inserted' );
+            }else{
+                $result[] = array('status'=>'NOK', 'timestamp'=>time(), 'message'=>'insertion failed' );
+            }
+            */
+
         }
 
         //print_r($result);
@@ -181,17 +304,45 @@ class SyncapiController extends \Controller {
 
                 $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)->first();
 
-                $shipment->status = $olog->status;
-                $shipment->courier_status = $olog->courierStatus;
+                if($shipment){
 
-                if($olog->status == 'pending'){
-                    $shipment->pending_count = $shipment->pending_count + 1;
-                }elseif($olog->status == 'delivered'){
-                    $shipment->deliverytime = date('Y-m-d H:i:s',time());
+                    $ts = new \MongoDate();
+                    $pre = clone $shipment;
+
+                    $shipment->status = $olog->status;
+                    $shipment->courier_status = $olog->courierStatus;
+
+                    if($olog->status == 'pending'){
+                        $shipment->pending_count = $shipment->pending_count + 1;
+                    }elseif($olog->status == 'delivered'){
+                        $shipment->deliverytime = date('Y-m-d H:i:s',time());
+                    }
+
+                    $shipment->save();
+
+                    $hdata = array();
+                    $hdata['historyTimestamp'] = $ts;
+                    $hdata['historyAction'] = 'api_shipment_change_status';
+                    $hdata['historySequence'] = 1;
+                    $hdata['historyObjectType'] = 'shipment';
+                    $hdata['historyObject'] = $shipment->toArray();
+                    $hdata['actor'] = $user->identifier;
+                    $hdata['actor_id'] = $user->key;
+
+                    \History::insert($hdata);
+
+                    $sdata = array();
+                    $sdata['timestamp'] = $ts;
+                    $sdata['action'] = 'api_shipment_change_status';
+                    $sdata['reason'] = 'api_update';
+                    $sdata['objectType'] = 'shipment';
+                    $sdata['object'] = $shipment->toArray();
+                    $sdata['preObject'] = $pre->toArray();
+                    $sdata['actor'] = $user->identifier;
+                    $sdata['actor_id'] = $user->key;
+                    \Shipmentlog::insert($sdata);
+
                 }
-
-                $shipment->save();
-
 
                 if( $r ){
                     $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>'log inserted' );
@@ -231,6 +382,8 @@ class SyncapiController extends \Controller {
 
         $key = \Input::get('key');
 
+        $appname = (\Input::has('app'))?\Input::get('app'):'app.name';
+
         //$user = \Apiauth::user($key);
 
         $user = \Device::where('key','=',$key)->first();
@@ -259,9 +412,103 @@ class SyncapiController extends \Controller {
                     $blog->{$k} = $v;
                 }
 
-                $blog->mtimestamp = new \MongoDate(time());
+                $blog->appname = $appname;
+
+                //$blog->mtimestamp = new \MongoDate(time());
+                $blog->mtimestamp = date('Y-m-d H:i:s',time());
 
                 $r = $blog->save();
+
+                if( $r ){
+                    $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>'log inserted' );
+                }else{
+                    $result[] = array('status'=>'NOK', 'timestamp'=>time(), 'message'=>'insertion failed' );
+                }
+
+            }
+
+
+        }
+
+        //print_r($result);
+
+        //die();
+        $actor = $user->identifier.' : '.$user->devname;
+
+        \Event::fire('log.api',array($this->controller_name, 'get' ,$actor,'sync scan log'));
+
+        return Response::json($result);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @return Response
+     */
+    public function postHuborder()
+    {
+
+        $key = \Input::get('key');
+
+        //$user = \Apiauth::user($key);
+
+        $user = \Device::where('key','=',$key)->first();
+
+        if(!$user){
+            $actor = 'no id : no name';
+            \Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found, upload image failed'));
+
+            return \Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Device Unregistered' ));
+        }
+
+        $json = \Input::all();
+
+        $batch = \Input::get('batch');
+
+        $result = array();
+
+        foreach( $json as $j){
+
+            //$j['mtimestamp'] = new \MongoDate(time());
+
+            if(is_array($j)){
+                $olog = new \Orderlog();
+
+                foreach ($j as $k=>$v) {
+                    $olog->{$k} = $v;
+                }
+
+                $olog->mtimestamp = new \MongoDate(time());
+
+                if($olog->disposition == $key && isset($user->node_id)){
+
+                    $olog->position = $user->node_id;
+                }
+
+                $r = $olog->save();
+
+                $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)->first();
+
+                if($shipment){
+                    //$shipment->status = $olog->status;
+                    $shipment->warehouse_status = $olog->warehouseStatus;
+
+                    if($olog->disposition == $key && isset($user->node_id)){
+
+                        $shipment->position = $user->node_id;
+                    }
+
+                    /*
+                    $shipment->pending_count = new \MongoInt32($olog->pendingCount) ;
+
+                    if($olog->courierStatus == \Config::get('jayon.trans_cr_oncr') || $olog->courierStatus == \Config::get('jayon.trans_cr_oncr_partial'))
+                    {
+                        $shipment->pickup_status = \Config::get('jayon.trans_status_pickup');
+                    }
+                    */
+                    $shipment->save();
+                }
+
 
                 if( $r ){
                     $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>'log inserted' );
