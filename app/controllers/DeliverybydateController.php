@@ -104,7 +104,7 @@ class DeliverybydateController extends AdminController {
 
         $company = Input::get('acc-company');
 
-//device=&courier=&logistic=&date-from=2015-10-24
+        //device=&courier=&logistic=&date-from=2015-10-24
 
         $period_from = Input::get('date-from');
         $period_to = Input::get('date-to');
@@ -257,6 +257,7 @@ class DeliverybydateController extends AdminController {
 
         $bymc = array();
 
+
         foreach($actualresult as $mc){
             $bymc[$mc->merchant_name][] = $mc;
         }
@@ -265,24 +266,42 @@ class DeliverybydateController extends AdminController {
 
         $bydc = array();
 
+        $tpd = array();
+
+
         foreach($actualresult as $dc){
             $bydc[$dc->device_name][$dc->buyerdeliverycity][$dc->buyerdeliveryzone][] = $dc;
+            if(isset($tpd[$dc->device_name])){
+                $tpd[$dc->device_name] += 1;
+            }else{
+                $tpd[$dc->device_name] = 1;
+            }
         }
+
+        $dtotal = array();
+
+        foreach($tpd as $dk=>$dv){
+            $dtotal[] = $dv;
+        }
+
+        $dmax = max($dtotal);
 
         $headvar1 = array(
             array('value'=>'No.','attr'=>''),
             array('value'=>'Device','attr'=>''),
+            array('value'=>'Total per Device','attr'=>''),
             array('value'=>'Kota','attr'=>''),
             array('value'=>'Kecamatan','attr'=>''),
             array('value'=>'Total','attr'=>'')
         );
 
         $headvar2 = array(
-            array('value'=>'No.','attr'=>''),
-            array('value'=>'Device','attr'=>''),
-            array('value'=>'Kota','attr'=>''),
-            array('value'=>'Kecamatan','attr'=>''),
-            array('value'=>'Total','attr'=>'')
+            array('value'=>'','attr'=>''),
+            array('value'=>'','attr'=>''),
+            array('value'=>'','attr'=>''),
+            array('value'=>'','attr'=>''),
+            array('value'=>'','attr'=>''),
+            array('value'=>'','attr'=>'')
         );
 
         foreach(array_keys($bymc) as $mctitle){
@@ -350,15 +369,42 @@ class DeliverybydateController extends AdminController {
         $cntps = 0;
         $cntreturn = 0;
 
-        //print_r($bydc);
+        //total per columns
+        $tcod = 0;
+        $tccod = 0;
+        $tdo = 0;
+        $tps = 0;
+        $treturn = 0;
+
+        $totalrow = array();
+
+        $mname = '';
+        $cd = '';
 
         foreach($bydc as $d=>$c){
             foreach($c as $ct=>$zn){
                 foreach($zn as $z=>$o){
+
+                    if($d == $cd){
+                        $currddev = '';
+                        $currdtotal = '';
+                    }else{
+                        $currddev = $d;
+                        $currdtotal = $tpd[$d];
+                    }
+
+                    $cd = $d;
+
                     $row = array(
                             array('value'=>$seq,'attr'=>''),
-                            array('value'=>$d,'attr'=>''),
+                            array('value'=>$currddev,'attr'=>''),
                         );
+
+
+                    $maxattr = ($dmax == $currdtotal)?'style="background-color:red;"':'';
+                    $row[] = array('value'=>$currdtotal,'attr'=>$maxattr);
+
+
                     $row[] = array('value'=>$ct,'attr'=>'');
                     $row[] = array('value'=>$z,'attr'=>'');
                     $row[] = array('value'=>count($o),'attr'=>'');
@@ -405,6 +451,30 @@ class DeliverybydateController extends AdminController {
             }
 
         }
+
+        $totalrow = array(
+                array('value'=>'','attr'=>''),
+                array('value'=>'','attr'=>''),
+                array('value'=>'','attr'=>''),
+                array('value'=>'','attr'=>''),
+                array('value'=>'','attr'=>'')
+            );
+
+        $coloffset = 5;
+        $colc = 0;
+        foreach($tabdata as $td){
+            //print_r($td);
+
+            for($ci = 0; $ci < (count($td) - $coloffset);$ci++){
+                if(isset($totalrow[$coloffset + $ci])){
+                    $totalrow[$coloffset + $ci] += $td[$coloffset + $ci]['value'];
+                }else{
+                    $totalrow[$coloffset + $ci] = $td[$coloffset + $ci]['value'];
+                }
+            }
+        }
+
+        array_unshift($tabdata,$totalrow);
 
             $avgdata = array(
                     array('value'=>'Rata-rata<br />( dlm satuan hari )','attr'=>'colspan="6"'),

@@ -217,8 +217,8 @@ class PickupapiController extends \BaseController {
 
             unset($or->id);
 
-            $or->boxList = $this->boxList('delivery_id',$or->deliveryId,$key);
-            $or->boxObjects = $this->boxList('delivery_id',$or->deliveryId, $key , true);
+            $or->boxList = $this->boxList('delivery_id',$or->deliveryId,$key,$or->merchantId);
+            $or->boxObjects = $this->boxList('delivery_id',$or->deliveryId, $key, $or->merchantId , true);
             $or->merchantObject = $this->merchantObject($or->merchantId);
             $orders[$n] = $or;
             //$norders[] = $or;
@@ -357,7 +357,7 @@ class PickupapiController extends \BaseController {
         }
     }
 
-    public function boxList($field,$val, $device_key ,$obj = false){
+    public function boxList($field,$val, $device_key , $merchant_id ,$obj = false){
 
         $boxes = \Box::where($field,'=',$val)
                         //->where('deliveryStatus','!=','delivered')
@@ -387,6 +387,7 @@ class PickupapiController extends \BaseController {
 
                 //print_r($ob);
                 $ob->extId = $ob->id;
+                $ob->merchantId = $merchant_id;
                 unset($ob->_id);
 
                 $ob->status = $this->lastBoxStatus($device_key, $ob->deliveryId, $ob->fulfillmentCode ,$ob->boxId);
