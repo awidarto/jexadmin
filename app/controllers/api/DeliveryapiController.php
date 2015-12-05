@@ -16,6 +16,81 @@ class DeliveryapiController extends \BaseController {
 
     public $sql_table_name;
 
+    public $order_unset = array(
+
+            'assignmentDate',
+            'assignmentTimeslot',
+            'assignmentZone',
+            'assignmentCity',
+            'assignmentSeq',
+            'paymentProvider',
+            'toscan',
+            'directions',
+            'phone',
+            'mobile1',
+            'mobile2',
+            'picAddress',
+            'pic1',
+            'pic2',
+            'pic3',
+            'undersign',
+            'rescheduleRef',
+            'revokeRef',
+            'sameEmail',
+            'samePhone',
+            'showMerchant',
+            'showShop',
+            'isPickup',
+            'isImport',
+            'isApi',
+            'courier',
+            'device',
+            'merchantName',
+            'appName',
+            'volume',
+
+        );
+
+    public $merchant_unset = array(
+            'username',
+            'email',
+            'password',
+            'fullname',
+            'created',
+            'updated',
+            'district',
+            'province',
+            'country',
+            'bank',
+            'account_number',
+            'account_name',
+            'same_as_personal_address',
+            'group_id',
+            'token',
+            'identifier',
+            'merchant_request',
+            'success',
+            'fail',
+            'mc_email',
+            'mc_street',
+            'mc_district',
+            'mc_city',
+            'mc_province',
+            'mc_country',
+            'mc_zip',
+            'mc_phone',
+            'mc_mobile',
+            'mc_first_order',
+            'mc_last_order',
+            'mc_unlimited_time',
+            'mc_toscan',
+            'mc_pickup_time',
+            'mc_pickup_cutoff',
+            'mc_delivery_bearer',
+            'mc_cod_bearer'
+        );
+
+
     public function  __construct()
     {
         //$this->model = "Member";
