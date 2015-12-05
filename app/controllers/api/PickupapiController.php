@@ -388,7 +388,7 @@ class PickupapiController extends \BaseController {
                 //print_r($ob);
                 $ob->extId = $ob->id;
                 $ob->merchantId = $merchant_id;
-                unset($ob->_id);
+                unset($ob->id);
 
                 $ob->status = $this->lastBoxStatus($device_key, $ob->deliveryId, $ob->fulfillmentCode ,$ob->boxId);
 
