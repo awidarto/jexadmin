@@ -134,7 +134,10 @@ class DeliveryapiController extends \BaseController {
             $or->extId = $or->id;
             unset($or->id);
 
-            $or->boxList = $this->boxList('delivery_id',$or->deliveryId);
+            $or->boxList = $this->boxList('delivery_id',$or->deliveryId,$key,$or->merchantId);
+            //$or->boxList = $this->boxList('delivery_id',$or->deliveryId);
+            $or->boxObjects = $this->boxList('delivery_id',$or->deliveryId, $key, $or->merchantId , true);
+            $or->merchantObject = $this->merchantObject($or->merchantId);
 
             $orders[$n] = $or;
         }
@@ -246,6 +249,104 @@ class DeliveryapiController extends \BaseController {
 
     }
 
+    public function merchantObject($merchant_id)
+    {
+        $merchant = \Merchant::where('id','=',$merchant_id)->first();
+        if($merchant){
+
+            $merchant = $merchant->toArray();
+
+            $nm = array();
+            foreach ($merchant as $key => $value) {
+                if(in_array($key, $this->merchant_unset)){
+
+                }else{
+                    $nk = $this->underscoreToCamelCase($key);
+                    $nm[$nk] = (is_null($value))?'':$value;
+                }
+            }
+
+            $nm['extId'] = $nm['id'];
+            unset($nm['id']);
+
+            return $nm;
+        }else{
+            return array();
+        }
+    }
+
+    public function boxList($field,$val, $device_key , $merchant_id ,$obj = false){
+
+        $boxes = \Box::where($field,'=',$val)
+                        //->where('deliveryStatus','!=','delivered')
+                        //->where('deliveryStatus','!=','returned')
+                        ->get();
+
+        $bx = array();
+
+        if($obj == true){
+
+            $boxes = $boxes->toArray();
+
+            for($n = 0; $n < count($boxes);$n++){
+
+
+                $ob = new \stdClass();
+
+                foreach( $boxes[$n] as $k=>$v ){
+                    if($k != '_id' && $k != 'id'){
+                        $nk = $this->underscoreToCamelCase($k);
+                    }else{
+                        $nk = $k;
+                    }
+
+                    $ob->$nk = (is_null($v))?'':$v;
+                }
+
+                //print_r($ob);
+                $ob->extId = $ob->id;
+                $ob->merchantId = $merchant_id;
+                unset($ob->_id);
+
+                $ob->status = $this->lastBoxStatus($device_key, $ob->deliveryId, $ob->fulfillmentCode ,$ob->boxId);
+
+                $boxes[$n] = $ob;
+            }
+
+            return $boxes;
+
+        }else{
+            foreach($boxes as $b){
+                $bx[] = $b->box_id;
+            }
+
+            if(count($bx) > 0){
+                return implode(',',$bx);
+            }else{
+                return '1';
+            }
+        }
+
+    }
+
+    public function lastBoxStatus($device_key, $delivery_id, $fulfillment_code ,$box_id){
+        $last = \Boxstatus::where('deliveryId','=',$delivery_id)
+                                ->where('deviceKey','=',$device_key)
+                                ->where('appname','=',\Config::get('jex.pickup_app'))
+                                //->where('fulfillmentCode'.'=',$fulfillment_code)
+                                ->where('boxId','=',strval($box_id))
+                                ->orderBy('mtimestamp', 'desc')
+                                ->first();
+        //print_r($last);
+
+        if($last){
+            return $last->status;
+        }else{
+            return 'out';
+        }
+    }
+
+    /*
     public function boxList($field,$val){
 
         $boxes = \Box::where($field,'=',$val)->get();
@@ -263,5 +364,5 @@ class DeliveryapiController extends \BaseController {
         }
 
     }
-
+    */
 }
