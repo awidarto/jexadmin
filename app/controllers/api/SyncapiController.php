@@ -565,7 +565,7 @@ class SyncapiController extends \Controller {
                         $box->courierStatus = $blog->courierStatus;
                     }
 
-                    $box->save():
+                    $box->save();
                 }
 
 
