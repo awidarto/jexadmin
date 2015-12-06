@@ -220,7 +220,7 @@ class PickupapiController extends \BaseController {
             $bc = \Box::where('delivery_id','=',$or->deliveryId)->count();
 
             if($bc == 0){
-                $this->createBox($or->deliveryId,$or->merchantTransId, $or->fulfillmentCode, $or->boxCount );
+                //$this->createBox($or->deliveryId,$or->merchantTransId, $or->fulfillmentCode, $or->boxCount );
             }
 
             $or->boxList = $this->boxList('delivery_id',$or->deliveryId,$key,$or->merchantId);
@@ -363,14 +363,16 @@ class PickupapiController extends \BaseController {
         }
     }
 
-    public function createBox($delivery_id,$order_id, fulfillment_code, $boxcount )
+    public function createBox($delivery_id, $order_id, $fulfillment_code, $boxcount )
     {
-        for($n = 0; $n < intval($boxcount); $n++){
+        $boxcount = intval($boxcount);
+
+        for ($i=0; $i < $boxcount ; $i++) {
             $box = new \Box();
             $box->delivery_id = $delivery_id;
             $box->merchant_trans_id = $order_id;
             $box->fulfillment_code = $fulfillment_code;
-            $box->box_id = $n + 1;
+            $box->box_id = strval($i + 1);
             $box->save();
         }
     }
