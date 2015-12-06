@@ -565,7 +565,7 @@ class SyncapiController extends \Controller {
                     }elseif($appname == \Config::get('jex.hub_app')){
                         $box->warehouseStatus = $blog->warehouseStatus;
                     }else{
-                        $box->status = $blog->status;
+                        $box->deliveryStatus = $blog->deliveryStatus;
                         $box->courierStatus = $blog->courierStatus;
                     }
 
