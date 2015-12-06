@@ -220,7 +220,7 @@ class PickupapiController extends \BaseController {
             $bc = \Box::where('delivery_id','=',$or->deliveryId)->count();
 
             if($bc == 0){
-                //$this->createBox($or->deliveryId,$or->merchantTransId, $or->fulfillmentCode, $or->boxCount );
+                $this->createBox($or->deliveryId,$or->merchantTransId, $or->fulfillmentCode, $or->boxCount );
             }
 
             $or->boxList = $this->boxList('delivery_id',$or->deliveryId,$key,$or->merchantId);
