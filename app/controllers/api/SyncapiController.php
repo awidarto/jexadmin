@@ -434,14 +434,23 @@ class SyncapiController extends \Controller {
                     $ts = new \MongoDate();
                     $pre = clone $shipment;
 
-                    $shipment->status = $olog->status;
-                    $shipment->courier_status = $olog->courierStatus;
 
-                    if($olog->status == 'pending'){
-                        $shipment->pending_count = $shipment->pending_count + 1;
-                    }elseif($olog->status == 'delivered'){
-                        $shipment->deliverytime = date('Y-m-d H:i:s',time());
+                    if($appname == Config::get('jex.pickup_app')){
+                        $shipment->status = $olog->pickup_status;
+                    }elseif($appname == Config::get('jex.hub_app')){
+                        $shipment->status = $olog->warehouse_status;
+                    }else{
+                        $shipment->status = $olog->status;
+                        $shipment->courier_status = $olog->courierStatus;
+
+                        if($olog->status == 'pending'){
+                            $shipment->pending_count = $shipment->pending_count + 1;
+                        }elseif($olog->status == 'delivered'){
+                            $shipment->deliverytime = date('Y-m-d H:i:s',time());
+                        }
+
                     }
+
 
                     $shipment->save();
 

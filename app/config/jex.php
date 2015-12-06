@@ -1,7 +1,7 @@
 <?php
 
 return array(
-        'tracker_app'=>'com.kickstartlab.android.jextracker',
+        'tracker_app'=>'com.kickstartlab.android.jexdelivery',
         'hub_app'=>'com.kickstartlab.android.jexwarehouse',
         'pickup_app'=>'com.kickstartlab.android.jexpickup',
         'buckets'=>array(
