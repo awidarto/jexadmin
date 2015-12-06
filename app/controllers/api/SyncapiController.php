@@ -551,7 +551,11 @@ class SyncapiController extends \Controller {
                 //$blog->mtimestamp = new \MongoDate(time());
                 $blog->mtimestamp = date('Y-m-d H:i:s',time());
 
-                $box = \Box::where('delivery_id','=',$blog->deliveryId)->first();
+                $box = \Box::where('delivery_id','=',$blog->deliveryId)
+                        ->where('merchant_trans_id','=',$blog->merchantTransId)
+                        ->where('fulfillment_code','=',$blog->fulfillmentCode)
+                        ->where('box_id','=',$blog->boxId)
+                        ->first();
 
 
                 if($box){
