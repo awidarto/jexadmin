@@ -719,7 +719,7 @@ class SyncapiController extends \Controller {
 
                 if($shipment){
                     //$shipment->status = $olog->status;
-                    $shipment->warehouse_status = $olog->pickupStatus;
+                    $shipment->pickup_status = $olog->pickupStatus;
 
                     if($olog->disposition == $key && isset($user->node_id)){
 
