@@ -553,7 +553,9 @@ class SyncapiController extends \Controller {
 
                 $box = \Box::where('delivery_id','=',$blog->deliveryId)->first();
 
+                /*
                 if($box){
+
                     if($appname == \Config::get('jex.pickup_app')){
                         $box->pickupStatus = $blog->pickup_status;
                     }elseif($appname == \Config::get('jex.hub_app')){
@@ -565,6 +567,7 @@ class SyncapiController extends \Controller {
 
                     $box->save():
                 }
+                */
 
 
                 $r = $blog->save();
