@@ -100,8 +100,14 @@ class ZoningController extends AdminController {
 
 
         //$this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','gl')->render();
+        $this->additional_filter = View::make('incoming.addfilter')
+                        ->with('submit_url','gl')
+                        ->with('ajaxawbdlxl','incoming/awbdlxl')
+                        ->with('importawburl','incoming/importawb')
+                        ->render();
 
-        $this->additional_filter = View::make('shared.cancelaction')->render();
+        $this->additional_filter .= '<br />';
+        $this->additional_filter .= View::make('shared.cancelaction')->render();
 
         //$this->additional_filter .= View::make('shared.confirmaction')->render();
 
