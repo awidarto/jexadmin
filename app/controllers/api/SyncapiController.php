@@ -672,6 +672,98 @@ class SyncapiController extends \Controller {
      *
      * @return Response
      */
+    public function postPickuporder()
+    {
+
+        $key = \Input::get('key');
+
+        $appname = (\Input::has('app'))?\Input::get('app'):'app.name';
+        //$user = \Apiauth::user($key);
+
+        $user = \Device::where('key','=',$key)->first();
+
+        if(!$user){
+            $actor = 'no id : no name';
+            \Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found, upload image failed'));
+
+            return \Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Device Unregistered' ));
+        }
+
+        $json = \Input::all();
+
+        $batch = \Input::get('batch');
+
+        $result = array();
+
+        foreach( $json as $j){
+
+            //$j['mtimestamp'] = new \MongoDate(time());
+
+            if(is_array($j)){
+                $olog = new \Orderlog();
+
+                foreach ($j as $k=>$v) {
+                    $olog->{$k} = $v;
+                }
+
+                $olog->mtimestamp = new \MongoDate(time());
+
+                if($olog->disposition == $key && isset($user->node_id)){
+
+                    $olog->position = $user->node_id;
+                }
+
+                $r = $olog->save();
+
+                $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)->first();
+
+                if($shipment){
+                    //$shipment->status = $olog->status;
+                    $shipment->warehouse_status = $olog->pickupStatus;
+
+                    if($olog->disposition == $key && isset($user->node_id)){
+
+                        $shipment->position = $user->node_id;
+                    }
+
+                    /*
+                    $shipment->pending_count = new \MongoInt32($olog->pendingCount) ;
+
+                    if($olog->courierStatus == \Config::get('jayon.trans_cr_oncr') || $olog->courierStatus == \Config::get('jayon.trans_cr_oncr_partial'))
+                    {
+                        $shipment->pickup_status = \Config::get('jayon.trans_status_pickup');
+                    }
+                    */
+                    $shipment->save();
+                }
+
+
+                if( $r ){
+                    $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>'log inserted' );
+                }else{
+                    $result[] = array('status'=>'NOK', 'timestamp'=>time(), 'message'=>'insertion failed' );
+                }
+
+            }
+
+
+        }
+
+        //print_r($result);
+
+        //die();
+        $actor = $user->identifier.' : '.$user->devname;
+
+        \Event::fire('log.api',array($this->controller_name, 'get' ,$actor,'sync scan log'));
+
+        return Response::json($result);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @return Response
+     */
     public function postOrder()
     {
 

@@ -120,7 +120,7 @@ $config['trans_wh_return2merchant'] = 'return_to_node';
 $config['trans_wh_canceled'] = 'canceled';
 
 
-$config['trans_cr_atmerchant'] = 'belum di kurir';
+$config['trans_cr_atmerchant'] = 'belum di gudang';
 $config['trans_cr_inwh'] = 'di gudang';
 $config['trans_cr_offcr'] = 'belum di kurir';
 $config['trans_cr_oncr'] = 'sudah di kurir';
