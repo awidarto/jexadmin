@@ -125,6 +125,7 @@ Route::group(array('prefix' => 'api/v1/mobile'), function (){
     Route::resource('asset', 'Api\AssetapiController');
     Route::resource('delivery', 'Api\DeliveryapiController');
     Route::resource('pickup', 'Api\PickupapiController');
+    Route::resource('warehouse', 'Api\HubapiController');
     Route::resource('merchant', 'Api\MerchantapiController');
 });
 
