@@ -900,6 +900,9 @@ class SyncapiController extends \Controller {
         foreach( $json as $j){
 
             if(isset( $j['logId'] )){
+
+                $j['appname'] = $appname;
+
                 if(isset($j['datetimestamp'])){
                     $j['mtimestamp'] = new \MongoDate(strtotime($j['datetimestamp']));
                 }
