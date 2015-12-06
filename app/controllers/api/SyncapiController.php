@@ -825,6 +825,29 @@ class SyncapiController extends \Controller {
 
                 $r = $olog->save();
 
+                $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)->first();
+
+                if($shipment){
+                    //$shipment->status = $olog->status;
+                    $shipment->courier_status = $olog->courierStatus;
+
+                    if($olog->disposition == $key && isset($user->node_id)){
+
+                        $shipment->position = $user->node_id;
+                    }
+
+                    /*
+                    $shipment->pending_count = new \MongoInt32($olog->pendingCount) ;
+
+                    if($olog->courierStatus == \Config::get('jayon.trans_cr_oncr') || $olog->courierStatus == \Config::get('jayon.trans_cr_oncr_partial'))
+                    {
+                        $shipment->pickup_status = \Config::get('jayon.trans_status_pickup');
+                    }
+                    */
+                    $shipment->save();
+                }
+
+
                 if( $r ){
                     $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>'log inserted' );
                 }else{

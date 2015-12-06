@@ -106,7 +106,6 @@ class ZoningController extends AdminController {
                         ->with('importawburl','incoming/importawb')
                         ->render();
 
-        $this->additional_filter .= '<br />';
         $this->additional_filter .= View::make('shared.cancelaction')->render();
 
         //$this->additional_filter .= View::make('shared.confirmaction')->render();
