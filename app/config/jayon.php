@@ -120,13 +120,13 @@ $config['trans_wh_return2merchant'] = 'return_to_node';
 $config['trans_wh_canceled'] = 'canceled';
 
 
-$config['trans_cr_atmerchant'] = 'at_initial_node';
-$config['trans_cr_inwh'] = 'in_warehouse';
-$config['trans_cr_offcr'] = 'off_courier';
-$config['trans_cr_oncr'] = 'on_courier';
-$config['trans_cr_oncr_partial'] = 'on_courier_partial';
-$config['trans_cr_return2wh'] = 'return_to_warehouse';
-$config['trans_cr_return2merchant'] = 'return_to_node';
+$config['trans_cr_atmerchant'] = 'belum di kurir';
+$config['trans_cr_inwh'] = 'di gudang';
+$config['trans_cr_offcr'] = 'belum di kurir';
+$config['trans_cr_oncr'] = 'sudah di kurir';
+$config['trans_cr_oncr_partial'] = 'di kurir sebagian';
+$config['trans_cr_return2wh'] = 'kembali ke gudang';
+$config['trans_cr_return2merchant'] = 'kembali ke pengirim';
 $config['trans_cr_canceled'] = 'canceled';
 
 
