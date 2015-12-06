@@ -365,7 +365,7 @@ class PickupapiController extends \BaseController {
 
     public function createBox($delivery_id,$order_id, fulfillment_code, $boxcount )
     {
-        for($n = 0; $n < $boxcount; $n++){
+        for($n = 0; $n < intval($boxcount); $n++){
             $box = new \Box();
             $box->delivery_id = $delivery_id;
             $box->merchant_trans_id = $order_id;
