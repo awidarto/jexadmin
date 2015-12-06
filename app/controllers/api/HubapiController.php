@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Response;
 
-class PickupapiController extends \BaseController {
+class HubapiController extends \BaseController {
 
     public $controller_name = '';
 
@@ -185,7 +185,7 @@ class PickupapiController extends \BaseController {
             })
             */
             ->where(function($query) use($deliverydate){
-                $query->where('pickup_status','=', \Config::get('jayon.trans_status_tobepickup') )
+                $query->where('warehouse_status','=', \Config::get('jayon.trans_status_tobepickup') )
                     ->where('status','!=', \Config::get('jayon.trans_status_canceled') )
                     ->where('ordertime','>=',$deliverydate);
                     /*
