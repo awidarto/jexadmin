@@ -284,7 +284,11 @@ class DeliverybydateController extends AdminController {
             $dtotal[] = $dv;
         }
 
-        $dmax = max($dtotal);
+        if(count($dtotal) > 0){
+            $dmax = max($dtotal);
+        }else{
+            $dmax = 1;
+        }
 
         $headvar1 = array(
             array('value'=>'No.','attr'=>''),
