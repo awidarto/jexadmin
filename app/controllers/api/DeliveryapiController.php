@@ -209,6 +209,12 @@ class DeliveryapiController extends \BaseController {
             $or->extId = $or->id;
             unset($or->id);
 
+            $bc = \Box::where('delivery_id','=',$or->deliveryId)->count();
+
+            if($bc == 0){
+                $this->createBox($or->deliveryId,$or->merchantTransId, $or->fulfillmentCode, $or->boxCount );
+            }
+
             $or->boxList = $this->boxList('delivery_id',$or->deliveryId,$key,$or->merchantId);
             //$or->boxList = $this->boxList('delivery_id',$or->deliveryId);
             $or->boxObjects = $this->boxList('delivery_id',$or->deliveryId, $key, $or->merchantId , true);
@@ -349,6 +355,21 @@ class DeliveryapiController extends \BaseController {
             return array();
         }
     }
+
+    public function createBox($delivery_id, $order_id, $fulfillment_code, $boxcount )
+    {
+        $boxcount = intval($boxcount);
+
+        for ($i=0; $i < $boxcount ; $i++) {
+            $box = new \Box();
+            $box->delivery_id = $delivery_id;
+            $box->merchant_trans_id = $order_id;
+            $box->fulfillment_code = $fulfillment_code;
+            $box->box_id = strval($i + 1);
+            $box->save();
+        }
+    }
+
 
     public function boxList($field,$val, $device_key , $merchant_id ,$obj = false){
 
