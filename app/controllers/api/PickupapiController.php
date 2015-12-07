@@ -43,8 +43,6 @@ class PickupapiController extends \BaseController {
             'isPickup',
             'isImport',
             'isApi',
-            'courier',
-            'device',
             'merchantName',
             'appName',
             'volume',

@@ -43,8 +43,6 @@ class HubapiController extends \BaseController {
             'isPickup',
             'isImport',
             'isApi',
-            'courier',
-            'device',
             'merchantName',
             'appName',
             'volume',
