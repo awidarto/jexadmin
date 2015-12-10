@@ -163,9 +163,9 @@ class ConfirmController extends \BaseController {
 
                         $m = $model->where('delivery_id','=',trim($awb))
                                 ->where(function($q){
-                                        $q->where('status','=', Config::get('jayon.trans_status_tobeconfirmed') )
+                                        $q->where('status','=', \Config::get('jayon.trans_status_tobeconfirmed') )
                                         ->orWhere(function($qp){
-                                            $qp->where('status','=',Config::get('jayon.trans_status_new'))
+                                            $qp->where('status','=',\Config::get('jayon.trans_status_new'))
                                                 ->where('pending_count','=',0);
                                         });
 
@@ -173,9 +173,9 @@ class ConfirmController extends \BaseController {
 
                         if($m){
 
-                            if($m->status == Config::get('jayon.trans_status_tobeconfirmed') || ( $m->status == Config::get('jayon.trans_status_new') && $m->pending_count == 0 ) ){
+                            if($m->status == \Config::get('jayon.trans_status_tobeconfirmed') || ( $m->status == \Config::get('jayon.trans_status_new') && $m->pending_count == 0 ) ){
 
-                                $m->status = Config::get('jayon.trans_status_confirmed');
+                                $m->status = \Config::get('jayon.trans_status_confirmed');
                                 $m->save();
 
                             }
