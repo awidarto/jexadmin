@@ -56,6 +56,9 @@ class FillDistrict extends Command {
             $district_list = array();
             foreach ($districts as $d) {
                 $district_list[$d->city][] = $d->district;
+                if(strpos($d->city, 'Jakarta')){
+                    $district['Jakarta'][] = $d->district;
+                }
             }
 
             //print_r($district_list);
