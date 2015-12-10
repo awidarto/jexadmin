@@ -37,36 +37,61 @@ class FillDistrict extends Command {
 	 */
 	public function fire()
 	{
-		$orders = Shipment::where('buyerdeliveryzone','=','')->get();
+		$orders = Shipment::where('buyerdeliveryzone','=','')
+                    ->orderBy('created','desc')
+                    ->get();
 
-        $cities = array();
-        foreach($orders as $order){
-            $cities[] = $order->buyerdeliverycity;
-        }
+        if($orders){
 
-        $cities = array_unique($cities);
+            $cities = array();
+            foreach($orders as $order){
+                $cities[] = $order->buyerdeliverycity;
+            }
 
-        $districts = Coverage::whereIn('city', $cities)->get();
+            $cities = array_unique($cities);
 
-        $district_list = array();
-        foreach ($districts as $d) {
-            $district_list[$d->city][] = $d->district;
-        }
+            $districts = Coverage::whereIn('city', $cities)->get();
 
-        $matches = 0;
-        foreach($orders as $order){
-            foreach ($district_list[$order->buyerdeliverycity] as $dist){
-                foreach ($dist as $d){
-                    if(preg_match('/'.$d.'/i', $order->shipping_address)){
-                        print 'match '.$d.' for '.$order->delivery_id;
-                        $matches++;
+
+            $district_list = array();
+            foreach ($districts as $d) {
+                $district_list[$d->city][] = $d->district;
+            }
+
+            //print_r($district_list);
+
+            $matches = 0;
+            foreach($orders as $order){
+
+                print $order->delivery_id.' '.$order->buyerdeliverycity.' '.$order->buyerdeliveryzone."\r\n";
+
+                if(isset($district_list[$order->buyerdeliverycity])){
+                    $cd = $district_list[$order->buyerdeliverycity];
+
+                    print_r($cd);
+
+                    foreach ($cd as $d){
+                        if(preg_match('/'.$d.'/i', $order->shipping_address)){
+                            print $d.' ================'."\r\n";
+                            print 'match '.$d.' for '.$order->delivery_id.' '.$order->shipping_address;
+                            print "\r\n";
+
+                            $order->buyerdeliveryzone = $d;
+                            $order->save();
+
+                            $matches++;
+                        }
+                        # code...
                     }
-                    # code...
                 }
             }
+
+            print 'found '.$matches.' matches';
+
+        }else{
+            print 'nothing to fill in';
         }
 
-        print 'found '.$matches.' matches';
 
 	}
 
