@@ -161,7 +161,8 @@ class ConfirmController extends \BaseController {
                     if(isset($j['awb'])){
                         $awb = $j['awb'];
 
-                        $m = $model->where('delivery_id','=',trim($awb))
+                        $m = $model->where('delivery_id','=',trim($awb))->first();
+                                /*
                                 ->where(function($q){
                                         $q->where('status','=', \Config::get('jayon.trans_status_tobeconfirmed') )
                                         ->orWhere(function($qp){
@@ -169,7 +170,8 @@ class ConfirmController extends \BaseController {
                                                 ->where('pending_count','=',0);
                                         });
 
-                                });
+                                })->first();
+                                */
 
                         if($m){
 
