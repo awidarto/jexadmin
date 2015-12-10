@@ -182,7 +182,7 @@ class ConfirmController extends \BaseController {
 
             }
 
-            if(count($result) < 0){
+            if(empty($result)){
                 $result = array('result'=>'NOK','message'=>'No Match Found');
             }
             //print_r($result);
