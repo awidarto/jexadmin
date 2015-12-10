@@ -160,13 +160,17 @@ class ConfirmController extends \BaseController {
 
                     if(isset($j['awb'])){
                         $awb = $j['awb'];
+
                         $m = $model->where('delivery_id','=',trim($awb))
                                 ->where(function($q){
-                                    $q->where(function($qp){
-                                        $qp->where('status','=',Config::get('jayon.trans_status_new'))
-                                            ->where('pending_count','=',0);
-                                    })->orWhere('status','=', Config::get('jayon.trans_status_tobeconfirmed') )
+                                        $q->where('status','=', Config::get('jayon.trans_status_tobeconfirmed') )
+                                        ->orWhere(function($qp){
+                                            $qp->where('status','=',Config::get('jayon.trans_status_new'))
+                                                ->where('pending_count','=',0);
+                                        });
+
                                 });
+
                         if($m){
                             $m->status = Config::get('jayon.trans_status_confirmed');
                             $m->save();
