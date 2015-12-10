@@ -144,6 +144,8 @@ class ConfirmController extends \BaseController {
 
         $app = \Application::where('key','=',$key)->first();
 
+
+
         if($app){
 
             $model = new \Shipment();
@@ -162,7 +164,7 @@ class ConfirmController extends \BaseController {
                                 ->where(function($q){
                                     $q->where(function($qp){
                                         $qp->where('status','=',Config::get('jayon.trans_status_new'))
-                                            ->where('pending_count','=',0)
+                                            ->where('pending_count','=',0);
                                     })->orWhere('status','=', Config::get('jayon.trans_status_tobeconfirmed') )
                                 });
                         if($m){
@@ -176,7 +178,7 @@ class ConfirmController extends \BaseController {
 
             }
 
-            if(empty($result)){
+            if(count($result) < 0){
                 $result = array('result'=>'NOK','message'=>'No Match Found');
             }
             //print_r($result);
