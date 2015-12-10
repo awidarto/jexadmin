@@ -190,6 +190,8 @@ class ConfirmController extends \BaseController {
 
             if(empty($result)){
                 $result = array('status'=>'ERR:NOMATCH','message'=>'No Match Found');
+            }else{
+                $result = array('status'=>'OK','message'=>'Confirmation Success','data'=>$result );
             }
             //print_r($result);
 
