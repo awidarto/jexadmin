@@ -173,9 +173,8 @@ class ConfirmController extends \BaseController {
 
                         if($m){
 
-                            if($m->status == Config::get('jayon.trans_status_tobeconfirmed' ||
-                                ( $m->status == Config::get('jayon.trans_status_new') &&
-                                    $m->pending_count == 0 ) ){
+                            if($m->status == Config::get('jayon.trans_status_tobeconfirmed' || ( $m->status == Config::get('jayon.trans_status_new') && $m->pending_count == 0 ) ){
+
                                 $m->status = Config::get('jayon.trans_status_confirmed');
                                 $m->save();
 
