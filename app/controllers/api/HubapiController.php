@@ -187,6 +187,7 @@ class HubapiController extends \BaseController {
                     ->where('warehouse_status','=', \Config::get('jayon.trans_status_atmerchant') )
                     */
                     $query->where('status','!=', \Config::get('jayon.trans_status_canceled') )
+                        ->where('status','!=', \Config::get('jayon.trans_status_mobile_delivered') )
                         ->where('ordertime','>=',$deliverydate);
                     /*
                     ->orWhere('status','=', \Config::get('jayon.trans_status_mobile_pickedup') )
