@@ -183,9 +183,11 @@ class HubapiController extends \BaseController {
             })
             */
             ->where(function($query) use($deliverydate){
-                $query->where('warehouse_status','=', \Config::get('jayon.trans_status_tobepickup') )
-                    ->where('status','!=', \Config::get('jayon.trans_status_canceled') )
-                    ->where('ordertime','>=',$deliverydate);
+                    /*
+                    ->where('warehouse_status','=', \Config::get('jayon.trans_status_atmerchant') )
+                    */
+                    $query->where('status','!=', \Config::get('jayon.trans_status_canceled') )
+                        ->where('ordertime','>=',$deliverydate);
                     /*
                     ->orWhere('status','=', \Config::get('jayon.trans_status_mobile_pickedup') )
                     ->orWhere('status','=', \Config::get('jayon.trans_status_mobile_enroute') )
