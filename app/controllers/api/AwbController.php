@@ -367,7 +367,7 @@ class AwbController extends \BaseController {
                     $pick_up_date = date('Y-m-d H:i:s',time());
                 }
 
-                $order['buyerdeliveryzone'] = $json['district'];
+                $order['buyerdeliveryzone'] = (isset($json['district']))?$json['district']:'';
                 $order['merchant_trans_id'] = $json['no_sales_order'];
                 $order['buyerdeliverytime'] = $pick_up_date;
                 $order['fulfillment_code'] = $json['consignee_olshop_orderid'];
