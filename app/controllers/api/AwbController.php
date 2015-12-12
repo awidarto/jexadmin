@@ -357,10 +357,14 @@ class AwbController extends \BaseController {
 
                 $order = $this->ordermap;
 
-                if(is_array($json['pick_up_date']) && isset($json['pick_up_date']['sec']) ){
-                    $pick_up_date = date('Y-m-d H:i:s', $json['pick_up_date']['sec']);
+                if(isset($json['pick_up_date'])){
+                    if(is_array($json['pick_up_date']) && isset($json['pick_up_date']['sec']) ){
+                        $pick_up_date = date('Y-m-d H:i:s', $json['pick_up_date']['sec']);
+                    }else{
+                        $pick_up_date = $json['pick_up_date'];
+                    }
                 }else{
-                    $pick_up_date = $json['pick_up_date'];
+                    $pick_up_date = date('Y-m-d H:i:s',time());
                 }
 
                 $order['buyerdeliveryzone'] = $json['district'];
