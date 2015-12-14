@@ -1,7 +1,7 @@
 <?php
     $dperiod = date('Y-m-d', time());
 ?>
-{{Former::open_for_files_vertical(URL::to($submit_url),'GET',array('class'=>''))}}
+{{Former::open_for_files_vertical(URL::to($submit_url),'GET',array('class'=>'filter-form'))->id('filter-form')}}
     <div class="row">
         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
             {{ Former::select('device','Device')

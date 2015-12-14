@@ -434,23 +434,35 @@ a.btn, input.btn {
         });
 
         $('#download-xls').on('click',function(){
-            var flt = $('thead td input, thead td select');
-            var dlfilter = [];
+
+            console.log('DOWNLOAD XLS');
+
+            var flt = $('#filter-form input, #filter-form select');
+
+            //console.log(flt);
+
+            var dlfilter = {};
 
             flt.each(function(){
+                dlfilter[this.name] = this.value;
+                /*
                 if($(this).hasClass('datetimeinput') || $(this).hasClass('dateinput')){
                     console.log(this.parentNode);
                     dlfilter[parseInt(this.parentNode.id)] = this.value ;
                 }else{
                     dlfilter[parseInt(this.id)] = this.value ;
                 }
+                */
             });
             console.log(dlfilter);
 
             //var sort = oTable.fnSettings().aaSorting;
-            var sort = oTable.order();
-            console.log(sort);
-            $.post('{{ URL::to($ajaxdlxl) }}',{'filter' : dlfilter, 'sort':sort[0], 'sortdir' : sort[1] }, function(data) {
+            //var sort = oTable.order();
+            //console.log(sort);
+            $.post('{{ URL::to($ajaxdlxl) }}',
+                dlfilter
+            ,
+            function(data) {
                 if(data.status == 'OK'){
 
                     window.location.href = data.urlxls;

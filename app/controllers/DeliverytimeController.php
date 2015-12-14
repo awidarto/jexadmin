@@ -102,21 +102,30 @@ class DeliverytimeController extends AdminController {
 
         $db = Config::get('lundin.main_db');
 
-        $company = Input::get('acc-company');
+
+        if( is_null($this->report_filter_input)){
+            $in = Input::all();
+        }else{
+            $in = $this->report_filter_input;
+        }
+
+        //$company = $in['acc-company'];
 
 //device=&courier=&logistic=&date-from=2015-10-24
 
-        $period_from = Input::get('date-from');
-        $period_to = Input::get('date-to');
+        //print_r($in);
 
-        $device = Input::get('device');
-        $courier = Input::get('courier');
+        $period_from = $in['date-from'];
+        $period_to = $in['date-to'];
 
-        $merchant = Input::get('merchant');
-        $logistic = Input::get('logistic');
+        $device = $in['device'];
+        $courier = $in['courier'];
 
-        $status = Input::get('status');
-        $courierstatus = Input::get('courier-status');
+        $merchant = $in['merchant'];
+        $logistic = $in['logistic'];
+
+        $status = $in['status'];
+        $courierstatus = $in['courier-status'];
 
         if($period_to == '' || is_null($period_to) ){
             $period_to = date('Y-m-d',time());
@@ -549,7 +558,7 @@ class DeliverytimeController extends AdminController {
         );
 
         /*
-        $categoryFilter = Input::get('categoryFilter');
+        $categoryFilter = $in['categoryFilter');
         if($categoryFilter != ''){
             $this->additional_query = array('shopcategoryLink'=>$categoryFilter, 'group_id'=>4);
         }
@@ -996,26 +1005,26 @@ class DeliverytimeController extends AdminController {
 
     public function postDlxl()
     {
+        set_time_limit(0);
 
-        $this->heads = null;
+        $this->report_filter_input = Input::all();
 
-        $this->fields = array(
-            array('PERIOD',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('TRANS_DATETIME',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('TREFERENCE',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('ACCNT_CODE',array('kind'=>'text', 'callback'=>'accDesc' ,'query'=>'like','pos'=>'both','show'=>true)),
-            array('DESCRIPTN',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('TREFERENCE',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('CONV_CODE',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('AMOUNT',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('AMOUNT',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('DESCRIPTN',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
-        );
+        //print_r($this->report_filter_input);
 
-        $this->def_order_dir = 'DESC';
-        $this->def_order_by = 'TRANS_DATETIME';
+        $this->print = true;
 
-        return parent::postDlxl();
+        $table = $this->getIndex();
+
+        //print_r($table);
+
+        //$view = View::make('print.xls')->with('tables',$table['tables'])->render();
+
+        //print $view;
+
+        $this->export_output_fields = $table;
+
+        return parent::postTabletoxls();
+
     }
 
     public function getImport(){

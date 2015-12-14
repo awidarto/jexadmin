@@ -157,6 +157,8 @@ class AdminController extends Controller {
 
     public $export_output_fields = null;
 
+    public $report_filter_input = null;
+
 	public function __construct(){
 
 		date_default_timezone_set('Asia/Jakarta');
@@ -2555,6 +2557,49 @@ class AdminController extends Controller {
             'urlxls'=>URL::to(strtolower($this->controller_name).'/dl/'.$path['file']),
             'urlcsv'=>URL::to(strtolower($this->controller_name).'/csv/'.$fname.'.csv'),
             'q'=>$lastQuery
+        );
+
+        print json_encode($result);
+
+    }
+
+    public function postTabletoxls()
+    {
+
+        $fname =  $this->controller_name.'_'.date('d-m-Y-H-m-s',time());
+
+        $sdata = $this->export_output_fields;
+
+        $path = Excel::create( $fname, function($excel) use ($sdata){
+                $excel->sheet('sheet1', function($sheet) use ($sdata){
+                    //$sheet->fromArray($sdata);
+
+                    //print_r($sdata);
+                    $sheet->loadView('print.xls')->with('tables',$sdata['tables']);
+                });
+                    //->with($sdata);
+            })->store('xls',public_path().'/storage/dled',true);
+
+        $view = View::make('print.xls')->with('tables',$sdata['tables'])->render();
+
+        file_put_contents(public_path().'/storage/dled/'.$fname.'.html', $view);
+        //print_r($path);
+
+        $fp = fopen(public_path().'/storage/dled/'.$fname.'.csv', 'w');
+
+        foreach ($sdata as $fields) {
+            fputcsv($fp, $fields, ',' , '"');
+        }
+
+        fclose($fp);
+
+
+        $result = array(
+            'status'=>'OK',
+            'filename'=>$fname,
+            'urlxls'=>URL::to(strtolower($this->controller_name).'/dl/'.$path['file']),
+            'urlcsv'=>URL::to(strtolower($this->controller_name).'/csv/'.$fname.'.csv'),
+            'q'=>''
         );
 
         print json_encode($result);
