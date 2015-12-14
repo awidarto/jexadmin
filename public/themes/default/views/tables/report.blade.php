@@ -163,6 +163,8 @@ a.btn, input.btn {
 
                 <a target="_blank" href="{{ URL::to($pdf_url) }}" class="btn btn-sm btn-transparent btn-primary"><i class="fa fa-print"></i> PDF</a>
 
+                <span id="loadingindicator" style="display:none;">Generating report, please wait, this may take several minutes...</span>
+
             @endif
             @if(isset($is_additional_action) && $is_additional_action == true)
                 {{ $additional_action }}
@@ -459,6 +461,7 @@ a.btn, input.btn {
             //var sort = oTable.fnSettings().aaSorting;
             //var sort = oTable.order();
             //console.log(sort);
+            showLoading(true);
             $.post('{{ URL::to($ajaxdlxl) }}',
                 dlfilter
             ,
@@ -466,6 +469,7 @@ a.btn, input.btn {
                 if(data.status == 'OK'){
 
                     window.location.href = data.urlxls;
+                    showLoading(false);
 
                 }
             },'json');
@@ -491,10 +495,14 @@ a.btn, input.btn {
             var sort = oTable.order();
 
             console.log(sort);
+
+            showLoading(true);
+
             $.post('{{ URL::to($ajaxdlxl) }}',{'filter' : dlfilter, 'sort':sort[0], 'sortdir' : sort[1] }, function(data) {
                 if(data.status == 'OK'){
 
                     window.location.href = data.urlcsv;
+                    showLoading(false);
 
                 }
             },'json');
@@ -921,6 +929,13 @@ a.btn, input.btn {
             return (dd[1]?dd:"0"+dd[0]) + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + yyyy;
         }
 
+        function showLoading(show){
+            if(show){
+                $('#loadingindicator').show();
+            }else{
+                $('#loadingindicator').hide();
+            }
+        }
 
     });
   </script>
