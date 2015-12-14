@@ -115,17 +115,17 @@ class DeliverytimeController extends AdminController {
 
         //print_r($in);
 
-        $period_from = $in['date-from'];
-        $period_to = $in['date-to'];
+        $period_from = isset($in['date-from'])?$in['date-from']:'';
+        $period_to = isset($in['date-to'])?$in['date-to']:'';
 
-        $device = $in['device'];
-        $courier = $in['courier'];
+        $device = isset($in['device'])?$in['device']:'';
+        $courier = isset($in['courier'])?$in['courier']:'';
 
-        $merchant = $in['merchant'];
-        $logistic = $in['logistic'];
+        $merchant = isset($in['merchant'])?$in['merchant']:'';
+        $logistic = isset($in['logistic'])?$in['logistic']:'';
 
-        $status = $in['status'];
-        $courierstatus = $in['courier-status'];
+        $status = isset($in['status'])?$in['status']:'';
+        $courierstatus = isset($in['courier-status'])?$in['courier-status']:'';
 
         if($period_to == '' || is_null($period_to) ){
             $period_to = date('Y-m-d',time());
