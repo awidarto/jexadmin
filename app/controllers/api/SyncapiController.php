@@ -636,12 +636,15 @@ class SyncapiController extends \Controller {
                     $olog->{$k} = $v;
                 }
 
+                $olog->appname = $appname;
+
                 $olog->mtimestamp = new \MongoDate(time());
 
                 if($olog->disposition == $key && isset($user->node_id)){
 
                     $olog->position = $user->node_id;
                 }
+
 
                 $r = $olog->save();
 
@@ -651,10 +654,11 @@ class SyncapiController extends \Controller {
                     //$shipment->status = $olog->status;
                     $shipment->warehouse_status = $olog->warehouseStatus;
 
+                    /*
                     if($olog->disposition == $key && isset($user->node_id)){
 
                         $shipment->position = $user->node_id;
-                    }
+                    }*/
 
                     /*
                     $shipment->pending_count = new \MongoInt32($olog->pendingCount) ;
@@ -731,6 +735,8 @@ class SyncapiController extends \Controller {
 
                 $olog->mtimestamp = new \MongoDate(time());
 
+                $olog->appname = $appname;
+
                 if($olog->disposition == $key && isset($user->node_id)){
 
                     $olog->position = $user->node_id;
@@ -744,10 +750,12 @@ class SyncapiController extends \Controller {
                     //$shipment->status = $olog->status;
                     $shipment->pickup_status = $olog->pickupStatus;
 
+                    /*
                     if($olog->disposition == $key && isset($user->node_id)){
 
                         $shipment->position = $user->node_id;
                     }
+                    */
 
                     /*
                     $shipment->pending_count = new \MongoInt32($olog->pendingCount) ;
@@ -823,6 +831,8 @@ class SyncapiController extends \Controller {
 
                 $olog->mtimestamp = new \MongoDate(time());
 
+                $olog->appname = $appname;
+
                 $r = $olog->save();
 
                 $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)->first();
@@ -831,10 +841,11 @@ class SyncapiController extends \Controller {
                     //$shipment->status = $olog->status;
                     $shipment->courier_status = $olog->courierStatus;
 
+                    /*
                     if($olog->disposition == $key && isset($user->node_id)){
 
                         $shipment->position = $user->node_id;
-                    }
+                    }*/
 
                     /*
                     $shipment->pending_count = new \MongoInt32($olog->pendingCount) ;
