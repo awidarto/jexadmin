@@ -38,6 +38,7 @@ class Backtrack extends Command {
 	public function fire()
 	{
         $dbox = Orderlog::where('pickupStatus','=',Config::get('jayon.trans_status_pickup'))
+                            ->orderBy('created_at','desc')
                             ->get();
 
         if($dbox){
@@ -50,7 +51,7 @@ class Backtrack extends Command {
                     print 'before : '.$ship->pickup_status."\r\n";
                     print 'before : '.$ship->pickuptime."\r\n";
 
-                    $pickuptime = ($dbx->pickuptime == '000-00-00 00:00:00')? date('Y-m-d H:i:s', $dbx->mtimestamp->sec ) :$dbx->pickuptime;
+                    $pickuptime = ($dbx->pickuptime == '000-00-00 00:00:00')? date('Y-m-d H:i:s', $dbx->created_at->sec ) :$dbx->pickuptime;
 
                     $ship->pickup_status = $dbx->pickupStatus;
                     $ship->pickuptime = $pickuptime;
