@@ -39,7 +39,7 @@ class Backtrack extends Command {
 	{
         $dbox = Orderlog::where('pickupStatus','=',Config::get('jayon.trans_status_pickup'))
                             ->orderBy('created_at','desc')
-                            ->groupBy('created_at')
+                            //->groupBy('created_at')
                             ->get();
 
         if($dbox){
@@ -47,7 +47,9 @@ class Backtrack extends Command {
 
                 print_r(array($dbx->pickupStatus, $dbx->pickuptime) );
 
-                $ship = Shipment::where('delivery_id','=',$dbx->deliveryId)->first();
+                $ship = Shipment::where('delivery_id','=',$dbx->deliveryId)
+                            ->where('pickuptime','!=','000-00-00 00:00:00')
+                            ->first();
                 if($ship){
                     print 'before : '.$ship->pickup_status."\r\n";
                     print 'before : '.$ship->pickuptime."\r\n";
