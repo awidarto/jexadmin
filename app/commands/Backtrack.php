@@ -60,6 +60,7 @@ class Backtrack extends Command {
                     $ship->pickup_status = $dbx->pickupStatus;
                     $ship->pickuptime = $pickuptime;
 
+                    $ship->save();
                     //print_r( $ship->toArray());
 
                     print 'after : '.$ship->pickup_status."\r\n";
