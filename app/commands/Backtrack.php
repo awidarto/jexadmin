@@ -42,13 +42,16 @@ class Backtrack extends Command {
 
         if($dbox){
             foreach($dbox as $dbx){
+
+                print_r($dbx);
+
                 $ship = Shipment::where('delivery_id','=',$dbox->deliveryId)->first();
                 if($ship){
-                    $ship->pickup_status = $dbx->pickupStatus;
-                    $ship->pickuptime = $dbx->pickuptime;
+                    //$ship->pickup_status = $dbx->pickupStatus;
+                    //$ship->pickuptime = $dbx->pickuptime;
 
-                    print $ship->pickup_status."\r\n";
-                    print $ship->pickuptime."\r\n";
+                    //print $ship->pickup_status."\r\n";
+                    //print $ship->pickuptime."\r\n";
                 }
             }
         }
