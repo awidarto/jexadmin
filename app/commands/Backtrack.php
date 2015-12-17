@@ -43,7 +43,7 @@ class Backtrack extends Command {
         if($dbox){
             foreach($dbox as $dbx){
 
-                print_r(array($dbx->pickupStatus, $dbx->pickuptime );
+                print_r(array($dbx->pickupStatus, $dbx->pickuptime) );
 
                 $ship = Shipment::where('delivery_id','=',$dbx->deliveryId)->first();
                 if($ship){
