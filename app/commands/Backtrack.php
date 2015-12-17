@@ -44,6 +44,7 @@ class Backtrack extends Command {
                             ->get();
 
         if($dbox){
+            print count($dbox)."\r\n";
             foreach($dbox as $dbx){
 
                 print_r(array($dbx->pickupStatus, $dbx->pickuptime) );
