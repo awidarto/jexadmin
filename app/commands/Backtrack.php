@@ -39,6 +39,7 @@ class Backtrack extends Command {
 	{
         $dbox = Orderlog::where('pickupStatus','=',Config::get('jayon.trans_status_pickup'))
                             ->orderBy('created_at','desc')
+                            ->groupBy('created_at')
                             ->get();
 
         if($dbox){
