@@ -12,4 +12,4 @@
 */
 Artisan::add(new RegeneratePic);
 Artisan::add(new FillDistrict);
-Artisan::add(new BackTrack);
+Artisan::add(new Backtrack);
