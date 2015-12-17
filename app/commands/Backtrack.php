@@ -38,7 +38,7 @@ class Backtrack extends Command {
 	public function fire()
 	{
         $dbox = Orderlog::where('pickupStatus','=',Config::get('jayon.trans_status_pickup'))
-                            ->where('pickuptime','!=','000-00-00 00:00:00')
+                            ->where('pickuptime','!=','0000-00-00 00:00:00')
                             ->orderBy('created_at','desc')
                             //->groupBy('created_at')
                             ->get();
