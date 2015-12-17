@@ -53,7 +53,7 @@ class Backtrack extends Command {
                     $pickuptime = ($dbx->pickuptime == '000-00-00 00:00:00')? date('Y-m-d H:i:s', $dbx->mtimestamp->sec ) :$dbx->pickuptime;
 
                     $ship->pickup_status = $dbx->pickupStatus;
-                    $ship->pickuptime = $dbx->pickuptime;
+                    $ship->pickuptime = $pickuptime;
 
                     //print_r( $ship->toArray());
 
