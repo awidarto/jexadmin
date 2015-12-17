@@ -737,6 +737,8 @@ class SyncapiController extends \Controller {
 
                 $olog->appname = $appname;
 
+                $olog->pickupDevId = $user->identifier;
+
                 if($olog->disposition == $key && isset($user->node_id)){
 
                     $olog->position = $user->node_id;
