@@ -50,13 +50,13 @@ class Backtrack extends Command {
                 print_r(array($dbx->pickupStatus, $dbx->pickuptime) );
 
                 $ship = Shipment::where('delivery_id','=',$dbx->deliveryId)
-                            ->where('pickuptime','!=','000-00-00 00:00:00')
+                            ->where('pickuptime','!=','0000-00-00 00:00:00')
                             ->first();
                 if($ship){
                     print 'before : '.$ship->pickup_status."\r\n";
                     print 'before : '.$ship->pickuptime."\r\n";
 
-                    $pickuptime = ($dbx->pickuptime == '000-00-00 00:00:00')? date('Y-m-d H:i:s', $dbx->created_at->sec ) :$dbx->pickuptime;
+                    $pickuptime = ($dbx->pickuptime == '0000-00-00 00:00:00')? date('Y-m-d H:i:s', $dbx->created_at->sec ) :$dbx->pickuptime;
 
                     $ship->pickup_status = $dbx->pickupStatus;
                     $ship->pickuptime = $pickuptime;
