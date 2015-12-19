@@ -367,13 +367,18 @@ class AwbController extends \BaseController {
                     $pick_up_date = date('Y-m-d H:i:s',time());
                 }
 
+                $codval = doubleval($json['cod']);
+
+                $codval = floor($codval * 100) / 100;
+
+
                 $order['buyerdeliveryzone'] = (isset($json['district']))?$json['district']:'';
                 $order['merchant_trans_id'] = $json['no_sales_order'];
                 $order['buyerdeliverytime'] = $pick_up_date;
                 $order['fulfillment_code'] = $json['consignee_olshop_orderid'];
                 $order['box_count'] = $json['number_of_package'];
                 $order['delivery_type'] = trim($json['delivery_type']);
-                $order['total_price'] = $json['cod'];
+                $order['total_price'] = $codval;
                 $order['email'] = $json['email'];
                 $order['buyer_name'] = $json['consignee_olshop_name'];
                 $order['recipient_name'] = $json['consignee_olshop_name'];
