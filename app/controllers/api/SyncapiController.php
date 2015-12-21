@@ -760,7 +760,9 @@ class SyncapiController extends \Controller {
                             $pickuptime = $olog->pickuptime;
                         }
 
-                        $shipment->pickuptime = $pickuptime;
+                        if($shipment->pickuptime == '' || $shipment->pickuptime == '0000-00-00 00:00:00' ){
+                            $shipment->pickuptime = $pickuptime;
+                        }
 
                         $shipment->pickup_dev_id = $user->identifier;
 
