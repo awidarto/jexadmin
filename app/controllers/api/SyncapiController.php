@@ -771,6 +771,8 @@ class SyncapiController extends \Controller {
 
                     }
 
+
+
                     /*
                     if($olog->disposition == $key && isset($user->node_id)){
 
