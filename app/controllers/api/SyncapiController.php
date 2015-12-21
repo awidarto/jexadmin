@@ -752,7 +752,7 @@ class SyncapiController extends \Controller {
                     //$shipment->status = $olog->status;
                     $shipment->pickup_status = $olog->pickupStatus;
 
-                    if( $olog->pickupStatus == Config::get('jayon.trans_status_pickup')){
+                    if( $olog->pickupStatus == \Config::get('jayon.trans_status_pickup')){
 
                         if($olog->pickuptime == '' || $olog->pickuptime == '0000-00-00 00:00:00' ){
                             $pickuptime = date('Y-m-d H:i:s',time());
