@@ -751,7 +751,16 @@ class SyncapiController extends \Controller {
                 if($shipment){
                     //$shipment->status = $olog->status;
                     $shipment->pickup_status = $olog->pickupStatus;
-                    $shipment->pickuptime = $olog->pickuptime;
+                    if(isset($shipment->pickuptime) && ( $shipment->pickuptime == '' || $shipment->pickuptime == '0000-00-00 00:00:00')){
+                        if($olog->pickuptime == '' || $olog->pickuptime == '0000-00-00 00:00:00' ){
+                            $shipment->pickuptime = date('Y-m-d H:i:s',time());
+                        }else{
+                             $shipment->pickuptime = $olog->pickuptime;
+                        }
+                    }else{
+                        $shipment->pickuptime = $olog->pickuptime;
+                    }
+
                     $shipment->pickup_dev_id = $user->identifier;
 
                     /*
