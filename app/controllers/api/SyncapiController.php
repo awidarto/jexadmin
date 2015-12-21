@@ -754,42 +754,16 @@ class SyncapiController extends \Controller {
 
                     if( $olog->pickupStatus == Config::get('jayon.trans_status_pickup')){
 
-                        //if(isset($shipment->pickuptime)
-                            //&& ( $shipment->pickuptime == '' || $shipment->pickuptime == '0000-00-00 00:00:00')
-                        //    ){
-                            if($olog->pickuptime == '' || $olog->pickuptime == '0000-00-00 00:00:00' ){
-                                $shipment->pickuptime = date('Y-m-d H:i:s',time());
-                            }else{
-                                 $shipment->pickuptime = $olog->pickuptime;
-                            }
-                        //}
-                        /*
-                        else{
-                            $shipment->pickuptime = $olog->pickuptime;
+                        if($olog->pickuptime == '' || $olog->pickuptime == '0000-00-00 00:00:00' ){
+                            $shipment->pickuptime = date('Y-m-d H:i:s',time());
+                        }else{
+                             $shipment->pickuptime = $olog->pickuptime;
                         }
-                        */
 
                         $shipment->pickup_dev_id = $user->identifier;
 
                     }
 
-
-
-                    /*
-                    if($olog->disposition == $key && isset($user->node_id)){
-
-                        $shipment->position = $user->node_id;
-                    }
-                    */
-
-                    /*
-                    $shipment->pending_count = new \MongoInt32($olog->pendingCount) ;
-
-                    if($olog->courierStatus == \Config::get('jayon.trans_cr_oncr') || $olog->courierStatus == \Config::get('jayon.trans_cr_oncr_partial'))
-                    {
-                        $shipment->pickup_status = \Config::get('jayon.trans_status_pickup');
-                    }
-                    */
                     $shipment->save();
                 }
 
