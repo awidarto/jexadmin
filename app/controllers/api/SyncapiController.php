@@ -751,20 +751,25 @@ class SyncapiController extends \Controller {
                 if($shipment){
                     //$shipment->status = $olog->status;
                     $shipment->pickup_status = $olog->pickupStatus;
-                    if(isset($shipment->pickuptime) && ( $shipment->pickuptime == '' || $shipment->pickuptime == '0000-00-00 00:00:00')){
-                        if($olog->pickuptime == '' || $olog->pickuptime == '0000-00-00 00:00:00' ){
-                            $shipment->pickuptime = date('Y-m-d H:i:s',time());
-                        }else{
-                             $shipment->pickuptime = $olog->pickuptime;
-                        }
-                    }
-                    /*
-                    else{
-                        $shipment->pickuptime = $olog->pickuptime;
-                    }
-                    */
 
-                    $shipment->pickup_dev_id = $user->identifier;
+                    if( $olog->pickupStatus == Config::get('jayon.trans_status_pickup')){
+
+                        if(isset($shipment->pickuptime) && ( $shipment->pickuptime == '' || $shipment->pickuptime == '0000-00-00 00:00:00')){
+                            if($olog->pickuptime == '' || $olog->pickuptime == '0000-00-00 00:00:00' ){
+                                $shipment->pickuptime = date('Y-m-d H:i:s',time());
+                            }else{
+                                 $shipment->pickuptime = $olog->pickuptime;
+                            }
+                        }
+                        /*
+                        else{
+                            $shipment->pickuptime = $olog->pickuptime;
+                        }
+                        */
+
+                        $shipment->pickup_dev_id = $user->identifier;
+
+                    }
 
                     /*
                     if($olog->disposition == $key && isset($user->node_id)){
