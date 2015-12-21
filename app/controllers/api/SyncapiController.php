@@ -757,9 +757,12 @@ class SyncapiController extends \Controller {
                         }else{
                              $shipment->pickuptime = $olog->pickuptime;
                         }
-                    }else{
+                    }
+                    /*
+                    else{
                         $shipment->pickuptime = $olog->pickuptime;
                     }
+                    */
 
                     $shipment->pickup_dev_id = $user->identifier;
 
