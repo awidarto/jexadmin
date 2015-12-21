@@ -185,7 +185,7 @@ class PickupapiController extends \BaseController {
             ->where(function($query) use($deliverydate){
                 $query->where('pickup_status','=', \Config::get('jayon.trans_status_tobepickup') )
                     ->where('status','!=', \Config::get('jayon.trans_status_canceled') )
-                    ->where('ordertime','>=',$deliverydate);
+                    ->where('ordertime','>=',$deliverydate.' 00:00:00');
                     /*
                     ->orWhere('status','=', \Config::get('jayon.trans_status_mobile_pickedup') )
                     ->orWhere('status','=', \Config::get('jayon.trans_status_mobile_enroute') )
