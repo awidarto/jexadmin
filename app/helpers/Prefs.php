@@ -67,6 +67,7 @@ class Prefs {
         $pic_count = 0;
         $sign_count = 0;
 
+        $app = 'app v 1.0';
 
         $existingpic = glob(Config::get('jayon.picture_path').$delivery_id.'*.jpg');
 
@@ -82,15 +83,20 @@ class Prefs {
 
         $pics = Uploaded::where('parent_id','=',$delivery_id)->get();
 
-        foreach($pics as $pic){
-            if( intval($pic->is_signature) == 1){
-                $sign_count++;
-            }else{
-                $pic_count++;
+        if($pics){
+
+            $app = 'app v 2.0';
+
+            foreach($pics as $pic){
+                if( intval($pic->is_signature) == 1){
+                    $sign_count++;
+                }else{
+                    $pic_count++;
+                }
             }
         }
 
-        return array('pic'=>$pic_count, 'sign'=>$sign_count);
+        return array('pic'=>$pic_count, 'sign'=>$sign_count, 'app'=>$app );
     }
 
     public static function getThumbnailStat($delivery_id, $class = 'thumb'){

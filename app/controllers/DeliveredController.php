@@ -971,7 +971,7 @@ class DeliveredController extends AdminController {
     {
         $pic_stat = Prefs::getPicStat($data['delivery_id']);
 
-        return $pic_stat['pic'].' pictures, '.$pic_stat['sign'].' signature';
+        return $pic_stat['pic'].' pictures, '.$pic_stat['sign'].' signature <span class="badge">'.$pic_stat.'</span>';
     }
 
     public function allNotes($data)
