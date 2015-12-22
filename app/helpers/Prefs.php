@@ -72,7 +72,7 @@ class Prefs {
         $pics_db = Uploaded::where('parent_id','=',$delivery_id)
                     ->get();
 
-        if($pics){
+        if($pics_db){
 
             if(count($pics->toArray()) > 0){
                 $app = 'app v 2.0';
