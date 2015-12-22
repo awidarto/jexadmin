@@ -144,6 +144,7 @@ class AwbController extends \BaseController {
                 return \Response::json(array('status'=>'OK',
                     'awb'=>$order->delivery_id,
                         'timestamp'=>date('Y-m-d H:i:s',time()) ,
+                        'pickup_time'=>$order->pickuptime,
                         'pending'=>$order->pending_count,
                         'order_status'=>$order->status,
                         'note'=>$order->delivery_note ));
@@ -429,6 +430,8 @@ class AwbController extends \BaseController {
                         'ff_id'=>$check->fulfillment_code,
                         'awb'=>$check->delivery_id,
                         'timestamp'=>$check->created,
+                        'pickup_time'=>$check->pickuptime,
+                        'delivery_time'=>$check->deliverytime,
                         'pending'=>$check->pending_count,
                         'status'=>$check->status,
                         'note'=>$check->delivery_note
@@ -442,6 +445,8 @@ class AwbController extends \BaseController {
                         'ff_id'=>$saved['fulfillment_code'],
                         'awb'=>$saved['delivery_id'],
                         'timestamp'=>$saved['created'],
+                        'pickup_time'=>$saved->pickuptime,
+                        'delivery_time'=>$saved->deliverytime,
                         'pending'=>$saved['pending_count'],
                         'status'=>$saved['status'],
                         'note'=>$saved['delivery_note']
