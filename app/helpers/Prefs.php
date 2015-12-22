@@ -69,19 +69,8 @@ class Prefs {
 
         $app = 'app v 1.0';
 
-        $existingpic = glob(Config::get('jayon.picture_path').$delivery_id.'*.jpg');
-
-
-        foreach($existingpic as $pic){
-            if(preg_match('/_sign.jpg$/', $pic)){
-                $sign_count++;
-            }else{
-                $pic_count++;
-            }
-        }
-
-
-        $pics = Uploaded::where('parent_id','=',$delivery_id)->get();
+        $pics_db = Uploaded::where('parent_id','=',$delivery_id)
+                    ->get();
 
         if($pics){
 
@@ -97,6 +86,21 @@ class Prefs {
                 }
             }
         }
+
+
+        if($pic_count == 0 && $sign_count == 0){
+            $existingpic = glob(Config::get('jayon.picture_path').$delivery_id.'*.jpg');
+
+            foreach($existingpic as $pic){
+                if(preg_match('/_sign.jpg$/', $pic)){
+                    $sign_count++;
+                }else{
+                    $pic_count++;
+                }
+            }
+        }
+
+
 
         return array('pic'=>$pic_count, 'sign'=>$sign_count, 'app'=>$app );
     }
