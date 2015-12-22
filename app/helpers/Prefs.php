@@ -85,7 +85,9 @@ class Prefs {
 
         if($pics){
 
-            $app = 'app v 2.0';
+            if(count($pics->toArray()) > 0){
+                $app = 'app v 2.0';
+            }
 
             foreach($pics as $pic){
                 if( intval($pic->is_signature) == 1){
