@@ -178,10 +178,10 @@ class StatusController extends \BaseController {
                 foreach($awbs as $awb){
 
                     $pod = array();
-                    /*
+
                     $pictures = \Uploaded::where('parent_id','=',$awb->delivery_id)->get();
 
-                    if($pictures){
+                    //if($pictures){
 
                         foreach($pictures as $pic){
                             $p = new stdClass();
@@ -190,8 +190,7 @@ class StatusController extends \BaseController {
                             $p->is_signature = $pic->is_signature;
                             $pod[] = $p;
                         }
-                    }
-                    */
+                    //}
 
                     $result[] = array('awb'=>$awb->delivery_id,
                         'timestamp'=>date('Y-m-d H:i:s',time()) ,
