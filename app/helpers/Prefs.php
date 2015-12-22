@@ -78,7 +78,7 @@ class Prefs {
                 $app = 'app v 2.0';
             }
 
-            foreach($pics as $pic){
+            foreach($pics_db as $pic){
                 if( intval($pic->is_signature) == 1){
                     $sign_count++;
                 }else{
