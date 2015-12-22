@@ -74,7 +74,7 @@ class Prefs {
 
         if($pics_db){
 
-            if(count($pics->toArray()) > 0){
+            if(count($pics_db->toArray()) > 0){
                 $app = 'app v 2.0';
             }
 
