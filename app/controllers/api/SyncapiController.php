@@ -11,6 +11,7 @@ class SyncapiController extends \Controller {
 
     public function  __construct()
     {
+        date_default_timezone_set('Asia/Jakarta');
         //$this->model = "Member";
         $this->controller_name = strtolower( str_replace('Controller', '', get_class()) );
 
@@ -23,6 +24,7 @@ class SyncapiController extends \Controller {
      */
     public function postScanlog()
     {
+        date_default_timezone_set('Asia/Jakarta');
 
         $key = \Input::get('key');
 
@@ -80,6 +82,7 @@ class SyncapiController extends \Controller {
      */
     public function postBoxstatus()
     {
+        date_default_timezone_set('Asia/Jakarta');
 
         $key = \Input::get('key');
 
@@ -143,6 +146,7 @@ class SyncapiController extends \Controller {
      */
     public function postPickupstatus()
     {
+        date_default_timezone_set('Asia/Jakarta');
 
         $key = \Input::get('key');
 
@@ -265,6 +269,7 @@ class SyncapiController extends \Controller {
      */
     public function postHubstatus()
     {
+        date_default_timezone_set('Asia/Jakarta');
 
         $key = \Input::get('key');
 
@@ -387,6 +392,7 @@ class SyncapiController extends \Controller {
      */
     public function postOrderstatus()
     {
+        date_default_timezone_set('Asia/Jakarta');
 
         $key = \Input::get('key');
 
@@ -513,6 +519,7 @@ class SyncapiController extends \Controller {
      */
     public function postBox()
     {
+        date_default_timezone_set('Asia/Jakarta');
 
         $key = \Input::get('key');
 
@@ -604,6 +611,7 @@ class SyncapiController extends \Controller {
      */
     public function postHuborder()
     {
+        date_default_timezone_set('Asia/Jakarta');
 
         $key = \Input::get('key');
 
@@ -701,6 +709,8 @@ class SyncapiController extends \Controller {
      */
     public function postPickuporder()
     {
+
+        date_default_timezone_set('Asia/Jakarta');
 
         $key = \Input::get('key');
 
@@ -800,6 +810,7 @@ class SyncapiController extends \Controller {
      */
     public function postOrder()
     {
+        date_default_timezone_set('Asia/Jakarta');
 
         $key = \Input::get('key');
 
@@ -890,6 +901,7 @@ class SyncapiController extends \Controller {
      */
     public function postGeolog()
     {
+        date_default_timezone_set('Asia/Jakarta');
 
         $key = \Input::get('key');
 
@@ -949,6 +961,7 @@ class SyncapiController extends \Controller {
      */
     public function postNote()
     {
+        date_default_timezone_set('Asia/Jakarta');
 
         $key = \Input::get('key');
 
