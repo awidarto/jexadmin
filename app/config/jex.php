@@ -319,7 +319,7 @@ return array(
             array('recipient_name',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('shipping_address',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('phone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('delivery_id',array('kind'=>'text', 'callback'=>'namePic','query'=>'like','pos'=>'both','show'=>true)),
+            array('delivery_id',array('kind'=>'text', 'callback'=>'picStats','query'=>'like','pos'=>'both','show'=>true)),
             array('delivery_note',array('kind'=>'text','callback'=>'allNotes','query'=>'like','pos'=>'both','show'=>true)),
             array('status',array('kind'=>'text','callback'=>'statusList','query'=>'like','pos'=>'both','show'=>true, 'multi'=>array('status','warehouse_status','pickup_status'), 'multirel'=>'OR'  )),
             array('delivery_note',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
