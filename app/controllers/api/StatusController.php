@@ -179,7 +179,10 @@ class StatusController extends \BaseController {
                     $result[] = array('awb'=>$awb->delivery_id,'timestamp'=>date('Y-m-d H:i:s',time()) ,
                         'pending'=>$awb->pending_count,
                         'district'=>$awb->buyerdeliveryzone,
-                        'status'=>$awb->status,'note'=>$awb->delivery_note);
+                        'status'=>$awb->status,
+                        'pickup_time'=>$awb->pickuptime,
+                        'delivery_time'=>$awb->deliverytime,
+                        'note'=>$awb->delivery_note);
                 }
             }
 
