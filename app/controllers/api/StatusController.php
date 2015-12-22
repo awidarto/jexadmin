@@ -176,12 +176,30 @@ class StatusController extends \BaseController {
 
             if($awbs){
                 foreach($awbs as $awb){
-                    $result[] = array('awb'=>$awb->delivery_id,'timestamp'=>date('Y-m-d H:i:s',time()) ,
+
+                    $pictures = \Uploaded::where('parent_id','=',$awb)->get();
+
+                    $pod = array();
+                    if($pictures)
+                    {
+                        foreach($pictures as $pic){
+                            $p = new stdClass();
+                            $p->thumbnail = $pic->thumbnail_url;
+                            $p->pictures = $pic->large_url;
+                            $p->is_signature = $pic->is_signature;
+
+                            $pod[] = $p;
+                        }
+                    }
+
+                    $result[] = array('awb'=>$awb->delivery_id,
+                        'timestamp'=>date('Y-m-d H:i:s',time()) ,
                         'pending'=>$awb->pending_count,
                         'district'=>$awb->buyerdeliveryzone,
                         'status'=>$awb->status,
                         'pickup_time'=>$awb->pickuptime,
                         'delivery_time'=>$awb->deliverytime,
+                        'pod'=>$pod,
                         'note'=>$awb->delivery_note);
                 }
             }
