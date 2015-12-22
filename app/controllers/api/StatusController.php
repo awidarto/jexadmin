@@ -177,9 +177,10 @@ class StatusController extends \BaseController {
             if($awbs){
                 foreach($awbs as $awb){
 
+                    $pod = array();
+                    /*
                     $pictures = \Uploaded::where('parent_id','=',$awb->delivery_id)->get();
 
-                    $pod = array();
                     if($pictures){
 
                         foreach($pictures as $pic){
@@ -190,6 +191,7 @@ class StatusController extends \BaseController {
                             $pod[] = $p;
                         }
                     }
+                    */
 
                     $result[] = array('awb'=>$awb->delivery_id,
                         'timestamp'=>date('Y-m-d H:i:s',time()) ,
