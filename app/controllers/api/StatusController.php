@@ -177,17 +177,16 @@ class StatusController extends \BaseController {
             if($awbs){
                 foreach($awbs as $awb){
 
-                    $pictures = \Uploaded::where('parent_id','=',$awb)->get();
+                    $pictures = \Uploaded::where('parent_id','=',$awb->delivery_id)->get();
 
                     $pod = array();
-                    if($pictures)
-                    {
+                    if($pictures){
+
                         foreach($pictures as $pic){
                             $p = new stdClass();
                             $p->thumbnail = $pic->thumbnail_url;
                             $p->pictures = $pic->large_url;
                             $p->is_signature = $pic->is_signature;
-
                             $pod[] = $p;
                         }
                     }
