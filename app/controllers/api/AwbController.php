@@ -370,7 +370,9 @@ class AwbController extends \BaseController {
 
                 $codval = doubleval($json['cod']);
 
-                $codval = floor($codval * 100) / 100;
+                //$codval = floor($codval * 100) / 100;
+
+                $codval = round($codval, 0, PHP_ROUND_HALF_UP);
 
 
                 $order['buyerdeliveryzone'] = (isset($json['district']))?$json['district']:'';
