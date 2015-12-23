@@ -445,8 +445,8 @@ class AwbController extends \BaseController {
                         'ff_id'=>$saved['fulfillment_code'],
                         'awb'=>$saved['delivery_id'],
                         'timestamp'=>$saved['created'],
-                        'pickup_time'=>$saved->pickuptime,
-                        'delivery_time'=>$saved->deliverytime,
+                        'pickup_time'=>$saved['pickuptime'],
+                        'delivery_time'=>$saved['deliverytime'],
                         'pending'=>$saved['pending_count'],
                         'status'=>$saved['status'],
                         'note'=>$saved['delivery_note']
