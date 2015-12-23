@@ -446,7 +446,7 @@ class AwbController extends \BaseController {
                         'awb'=>$saved['delivery_id'],
                         'timestamp'=>$saved['created'],
                         'pickup_time'=>'0000-00-00 00:00:00',
-                        'delivery_time'=>$saved['deliverytime'],
+                        'delivery_time'=>'0000-00-00 00:00:00',
                         'pending'=>$saved['pending_count'],
                         'status'=>$saved['status'],
                         'note'=>$saved['delivery_note']
