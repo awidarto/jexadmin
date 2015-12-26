@@ -517,6 +517,81 @@ class SyncapiController extends \Controller {
      *
      * @return Response
      */
+    public function postMeta()
+    {
+
+        $key = \Input::get('key');
+
+        //$user = \Apiauth::user($key);
+
+        $user = \Device::where('key','=',$key)->first();
+
+        if(!$user){
+            $actor = 'no id : no name';
+            \Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found, upload image meta failed'));
+
+            return \Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Device Unregistered' ));
+        }
+
+        $json = \Input::all();
+
+        $batch = \Input::get('batch');
+
+        $result = array();
+
+        foreach( $json as $j){
+
+            //$j['mtimestamp'] = new \MongoDate(time());
+
+            if(is_array($j)){
+                $blog = new \Imagemeta();
+
+                foreach ($j as $k=>$v) {
+                    $blog->{$k} = $v;
+                }
+
+                $blog->mtimestamp = new \MongoDate(time());
+
+                $r = $blog->save();
+
+                $upl = \Uploaded::where('_id','=',new \MongoId($blog->extId))->first();
+
+                if($upl){
+                   $upl->is_signature = $blog->isSignature;
+                   $upl->latitude = $blog->latitude;
+                   $upl->longitude = $blog->longitude;
+                   $upl->delivery_id = $blog->parentId;
+                   $upl->photo_time = $blog->photoTime;
+                   $upl->save();
+                }
+
+                if( $r ){
+                    $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['extId'] );
+                }else{
+                    $result[] = array('status'=>'NOK', 'timestamp'=>time(), 'message'=>'insertion failed' );
+                }
+
+            }
+
+
+        }
+
+        //print_r($result);
+
+        //die();
+        $actor = $user->identifier.' : '.$user->devname;
+
+        \Event::fire('log.api',array($this->controller_name, 'get' ,$actor,'sync scan log'));
+
+        return Response::json($result);
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @return Response
+     */
     public function postBox()
     {
         date_default_timezone_set('Asia/Jakarta');
