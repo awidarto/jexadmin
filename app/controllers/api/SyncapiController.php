@@ -730,7 +730,7 @@ class SyncapiController extends \Controller {
 
                 if($olog->warehouseStatus == \Config::get('jayon.trans_status_pu2wh') ){
                     if($olog->warehouseIn == '' || $olog->warehouseIn == '0000-00-00 00:00:00'){
-                        $olog->warehouseIn = $olog->mtimestamp;
+                        $olog->warehouseIn = date('Y-m-d H:i:s', time());
                     }
                 }
 
@@ -752,7 +752,11 @@ class SyncapiController extends \Controller {
                     $shipment->warehouse_status = $olog->warehouseStatus;
 
                     if($olog->warehouseStatus == \Config::get('jayon.trans_status_pu2wh') ){
-                        $shipment->warehouse_in = date('Y-m-d H:i:s', time());
+                        if($olog->warehouseIn == '' || $olog->warehouseIn == '0000-00-00 00:00:00'){
+                            $shipment->warehouse_in = date('Y-m-d H:i:s', time());
+                        }else{
+                            $shipment->warehouse_in = $olog->warehouseIn;
+                        }
                     }
                     /*
                     if($olog->disposition == $key && isset($user->node_id)){
