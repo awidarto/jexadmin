@@ -45,7 +45,7 @@ class DeliveryBacktrack extends Command {
 
         foreach($delivereds as $d){
             //print $d->deliveryId." ".$d->deliverytime."\r\n";
-            print_r($d);
+            print_r($d->toArray());
         }
 	}
 
