@@ -71,7 +71,7 @@ class OrderlogController extends AdminController {
             array('warehouseStatus',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('warehouseIn',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
             array('warehouseOut',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
-            array('warehouseDevId',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
+            array('warehouseDevId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('appname',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
         );
 
