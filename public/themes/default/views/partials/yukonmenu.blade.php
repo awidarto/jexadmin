@@ -74,6 +74,13 @@
                             <li class="{{ sa('docs') }}" ><a href="{{ URL::to('docs') }}"> Manifests</a></li>
                           </ul>
                         </li>
+                        <li class="first_level {{ hsa( array('logs') ) }} ">
+                          <a href=""><span class="fa fa-table"></span>
+                            <span>Logs</span><span class="fa arrow"></span></a>
+                          <ul>
+                            <li class="{{ sa('orderlog') }}" ><a href="{{ URL::to('orderlog') }}"> Order Log</a></li>
+                          </ul>
+                        </li>
                         <li class="first_level">
                           <a href=""><span class="fa fa-cogs"></span>
                             <span>System </span><span class="fa arrow"></span></a>

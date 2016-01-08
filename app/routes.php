@@ -78,6 +78,8 @@ Route::controller('devmanifest', 'DevmanifestController');
 Route::controller('deliverytime', 'DeliverytimeController');
 Route::controller('deliverybydate', 'DeliverybydateController');
 
+Route::controller('orderlog', 'OrderlogController');
+
 
 Route::controller('upload', 'UploadController');
 Route::controller('ajax', 'AjaxController');
