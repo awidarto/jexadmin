@@ -834,26 +834,32 @@ class SyncapiController extends \Controller {
                 $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)->first();
 
                 if($shipment){
-                    //$shipment->status = $olog->status;
-                    $shipment->pickup_status = $olog->pickupStatus;
 
-                    if( $olog->pickupStatus == \Config::get('jayon.trans_status_pickup')){
+                    $check = $this->checkPickedUp($olog->deliveryId, 'pickupStatus' ,'sudah diambil' ,Config::get('jex.pickup_app') , $key  );
 
-                        if($olog->pickuptime == '' || $olog->pickuptime == '0000-00-00 00:00:00' ){
-                            $pickuptime = date('Y-m-d H:i:s',time());
-                        }else{
-                            $pickuptime = $olog->pickuptime;
+                    if(!$check){
+
+                        $shipment->pickup_status = $olog->pickupStatus;
+
+                        if( $olog->pickupStatus == \Config::get('jayon.trans_status_pickup')){
+
+                            if($olog->pickuptime == '' || $olog->pickuptime == '0000-00-00 00:00:00' ){
+                                $pickuptime = date('Y-m-d H:i:s',time());
+                            }else{
+                                $pickuptime = $olog->pickuptime;
+                            }
+
+                            if($shipment->pickuptime == '' || $shipment->pickuptime == '0000-00-00 00:00:00' ){
+                                $shipment->pickuptime = $pickuptime;
+                            }
+
+                            $shipment->pickup_dev_id = $user->identifier;
+
                         }
 
-                        if($shipment->pickuptime == '' || $shipment->pickuptime == '0000-00-00 00:00:00' ){
-                            $shipment->pickuptime = $pickuptime;
-                        }
-
-                        $shipment->pickup_dev_id = $user->identifier;
-
+                        $shipment->save();
                     }
-
-                    $shipment->save();
+                    //$shipment->status = $olog->status;
                 }
 
 
@@ -1160,8 +1166,14 @@ class SyncapiController extends \Controller {
         $exist = Orderlog::where('deliveryId','=',$delivery_id)
                         ->where($status_field,'',$status)
                         ->where('appname','=', $appname)
-                        ->where('deviceKey','=',$devicekey)
+                        ->where('pickupDevId','!=','')
                         ->count();
+
+        if($exist > 0){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 }
