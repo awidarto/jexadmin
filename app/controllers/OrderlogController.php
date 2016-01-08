@@ -29,6 +29,7 @@ class OrderlogController extends AdminController {
     {
         $this->heads = array(
             array('Timestamp',array('search'=>true,'sort'=>true,'datetimerange'=>true)),
+            array('Merchant Id',array('search'=>true,'sort'=>true)),
             array('Delivery Id',array('search'=>true,'sort'=>true)),
             array('No Kode Toko',array('search'=>true,'sort'=>false)),
             array('Fulfillment Code',array('search'=>true,'sort'=>false)),
@@ -61,6 +62,7 @@ class OrderlogController extends AdminController {
 
         $this->fields = array(
             array('created_at',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
+            array('merchantId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('deliveryId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('merchantTransId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('fulfillmentCode',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
