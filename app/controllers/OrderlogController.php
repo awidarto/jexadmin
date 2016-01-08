@@ -63,7 +63,7 @@ class OrderlogController extends AdminController {
             array('status',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupStatus',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('warehouseStatus',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('puchangeActor',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('pickupDevId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('appname',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
         );
 
