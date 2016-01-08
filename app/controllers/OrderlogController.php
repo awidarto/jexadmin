@@ -35,6 +35,7 @@ class OrderlogController extends AdminController {
             array('Status',array('search'=>true,'sort'=>false)),
             array('Pickup Status',array('search'=>true,'sort'=>true)),
             array('Warehouse Status',array('search'=>true,'sort'=>true)),
+            array('Pick Up Actor',array('search'=>true,'sort'=>true)),
             array('App Name',array('search'=>true,'sort'=>true)),
 
         );
@@ -62,6 +63,7 @@ class OrderlogController extends AdminController {
             array('status',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupStatus',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('warehouseStatus',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('puchangeActor',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('appname',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
         );
 

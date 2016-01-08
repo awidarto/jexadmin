@@ -1155,9 +1155,13 @@ class SyncapiController extends \Controller {
         return preg_replace_callback('/([A-Z])/', $func, $str);
     }
 
-    public function checkPickedUp($appname, $devicekey)
+    public function checkPickedUp($delivery_id, $status_field ,$status ,$appname, $devicekey  )
     {
-
+        $exist = Orderlog::where('deliveryId','=',$delivery_id)
+                        ->where($status_field,'',$status)
+                        ->where('appname','=', $appname)
+                        ->where('deviceKey','=',$devicekey)
+                        ->count();
     }
 
 }
