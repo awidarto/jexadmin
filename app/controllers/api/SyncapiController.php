@@ -726,6 +726,8 @@ class SyncapiController extends \Controller {
 
                 $olog->mtimestamp = new \MongoDate(time());
 
+                $olog->warehouseDevId = $user->identifier;
+
                 if($olog->disposition == $key && isset($user->node_id)){
 
                     $olog->position = $user->node_id;

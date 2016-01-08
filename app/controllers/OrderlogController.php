@@ -34,8 +34,12 @@ class OrderlogController extends AdminController {
             array('Fulfillment Code',array('search'=>true,'sort'=>false)),
             array('Status',array('search'=>true,'sort'=>false)),
             array('Pickup Status',array('search'=>true,'sort'=>true)),
-            array('Warehouse Status',array('search'=>true,'sort'=>true)),
+            array('Pickup Time',array('search'=>true,'sort'=>true)),
             array('Pick Up Actor',array('search'=>true,'sort'=>true)),
+            array('Warehouse Status',array('search'=>true,'sort'=>true)),
+            array('Warehouse In',array('search'=>true,'sort'=>true ,'datetimerange'=>true)),
+            array('Warehouse Out',array('search'=>true,'sort'=>true ,'datetimerange'=>true)),
+            array('Warehouse Actor',array('search'=>true,'sort'=>true)),
             array('App Name',array('search'=>true,'sort'=>true)),
 
         );
@@ -62,8 +66,12 @@ class OrderlogController extends AdminController {
             array('fulfillmentCode',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('status',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupStatus',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('warehouseStatus',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('pickuptime',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupDevId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('warehouseStatus',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('warehouseIn',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
+            array('warehouseOut',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
+            array('warehouseDevId',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
             array('appname',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
         );
 
