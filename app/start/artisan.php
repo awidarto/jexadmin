@@ -13,3 +13,4 @@
 Artisan::add(new RegeneratePic);
 Artisan::add(new FillDistrict);
 Artisan::add(new Backtrack);
+Artisan::add(new DeliveryBacktrack);
