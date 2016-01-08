@@ -40,8 +40,9 @@ class DeliveryBacktrack extends Command {
 		$delivereds = Orderlog::where('appname','=',Config::get('jex.tracker_app'))
                         ->where('status','=','delivered')
                         ->orderBy('created_at','desc')
+                        ->orderBy('deliveryId','desc')
                         ->groupBy('deliveryId')
-                        ->get();
+                        ->get(array( 'deliveryId', 'deliverytime' ));
 
         foreach($delivereds as $d){
             //print $d->deliveryId." ".$d->deliverytime."\r\n";
