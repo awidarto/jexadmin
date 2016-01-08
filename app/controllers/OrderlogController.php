@@ -66,7 +66,7 @@ class OrderlogController extends AdminController {
             array('fulfillmentCode',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('status',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupStatus',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('pickuptime',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
+            array('pickuptime',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupDevId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('warehouseStatus',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('warehouseIn',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
