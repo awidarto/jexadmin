@@ -322,8 +322,9 @@ class SyncapiController extends \Controller {
                     $ts = new \MongoDate();
                     $pre = clone $shipment;
 
-                    //$shipment->status = $olog->status;
                     $shipment->warehouse_status = $olog->warehouseStatus;
+
+                    $shipment->warehouse_in = date('Y-m-d H:i:s',time());
 
                     if($olog->disposition == $key && isset($user->node_id)){
 
@@ -331,6 +332,8 @@ class SyncapiController extends \Controller {
                     }
 
                     $shipment->save();
+
+                    //$shipment->status = $olog->status;
 
                     $hdata = array();
                     $hdata['historyTimestamp'] = $ts;
@@ -735,8 +738,12 @@ class SyncapiController extends \Controller {
 
                 if($shipment){
                     //$shipment->status = $olog->status;
+
+                    //$check = $this->checkPickedUp($olog->deliveryId, 'warehouseStatus' ,'   diterima di gudang' ,\Config::get('jex.hub_app') , $key  );
+
                     $shipment->warehouse_status = $olog->warehouseStatus;
 
+                    $shipment->warehouse_in = date('Y:m:d H:i:s',time());
                     /*
                     if($olog->disposition == $key && isset($user->node_id)){
 
