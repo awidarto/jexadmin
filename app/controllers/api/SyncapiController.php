@@ -835,7 +835,7 @@ class SyncapiController extends \Controller {
 
                 if($shipment){
 
-                    $check = $this->checkPickedUp($olog->deliveryId, 'pickupStatus' ,'sudah diambil' ,Config::get('jex.pickup_app') , $key  );
+                    $check = $this->checkPickedUp($olog->deliveryId, 'pickupStatus' ,'sudah diambil' ,\Config::get('jex.pickup_app') , $key  );
 
                     if(!$check){
 
