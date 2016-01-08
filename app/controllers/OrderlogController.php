@@ -43,6 +43,8 @@ class OrderlogController extends AdminController {
 
         $this->title = 'Order Status Log';
 
+        $this->show_select = false;
+
         $this->place_action = 'none';
 
         return parent::getIndex();
@@ -62,6 +64,10 @@ class OrderlogController extends AdminController {
             array('warehouseStatus',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('appname',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
         );
+
+        $this->def_order_by = 'created_at';
+        $this->def_order_dir = 'desc';
+        $this->show_select = false;
 
         $this->place_action = 'none';
 

@@ -1155,4 +1155,9 @@ class SyncapiController extends \Controller {
         return preg_replace_callback('/([A-Z])/', $func, $str);
     }
 
+    public function checkPickedUp($appname, $devicekey)
+    {
+
+    }
+
 }
