@@ -464,7 +464,6 @@ class SyncapiController extends \Controller {
 
                     }
 
-
                     $shipment->save();
 
                     $hdata = array();
