@@ -53,7 +53,7 @@ class DeliveryBacktrack extends Command {
             if($shipment){
                 $shipment->status = 'delivered';
                 $shipment->deliverytime = $d->deliverytime;
-                //$shipment->save();
+                $shipment->save();
             }
 
             print_r($d->toArray());
