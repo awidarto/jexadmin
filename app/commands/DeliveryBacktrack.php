@@ -44,9 +44,10 @@ class DeliveryBacktrack extends Command {
                         ->groupBy('deliveryId')
                         ->get(array( 'deliveryId', 'deliverytime' ));
 
+        $count = 0;
         foreach($delivereds as $d){
             //print $d->deliveryId." ".$d->deliverytime."\r\n";
-
+            $count++;
             $shipment = \Shipment::where('delivery_id','=',$d->deliveryId)->first();
 
             if($shipment){
@@ -57,6 +58,8 @@ class DeliveryBacktrack extends Command {
 
             print_r($d->toArray());
         }
+
+        print "\r\n".$count;
 	}
 
 	/**
