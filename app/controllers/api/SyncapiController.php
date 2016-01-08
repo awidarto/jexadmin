@@ -434,6 +434,8 @@ class SyncapiController extends \Controller {
 
                 $olog->mtimestamp = new \MongoDate(time());
 
+                $olog->appname = $appname;
+
                 $r = $olog->save();
 
                 $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)->first();
