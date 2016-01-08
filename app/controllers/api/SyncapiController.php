@@ -729,7 +729,7 @@ class SyncapiController extends \Controller {
                 $olog->warehouseDevId = $user->identifier;
 
                 if($olog->warehouseStatus == \Config::get('jayon.trans_status_pu2wh') ){
-                    $olog->warehouse_in = $olog->mtimestamp;
+                    $olog->warehouseIn = $olog->mtimestamp;
                 }
 
                 if($olog->disposition == $key && isset($user->node_id)){
