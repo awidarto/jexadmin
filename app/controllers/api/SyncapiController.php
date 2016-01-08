@@ -448,14 +448,18 @@ class SyncapiController extends \Controller {
                         $shipment->pickup_status = $olog->pickupStatus;
                     }elseif($appname == \Config::get('jex.hub_app')){
                         $shipment->warehouse_status = $olog->warehouseStatus;
-                    }else{
+                    }elseif($appname == \Config::get('jex.tracker_app')){
                         $shipment->status = $olog->status;
                         $shipment->courier_status = $olog->courierStatus;
 
                         if($olog->status == 'pending'){
                             $shipment->pending_count = $shipment->pending_count + 1;
                         }elseif($olog->status == 'delivered'){
-                            $shipment->deliverytime = date('Y-m-d H:i:s',time());
+                            if($olog->deliverytime == '' || $olog->deliverytime == '0000-00-00 00:00:00'){
+                                $shipment->deliverytime = date('Y-m-d H:i:s',time());
+                            }else{
+                                $shipment->deliverytime = $olog->deliverytime;
+                            }
                         }
 
                     }
