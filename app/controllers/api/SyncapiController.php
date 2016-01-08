@@ -852,7 +852,7 @@ class SyncapiController extends \Controller {
 
                 if($shipment){
 
-                    $check = $this->checkPickedUp($olog->deliveryId, 'pickupStatus' ,'sudah diambil' ,\Config::get('jex.pickup_app') , $key  );
+                    $check = $this->checkPickedUp($olog->deliveryId, 'pickupStatus' ,'sudah diambil' ,\Config::get('jex.pickup_app') , $user->identifier  );
 
                     if(!$check){
 
@@ -1178,12 +1178,12 @@ class SyncapiController extends \Controller {
         return preg_replace_callback('/([A-Z])/', $func, $str);
     }
 
-    public function checkPickedUp($delivery_id, $status_field ,$status ,$appname, $devicekey  )
+    public function checkPickedUp($delivery_id, $status_field ,$status ,$appname, $devicename  )
     {
         $exist = Orderlog::where('deliveryId','=',$delivery_id)
-                        ->where($status_field,'',$status)
+                        ->where($status_field,'=',$status)
                         ->where('appname','=', $appname)
-                        ->where('pickupDevId','!=','')
+                        ->where('pickupDevId','!=',$devicename)
                         ->count();
 
         if($exist > 0){
