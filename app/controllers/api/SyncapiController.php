@@ -1180,7 +1180,7 @@ class SyncapiController extends \Controller {
 
     public function checkPickedUp($delivery_id, $status_field ,$status ,$appname, $devicename  )
     {
-        $exist = Orderlog::where('deliveryId','=',$delivery_id)
+        $exist = \Orderlog::where('deliveryId','=',$delivery_id)
                         ->where($status_field,'=',$status)
                         ->where('appname','=', $appname)
                         ->where('pickupDevId','!=',$devicename)
