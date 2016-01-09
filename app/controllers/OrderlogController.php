@@ -42,6 +42,8 @@ class OrderlogController extends AdminController {
             array('Warehouse In',array('search'=>true,'sort'=>true ,'datetimerange'=>true)),
             array('Warehouse Out',array('search'=>true,'sort'=>true ,'datetimerange'=>true)),
             array('Warehouse Actor',array('search'=>true,'sort'=>true)),
+            array('Latitude',array('search'=>true,'sort'=>false)),
+            array('Longitude',array('search'=>true,'sort'=>false)),
             array('App Name',array('search'=>true,'sort'=>true)),
 
         );
@@ -76,6 +78,8 @@ class OrderlogController extends AdminController {
             array('warehouseIn',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
             array('warehouseOut',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
             array('warehouseDevId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('latitude',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('longitude',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('appname',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
         );
 

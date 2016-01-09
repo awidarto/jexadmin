@@ -444,6 +444,7 @@ class SyncapiController extends \Controller {
 
                     $ts = new \MongoDate();
                     $pre = clone $shipment;
+
                     $changes = false;
 
                     if($appname == \Config::get('jex.pickup_app')){
