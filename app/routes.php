@@ -79,6 +79,7 @@ Route::controller('deliverytime', 'DeliverytimeController');
 Route::controller('deliverybydate', 'DeliverybydateController');
 
 Route::controller('orderlog', 'OrderlogController');
+Route::controller('locationlog', 'LocationlogController');
 
 
 Route::controller('upload', 'UploadController');
