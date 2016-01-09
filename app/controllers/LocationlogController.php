@@ -1,6 +1,6 @@
 <?php
 
-class OrderlogController extends AdminController {
+class LocationlogController extends AdminController {
 
     public function __construct()
     {
