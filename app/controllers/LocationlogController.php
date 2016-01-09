@@ -61,7 +61,7 @@ class LocationlogController extends AdminController {
             array('appname',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
         );
 
-        $this->def_order_by = 'created_at';
+        $this->def_order_by = 'mtimestamp';
         $this->def_order_dir = 'desc';
         $this->show_select = false;
 
