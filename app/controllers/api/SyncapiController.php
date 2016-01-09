@@ -968,6 +968,36 @@ class SyncapiController extends \Controller {
                 $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)->first();
 
                 if($shipment){
+
+                    $shipment->courier_status = $olog->courierStatus;
+
+                    if($olog->status == 'pending'){
+                        $shipment->status = $olog->status;
+                        $shipment->pending_count = $shipment->pending_count + 1;
+                        $shipment->delivery_note = $olog->deliveryNote;
+                    }elseif($olog->status == 'delivered'){
+                        $shipment->status = $olog->status;
+                        if($olog->deliverytime == '' || $olog->deliverytime == '0000-00-00 00:00:00'){
+                            $shipment->deliverytime = date('Y-m-d H:i:s',time());
+                        }else{
+                            $shipment->deliverytime = $olog->deliverytime;
+                        }
+
+                        if($olog->deliveryNote != ''){
+                            $shipment->delivery_note = $olog->deliveryNote;
+                        }
+
+                        if($olog->latitude != ''){
+                            $shipment->latitude = doubleval($olog->latitude);
+                            $shipment->dir_lat = doubleval($olog->latitude);
+                        }
+
+                        if($olog->longitude != ''){
+                            $shipment->longitude = doubleval($olog->longitude);
+                            $shipment->dir_lon = doubleval($olog->longitude);
+                        }
+                    }
+
                     //$shipment->status = $olog->status;
                     $shipment->courier_status = $olog->courierStatus;
 
