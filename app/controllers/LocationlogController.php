@@ -12,7 +12,7 @@ class LocationlogController extends AdminController {
         //$this->crumb->append('Home','left',true);
         //$this->crumb->append(strtolower($this->controller_name));
 
-        $this->model = new Orderlog();
+        $this->model = new Geolog();
         //$this->model = DB::collection('documents');
 
     }
