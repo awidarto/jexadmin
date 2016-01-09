@@ -444,12 +444,16 @@ class SyncapiController extends \Controller {
 
                     $ts = new \MongoDate();
                     $pre = clone $shipment;
-
+                    $changes = false;
 
                     if($appname == \Config::get('jex.pickup_app')){
                         $shipment->pickup_status = $olog->pickupStatus;
+                        $changes = true;
+
                     }elseif($appname == \Config::get('jex.hub_app')){
                         $shipment->warehouse_status = $olog->warehouseStatus;
+                        $changes = true;
+
                     }elseif($appname == \Config::get('jex.tracker_app')){
                         $shipment->status = $olog->status;
                         $shipment->courier_status = $olog->courierStatus;
@@ -464,9 +468,13 @@ class SyncapiController extends \Controller {
                             }
                         }
 
+                        $changes = true;
+
                     }
 
-                    $shipment->save();
+                    if($changes){
+                        $shipment->save();
+                    }
 
                     $hdata = array();
                     $hdata['historyTimestamp'] = $ts;
