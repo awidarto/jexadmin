@@ -317,7 +317,7 @@ return array(
             array(Config::get('jayon.jayon_members_table').'.merchantname',array('kind'=>'text','alias'=>'merchant_name','query'=>'like','callback'=>'merchantInfo','pos'=>'both','show'=>true)),
             array('buyer_name',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('recipient_name',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('shipping_address',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('shipping_address',array('kind'=>'text', 'callback'=>'shipAddr' ,'query'=>'like','pos'=>'both','show'=>true)),
             array('phone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('delivery_id',array('kind'=>'text', 'callback'=>'picStats','query'=>'like','pos'=>'both','show'=>true)),
             array('delivery_note',array('kind'=>'text','callback'=>'allNotes','query'=>'like','pos'=>'both','show'=>true)),
