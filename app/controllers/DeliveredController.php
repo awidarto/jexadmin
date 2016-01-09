@@ -839,7 +839,7 @@ class DeliveredController extends AdminController {
     public function shipAddr($data)
     {
         if($data['latitude'] != 0 && $data['longitude'] != 0){
-            return $data['shipping_address'].'<br />'.$data['latitude'].','.$data['longitude'];
+            return $data['shipping_address'].'<hr />'.$data['latitude'].','.$data['longitude'];
         }else{
             return $data['shipping_address'];
         }
