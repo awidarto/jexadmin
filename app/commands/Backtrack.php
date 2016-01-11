@@ -39,7 +39,7 @@ class Backtrack extends Command {
 	{
         $shipped = Shipment::where('deliverytime','like','2016-01-11%')->get();
 
-        foreach($shipped as $ship){
+        foreach($shipped as $shipment){
 
             $is_there = Geolog::where('datetimestamp','=',$shipment->deliverytime)
                                 ->where('deliveryId' ,'=',  $shipment->delivery_id)
