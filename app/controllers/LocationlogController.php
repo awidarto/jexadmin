@@ -81,7 +81,9 @@ class LocationlogController extends AdminController {
     public function SQL_additional_query($model)
     {
 
-        $model = $model->groupBy('mtimestamp')->orderBy('mtimestamp','desc');
+        $model = $model->groupBy('timestamp')
+                    ->groupBy('appname')
+                    ->orderBy('mtimestamp','desc');
 
         return $model;
 
