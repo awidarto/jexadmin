@@ -48,25 +48,31 @@ class Backtrack extends Command {
                                 //->where('status','=', $shipment->status)
                                 ->where('sourceSensor','=','gps')
                                 ->get();
-            print_r($is_there);
 
-            $stay = array_pop($is_there->toArray());
+            if($is_there){
 
-            foreach($is_there as $there){
-                print 'there'."\r\n";
-                print_r($there);
-                //$there->remove();
+                print_r($is_there);
+
+                $stay = array_pop($is_there->toArray());
+
+                foreach($is_there as $there){
+                    print 'there'."\r\n";
+                    print_r($there);
+                    //$there->remove();
+                }
+
+                print 'stay'."\r\n";
+                print_r($stay);
+
+                if($stay){
+                    $stay->latitude = doubleval($shipment->latitude);
+                    $stay->longitude = doubleval($shipment->longitude);
+
+                    //$stay->save();
+                }
+
             }
 
-            print 'stay'."\r\n";
-            print_r($stay);
-
-            if($stay){
-                $stay->latitude = doubleval($shipment->latitude);
-                $stay->longitude = doubleval($shipment->longitude);
-
-                //$stay->save();
-            }
         }
 
         /*
