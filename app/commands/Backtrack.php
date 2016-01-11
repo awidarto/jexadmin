@@ -46,8 +46,9 @@ class Backtrack extends Command {
                                 ->where('status','=', $shipment->status)
                                 ->where('sourceSensor','=','gps')
                                 ->get();
+            print_r($is_there);
 
-            $stay = array_pop($is_there);
+            $stay = array_pop($is_there->toArray());
 
             foreach($is_there as $there){
                 print 'there'."\r\n";
