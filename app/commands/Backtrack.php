@@ -45,7 +45,7 @@ class Backtrack extends Command {
 
             $is_there = Geolog::where('datetimestamp','=',$shipment->deliverytime)
                                 ->where('deliveryId' ,'=',  $shipment->delivery_id)
-                                ->where('status','=', $shipment->status)
+                                //->where('status','=', $shipment->status)
                                 ->where('sourceSensor','=','gps')
                                 ->get();
             print_r($is_there);
