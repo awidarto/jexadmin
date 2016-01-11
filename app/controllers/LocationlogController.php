@@ -78,63 +78,16 @@ class LocationlogController extends AdminController {
         return parent::postIndex();
     }
 
-    public function postAdd($data = null)
+    public function SQL_additional_query($model)
     {
 
-        $this->validator = array(
-            'firstname' => 'required',
-            'lastname' => 'required',
-            'email'=> 'required|unique:agents',
-            'pass'=>'required|same:repass'
-        );
+        $model = $model->groupBy('mtimestamp')->orderBy('mtimestamp','desc');
 
-        return parent::postAdd($data);
+        return $model;
+
     }
 
-    public function beforeSave($data)
-    {
-        unset($data['repass']);
-        $data['pass'] = Hash::make($data['pass']);
-        return $data;
-    }
 
-    public function beforeUpdate($id,$data)
-    {
-        //print_r($data);
-
-        if(isset($data['pass']) && $data['pass'] != ''){
-            unset($data['repass']);
-            $data['pass'] = Hash::make($data['pass']);
-
-        }else{
-            unset($data['pass']);
-            unset($data['repass']);
-        }
-
-        //print_r($data);
-
-        //exit();
-
-        return $data;
-    }
-
-    public function postEdit($id,$data = null)
-    {
-        $this->validator = array(
-            'firstname' => 'required',
-            'lastname' => 'required',
-            'email'=> 'required'
-        );
-
-        if($data['pass'] == ''){
-            unset($data['pass']);
-            unset($data['repass']);
-        }else{
-            $this->validator['pass'] = 'required|same:repass';
-        }
-
-        return parent::postEdit($id,$data);
-    }
 
     public function makeActions($data)
     {
