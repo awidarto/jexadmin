@@ -1019,23 +1019,36 @@ class SyncapiController extends \Controller {
                     */
                     $shipment->save();
 
-                    $geolog = array(
-                            'datetimestamp' => $shipment->deliverytime,
-                            'deliveryId' => $shipment->delivery_id,
-                            'deviceId' => $user->identifier,
-                            'status'=>$olog->status,
-                            'deviceKey' => $user->key,
-                            'extId' => 'noid',
-                            'latitude' => doubleval($olog->longitude),
-                            'longitude' => doubleval($olog->longitude),
-                            'sourceSensor' => 'gps',
-                            'timestamp' => strval( strtotime($shipment->deliverytime)),
-                            'uploaded' => 1,
-                            'appname'=>$appname,
-                            'mtimestamp' => new \MongoDate( strtotime($shipment->deliverytime) )
-                        );
+                    $is_there = \Geolog::where('datetimestamp','=',$shipment->deliverytime)
+                                        ->where('deliveryId' ,'=',  $shipment->delivery_id)
+                                        ->where('deviceId' ,'=',  $user->identifier)
+                                        ->where('appname','=', $appname )
+                                        ->where('status','=', $olog->status)
+                                        ->where('sourceSensor','=','gps')
+                                        ->count();
 
-                    \Geolog::insert($geolog);
+                    if($is_there == 0){
+
+                        $geolog = array(
+                                'datetimestamp' => $shipment->deliverytime,
+                                'deliveryId' => $shipment->delivery_id,
+                                'deviceId' => $user->identifier,
+                                'status'=>$olog->status,
+                                'deviceKey' => $user->key,
+                                'extId' => 'noid',
+                                'latitude' => doubleval($olog->latitude),
+                                'longitude' => doubleval($olog->longitude),
+                                'sourceSensor' => 'gps',
+                                'timestamp' => strval( strtotime($shipment->deliverytime)),
+                                'uploaded' => 1,
+                                'appname'=>$appname,
+                                'mtimestamp' => new \MongoDate( strtotime($shipment->deliverytime) )
+                            );
+
+                        \Geolog::insert($geolog);
+
+                    }
+
 
                 }
 
