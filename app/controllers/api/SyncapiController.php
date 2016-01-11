@@ -997,22 +997,6 @@ class SyncapiController extends \Controller {
                             $shipment->dir_lon = doubleval($olog->longitude);
                         }
 
-                        $geolog = array(
-                                'datetimestamp' => $shipment->deliverytime,
-                                'deliveryId' => $shipment->delivery_id,
-                                'deviceId' => $user->identifier,
-                                'status'=>$olog->status,
-                                'deviceKey' => $user->key,
-                                'extId' => 'noid',
-                                'latitude' => doubleval($olog->longitude),
-                                'longitude' => doubleval($olog->longitude),
-                                'sourceSensor' => 'gps',
-                                'timestamp' => strval( strtotime($shipment->deliverytime)),
-                                'uploaded' => 1,
-                                'mtimestamp' => new MongoDate( strtotime($shipment->deliverytime) )
-                            );
-
-                        \Geolog::insert($geolog);
 
                     }
 
@@ -1034,6 +1018,24 @@ class SyncapiController extends \Controller {
                     }
                     */
                     $shipment->save();
+
+                    $geolog = array(
+                            'datetimestamp' => $shipment->deliverytime,
+                            'deliveryId' => $shipment->delivery_id,
+                            'deviceId' => $user->identifier,
+                            'status'=>$olog->status,
+                            'deviceKey' => $user->key,
+                            'extId' => 'noid',
+                            'latitude' => doubleval($olog->longitude),
+                            'longitude' => doubleval($olog->longitude),
+                            'sourceSensor' => 'gps',
+                            'timestamp' => strval( strtotime($shipment->deliverytime)),
+                            'uploaded' => 1,
+                            'mtimestamp' => new \MongoDate( strtotime($shipment->deliverytime) )
+                        );
+
+                    \Geolog::insert($geolog);
+
                 }
 
 
