@@ -39,6 +39,8 @@ class Backtrack extends Command {
 	{
         $shipped = Shipment::where('deliverytime','like','2016-01-11%')->get();
 
+        print_r($shipped);
+
         foreach($shipped as $shipment){
 
             $is_there = Geolog::where('datetimestamp','=',$shipment->deliverytime)
