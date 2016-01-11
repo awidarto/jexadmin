@@ -1031,6 +1031,7 @@ class SyncapiController extends \Controller {
                             'sourceSensor' => 'gps',
                             'timestamp' => strval( strtotime($shipment->deliverytime)),
                             'uploaded' => 1,
+                            'appname'=>$appname,
                             'mtimestamp' => new \MongoDate( strtotime($shipment->deliverytime) )
                         );
 
