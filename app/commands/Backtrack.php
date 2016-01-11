@@ -37,6 +37,36 @@ class Backtrack extends Command {
 	 */
 	public function fire()
 	{
+        $shipped = Shipment::where('deliverytime','like','2016-01-11%')->get();
+
+        foreach($shipped as $ship){
+
+            $is_there = Geolog::where('datetimestamp','=',$shipment->deliverytime)
+                                ->where('deliveryId' ,'=',  $shipment->delivery_id)
+                                ->where('status','=', $shipment->status)
+                                ->where('sourceSensor','=','gps')
+                                ->get();
+
+            $stay = array_pop($is_there);
+
+            foreach($is_there as $there){
+                print 'there'."\r\n";
+                print_r($there);
+                //$there->remove();
+            }
+
+            print 'stay'."\r\n";
+            print_r($stay);
+
+            if($stay){
+                $stay->latitude = doubleval($shipment->latitude);
+                $stay->longitude = doubleval($shipment->longitude);
+
+                //$stay->save();
+            }
+        }
+
+        /*
         $dbox = Orderlog::where('pickupStatus','=',Config::get('jayon.trans_status_pickup'))
                             ->where('pickuptime','!=','0000-00-00 00:00:00')
                             ->orderBy('created_at','desc')
@@ -69,6 +99,7 @@ class Backtrack extends Command {
                 }
             }
         }
+        */
 	}
 
 	/**

@@ -1001,7 +1001,7 @@ class SyncapiController extends \Controller {
                     }
 
                     //$shipment->status = $olog->status;
-                    $shipment->courier_status = $olog->courierStatus;
+                    //$shipment->courier_status = $olog->courierStatus;
 
                     /*
                     if($olog->disposition == $key && isset($user->node_id)){
