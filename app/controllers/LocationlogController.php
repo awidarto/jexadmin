@@ -85,6 +85,8 @@ class LocationlogController extends AdminController {
         //            ->groupBy('appname')
         //            ->orderBy('mtimestamp','desc');
 
+        $model = $model->groupBy('datetimestamp');
+
         return $model;
 
     }
