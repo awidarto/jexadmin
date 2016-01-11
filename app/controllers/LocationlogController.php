@@ -45,6 +45,10 @@ class LocationlogController extends AdminController {
 
         $this->place_action = 'none';
 
+        $this->can_add = false;
+
+        $this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','deliverytime')->render();
+
         return parent::getIndex();
 
     }

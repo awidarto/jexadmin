@@ -43,6 +43,98 @@ class AjaxController extends BaseController {
 
     }
 
+    public function postLocationlog()
+    {
+
+
+        $device_name = Input::get('device_identifier');
+        $timestamp = Input::get('timestamp');
+        $courier = Input::get('courier');
+        $status = Input::get('status');
+
+        $device_name = ($device_name == '')?'all':$device_name;
+        $timestamp = ($timestamp == '')? 'now' :$timestamp;
+        $courier = ($courier == '')?'all':$courier;
+        $status = ($status == '')?'all':$status;
+
+        $model = new Geolog();
+
+        if($device_name == 'all'){
+            $devices = Geolog::distinct('identifier')->get();
+        }else{
+            $devices = Geolog::distinct('identifier')
+                ->where('deviceId','like','%'.$device_name.'%')
+                ->get();
+        }
+
+        $locations = array();
+
+        $paths = array();
+
+        $pathdummy = array();
+
+        foreach($devices as $d){
+
+            $mapcolor = Prefs::get_device_color($d->identifier);
+
+            $this->db
+                ->select('id,identifier,timestamp,latitude as lat,longitude as lng,status')
+                ->where('identifier',$d->identifier);
+
+            if($timestamp == ''){
+                $this->db->like('timestamp',date('Y-m-d',time()),'after');
+            }else{
+                $this->db->like('timestamp',$timestamp,'after');
+            }
+
+            if($status != ''){
+                $this->db->like('status',$status,'after');
+            }
+
+                //->like('timestamp','2012-09-03','after')
+                //->limit(10,0)
+            $loc = $this->db
+                ->order_by('timestamp','desc')
+                ->get($this->config->item('location_log_table'));
+
+            if($loc->num_rows() > 0){
+                $path = array();
+                $loc = $loc->result();
+                foreach($loc as $l){
+                    $lat = (double)$l->lat;
+                    $lng = (double)$l->lng;
+
+                    if($lat != 0 && $lng != 0){
+                        $locations[] = array(
+                            'data'=>array(
+                                    'id'=>$l->id,
+                                    'lat'=>$lat,
+                                    'lng'=>$lng,
+                                    'timestamp'=>$l->timestamp,
+                                    'identifier'=>$l->identifier,
+                                    'status'=>$l->status
+                                )
+                            );
+                        $path[] = array(
+                                $lat,
+                                $lng
+                            );
+                        $pathdummy[] = array(
+                                $l->identifier,
+                                $l->timestamp,
+                                $lat,
+                                $lng
+                            );
+                    }
+                }
+                $paths[]=array('color'=>$mapcolor,'poly'=>$path);
+            }
+        }
+
+        print json_encode(array('result'=>'ok','locations'=>$locations,'paths'=>$paths, 'pathdummy'=>$pathdummy, 'q'=>$this->db->last_query() ));
+
+    }
+
     public function postShipmentlist()
     {
         $in = Input::get();

@@ -1146,4 +1146,17 @@ class Prefs {
     }
 
 
+    public static function get_device_color($identifier){
+
+        $col = Devices::where('identifier','=',$identifier)->first();
+
+        if($col){
+            return $col->color;
+        }else{
+            return '#FF0000';
+        }
+
+    }
+
+
 }
