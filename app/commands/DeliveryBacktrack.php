@@ -56,18 +56,18 @@ class DeliveryBacktrack extends Command {
 
         $pc = array();
         foreach ($pendingan as $p) {
-            if(isset($pc[$p->deliveryId]['pc'])){
+            if(isset($pc[$p->deliveryId])){
                 if($p->status == 'pending'){
-                    $pc[$p->deliveryId]['pc'] = $pc[$p->deliveryId]['pc'] + 1;
+                    $pc[$p->deliveryId] = $pc[$p->deliveryId] + 1;
                 }
             }else{
-                $pc[$p->deliveryId]['pc'] = 1;
+                $pc[$p->deliveryId] = 1;
             }
         }
 
         print_r($pc);
 
-        foreach($pendingan as $d){
+        foreach($pc as $d){
             //print $d->deliveryId." ".$d->deliverytime."\r\n";
             $count++;
             //$shipment = \Shipment::where('delivery_id','=',$d->deliveryId)->first();
