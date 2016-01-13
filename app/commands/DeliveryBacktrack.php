@@ -50,7 +50,7 @@ class DeliveryBacktrack extends Command {
                         ->orderBy('created_at','desc')
                         ->orderBy('deliveryId','desc')
                         ->groupBy('deliveryNote')
-                        ->get(array( 'deliveryId', 'deliveryNote' ));
+                        ->get(array( 'deliveryId', 'deliveryNote','status' ));
 
         $count = 0;
         foreach($pendingan as $d){
