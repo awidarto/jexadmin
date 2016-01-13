@@ -37,23 +37,31 @@ class DeliveryBacktrack extends Command {
 	 */
 	public function fire()
 	{
+        /*
 		$delivereds = Orderlog::where('appname','=',Config::get('jex.tracker_app'))
                         ->where('status','=','delivered')
                         ->orderBy('created_at','desc')
                         ->orderBy('deliveryId','desc')
                         ->groupBy('deliveryId')
                         ->get(array( 'deliveryId', 'deliverytime' ));
+        */
+        $pendingan = Orderlog::where('appname','=',Config::get('jex.tracker_app'))
+                        ->where('pendingCount','!=', strval(0))
+                        ->orderBy('created_at','desc')
+                        ->orderBy('deliveryId','desc')
+                        ->groupBy('deliveryNote')
+                        ->get(array( 'deliveryId', 'deliveryNote' ));
 
         $count = 0;
-        foreach($delivereds as $d){
+        foreach($pendingan as $d){
             //print $d->deliveryId." ".$d->deliverytime."\r\n";
             $count++;
-            $shipment = \Shipment::where('delivery_id','=',$d->deliveryId)->first();
+            //$shipment = \Shipment::where('delivery_id','=',$d->deliveryId)->first();
 
             if($shipment){
                 $shipment->status = 'delivered';
-                $shipment->deliverytime = $d->deliverytime;
-                $shipment->save();
+                //$shipment->deliverytime = $d->deliverytime;
+                //$shipment->save();
             }
 
             print_r($d->toArray());
