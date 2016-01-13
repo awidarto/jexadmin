@@ -58,11 +58,11 @@ class DeliveryBacktrack extends Command {
             $count++;
             //$shipment = \Shipment::where('delivery_id','=',$d->deliveryId)->first();
 
-            if($shipment){
-                $shipment->status = 'delivered';
+            //if($shipment){
+                //$shipment->status = 'delivered';
                 //$shipment->deliverytime = $d->deliverytime;
                 //$shipment->save();
-            }
+            //}
 
             print_r($d->toArray());
         }
