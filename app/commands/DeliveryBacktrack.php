@@ -53,6 +53,20 @@ class DeliveryBacktrack extends Command {
                         ->get(array( 'deliveryId', 'deliveryNote','status' ));
 
         $count = 0;
+
+        $pc = array();
+        foreach ($pendingan as $p) {
+            if(isset($pc[$p->deliveryId]['pc'])){
+                if($p->status == 'pending'){
+                    $pc[$p->deliveryId]['pc'] = $pc[$p->deliveryId]['pc'] + 1;
+                }
+            }else{
+                $pc[$p->deliveryId]['pc'] = 1;
+            }
+        }
+
+        print_r($pc);
+
         foreach($pendingan as $d){
             //print $d->deliveryId." ".$d->deliverytime."\r\n";
             $count++;
@@ -64,7 +78,7 @@ class DeliveryBacktrack extends Command {
                 //$shipment->save();
             //}
 
-            print_r($d->toArray());
+            //print_r($d->toArray());
         }
 
         print "\r\n".$count;
