@@ -67,16 +67,17 @@ class DeliveryBacktrack extends Command {
 
         print_r($pc);
 
-        foreach($pc as $d){
+        foreach($pc as $d=>$c){
             //print $d->deliveryId." ".$d->deliverytime."\r\n";
             $count++;
-            //$shipment = \Shipment::where('delivery_id','=',$d->deliveryId)->first();
+            $shipment = \Shipment::where('delivery_id','=',$d)->first();
 
-            //if($shipment){
+            if($shipment){
+                $shipment->pending_count = $c;
                 //$shipment->status = 'delivered';
                 //$shipment->deliverytime = $d->deliverytime;
-                //$shipment->save();
-            //}
+                $shipment->save();
+            }
 
             //print_r($d->toArray());
         }
