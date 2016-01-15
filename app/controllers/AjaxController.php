@@ -116,6 +116,7 @@ class AjaxController extends BaseController {
                     $lat = doubleval($l->latitude);
                     $lng = doubleval($l->longitude);
 
+                    $status = ($l->status == '')?'report':$l->status;
                     if($lat != 0 && $lng != 0){
                         $locations[] = array(
                             'data'=>array(
@@ -125,7 +126,7 @@ class AjaxController extends BaseController {
                                     'timestamp'=>$l->datetimestamp,
                                     'identifier'=>$l->deviceId,
                                     'delivery_id'=>$l->deliveryId,
-                                    'status'=>$l->status
+                                    'status'=>$status
                                 )
                             );
                         $path[] = array(

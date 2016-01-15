@@ -26,6 +26,9 @@
             {{ Former::text('search_status')->id('search_status') }}
         </td>
         <td>
+            {{ Former::select('line_weight')->options(range(4,8))->id('lineWeight') }}
+        </td>
+        <td>
             <input type="checkbox" checked="true" id="showLocUpdate"> Show Location Update
         </td>
         <td>
@@ -34,6 +37,7 @@
     </tr>
     <tr>
         <td colspan="5" style="min-width:1000px;width:100%;">
+            <div id="refreshingMap" style="display:none;">Refreshing map points...</div>
             <div id="lmap" style="width:90%;height:800px;">
 
             </div>
@@ -79,6 +83,10 @@
             refreshMap();
         });
 
+        $('#showLocUpdate').on('click',function(){
+            refreshMap();
+        });
+
         var lg;
         var icsize = new L.Point(19,47);
         var icanchor = new L.Point(9,20);
@@ -97,6 +105,9 @@
         var paths = [];
 
         function refreshMap(){
+
+            $('#refreshingMap').show();
+
             var currtime = new Date();
             lineWeight = $('#lineWeight').val();
             //console.log(currtime.getTime());
@@ -132,6 +143,8 @@
                 },
 
                 function(data) {
+
+
                     if(data.result == 'ok'){
 
 
@@ -186,7 +199,7 @@
                                 markers.push(m);
 
                             }else{
-                                if(this.data.status != 'report'){
+                                if(this.data.status != 'report' && this.data.status != ''){
                                     var m = L.marker(new L.LatLng( this.data.lat, this.data.lng ), { icon: icon }).addTo(map).bindPopup(content);
                                     markers.push(m);
                                 }
@@ -195,10 +208,15 @@
                         });
 
                     }
+
+                    $('#refreshingMap').hide();
+
                 },'json');
 
         }
 
+
+        refreshMap();
 
     } );
 
