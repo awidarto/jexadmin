@@ -103,7 +103,7 @@
 
             var icon_yellow = L.AwesomeMarkers.icon({
                 icon: 'icon-gift',
-                color: 'blue',
+                color: 'orange',
                 iconSize: icsize,
                 iconAnchor: icanchor,
                 shadowAnchor: shanchor
@@ -169,9 +169,9 @@
                         $.each(data.locations,function(){
 
                             if(this.data.status == 'report'){
-                                icon = icon_green;
-                            }else if(this.data.status == 'delivered'){
                                 icon = icon_yellow;
+                            }else if(this.data.status == 'delivered'){
+                                icon = icon_green;
                             }else{
                                 icon =  icon_red;
                             }
