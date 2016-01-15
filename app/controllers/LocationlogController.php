@@ -59,7 +59,7 @@ class LocationlogController extends AdminController {
     {
 
         $this->fields = array(
-            array('mtimestamp',array('kind'=>'daterange','query'=>'like','pos'=>'both','show'=>true)),
+            array('mtimestamp',array('kind'=>'daterange', 'callback'=>'showDatetime','query'=>'like','pos'=>'both','show'=>true)),
             array('deviceId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('sourceSensor',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('latitude',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
@@ -98,6 +98,11 @@ class LocationlogController extends AdminController {
 
         $actions = $edit.'<br />'.$delete;
         return $actions;
+    }
+
+    public function showDatetime($data)
+    {
+        return date('d-m-Y H:i:s',$data['mtimestamp']->sec );
     }
 
     public function splitTag($data){
