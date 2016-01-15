@@ -59,7 +59,7 @@ class LocationlogController extends AdminController {
     {
 
         $this->fields = array(
-            array('mtimestamp',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
+            array('mtimestamp',array('kind'=>'daterange','query'=>'like','pos'=>'both','show'=>true)),
             array('deviceId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('sourceSensor',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('latitude',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
