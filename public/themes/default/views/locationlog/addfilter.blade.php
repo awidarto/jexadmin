@@ -14,7 +14,7 @@
 <table style="width:100%;">
     <tr>
         <td>
-            {{ Former::text('search_deliverytime')->id('search_deliverytime')->class('form-control daterangespicker') }}
+            {{ Former::text('search_timestamp')->id('search_deliverytime')->class('form-control daterangespicker') }}
         </td>
         <td>
             {{ Former::text('search_device')->id('search_device') }}
