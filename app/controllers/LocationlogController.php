@@ -28,7 +28,7 @@ class LocationlogController extends AdminController {
     public function getIndex()
     {
         $this->heads = array(
-            array('Timestamp',array('search'=>true,'sort'=>true,'datetimerange'=>true)),
+            array('Timestamp',array('search'=>true,'sort'=>true,'daterange'=>true)),
             array('Device Name',array('search'=>true,'sort'=>true)),
             array('Sensor',array('search'=>true,'sort'=>true)),
             array('Latitude',array('search'=>true,'sort'=>false)),
