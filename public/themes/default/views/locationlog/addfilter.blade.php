@@ -7,22 +7,37 @@
 
 <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
 
-<table>
+{{ HTML::script('js/leaflet-google.js') }}
+{{ HTML::script('js/leaflet.awesome-markers.min.js') }}
+{{ HTML::script('js/leaflet.polylineDecorator.min.js') }}
+
+<table style="width:100%;">
     <tr>
-        <td style="min-width:1000px;width:80%;">
-            <div id="lmap" style="width:100%;height:800px;">
+        <td>
+            {{ Former::text('search_deliverytime')->id('search_deliverytime')->class('form-control daterangespicker') }}
+        </td>
+        <td>
+            {{ Former::text('search_device')->id('search_device') }}
+        </td>
+        <td>
+            {{ Former::text('search_courier')->id('search_courier') }}
+        </td>
+        <td>
+            {{ Former::text('search_status')->id('search_status') }}
+        </td>
+        <td>
+            <input type="checkbox" checked="true" id="showLocUpdate"> Show Location Update
+        </td>
+        <td>
+            {{ Former::button('Refresh')->id('refreshMap')}}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="5" style="min-width:1000px;width:100%;">
+            <div id="lmap" style="width:90%;height:800px;">
 
             </div>
 
-        </td>
-        <td style="width:400px;max-width:400px;vertical-align:top;">
-            <h4>Filters</h4>
-            {{ Former::text('search_deliverytime')->id('search_deliverytime') }}
-            {{ Former::text('search_device')->id('search_device') }}
-            {{ Former::text('search_courier')->id('search_courier') }}
-            {{ Former::text('search_status')->id('search_status') }}
-            <br />
-            {{ Former::button('Refresh')->id('refreshMap')}}
         </td>
     </tr>
 </table>
@@ -108,7 +123,7 @@
                 shadowAnchor: shanchor
             });
 
-            $.post('{{ URL::to('ajax/locationlog')}}' + currtime.getTime() ,
+            $.post('{{ URL::to('ajax/locationlog')}}?' + currtime.getTime() ,
                 {
                     'device_identifier':$('#search_device').val(),
                     'timestamp':$('#search_deliverytime').val(),
@@ -153,7 +168,7 @@
 
                         $.each(data.locations,function(){
 
-                            if(this.data.status == 'loc_update'){
+                            if(this.data.status == 'record'){
                                 icon = icon_green;
                             }else if(this.data.status == 'delivered'){
                                 icon = icon_yellow;

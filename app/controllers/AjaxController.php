@@ -53,16 +53,16 @@ class AjaxController extends BaseController {
         $status = Input::get('status');
 
         $device_name = ($device_name == '')?'all':$device_name;
-        $timestamp = ($timestamp == '')? 'now' :$timestamp;
+        $timestamp = ($timestamp == '')? date('Y-m-d',time()) :$timestamp;
         $courier = ($courier == '')?'all':$courier;
         $status = ($status == '')?'all':$status;
 
         $model = new Geolog();
 
         if($device_name == 'all'){
-            $devices = Geolog::distinct('identifier')->get();
+            $devices = Geolog::distinct('deviceId')->get();
         }else{
-            $devices = Geolog::distinct('identifier')
+            $devices = Geolog::distinct('deviceId')
                 ->where('deviceId','like','%'.$device_name.'%')
                 ->get();
         }
@@ -75,43 +75,53 @@ class AjaxController extends BaseController {
 
         foreach($devices as $d){
 
-            $mapcolor = Prefs::get_device_color($d->identifier);
+            $deviceId = $d[0];
 
-            $this->db
-                ->select('id,identifier,timestamp,latitude as lat,longitude as lng,status')
-                ->where('identifier',$d->identifier);
+            $mapcolor = Prefs::get_device_color($deviceId);
 
-            if($timestamp == ''){
-                $this->db->like('timestamp',date('Y-m-d',time()),'after');
+            $timestamps = explode(' - ',$timestamp);
+
+            if(count($timestamps) == 2){
+                $daystart = trim($timestamps[0]).' 00:00:00';
+                $dayend = trim($timestamps[1]).' 23:59:59';
             }else{
-                $this->db->like('timestamp',$timestamp,'after');
+                $daystart = $timestamp.' 00:00:00';
+                $dayend = $timestamp.' 23:59:59';
             }
 
-            if($status != ''){
-                $this->db->like('status',$status,'after');
+
+            $daystart = new MongoDate( strtotime($daystart) );
+            $dayend = new MongoDate( strtotime($dayend) );
+
+
+            $model = new Geolog();
+            $model = $model->where('deviceId','=',$deviceId)->whereBetween('mtimestamp',array($daystart,$dayend));
+
+            if($status != 'all'){
+                $model = $model->where('status','like','%'.$status.'%');
             }
 
-                //->like('timestamp','2012-09-03','after')
-                //->limit(10,0)
-            $loc = $this->db
-                ->order_by('timestamp','desc')
-                ->get($this->config->item('location_log_table'));
+            //->where('appname','=', Config::get('jex.tracker_app'))
 
-            if($loc->num_rows() > 0){
+            $locs = $model->get();
+
+            //print_r($locs);
+
+            if( count( $locs->toArray() ) > 0){
                 $path = array();
-                $loc = $loc->result();
-                foreach($loc as $l){
-                    $lat = (double)$l->lat;
-                    $lng = (double)$l->lng;
+
+                foreach($locs as $l){
+                    $lat = doubleval($l->latitude);
+                    $lng = doubleval($l->longitude);
 
                     if($lat != 0 && $lng != 0){
                         $locations[] = array(
                             'data'=>array(
-                                    'id'=>$l->id,
+                                    'id'=>$l->_id,
                                     'lat'=>$lat,
                                     'lng'=>$lng,
-                                    'timestamp'=>$l->timestamp,
-                                    'identifier'=>$l->identifier,
+                                    'timestamp'=>$l->datetimestamp,
+                                    'identifier'=>$l->deviceId,
                                     'status'=>$l->status
                                 )
                             );
@@ -131,7 +141,7 @@ class AjaxController extends BaseController {
             }
         }
 
-        print json_encode(array('result'=>'ok','locations'=>$locations,'paths'=>$paths, 'pathdummy'=>$pathdummy, 'q'=>$this->db->last_query() ));
+        print json_encode(array('result'=>'ok','locations'=>$locations,'paths'=>$paths, 'pathdummy'=>$pathdummy, 'q'=>'' ));
 
     }
 
