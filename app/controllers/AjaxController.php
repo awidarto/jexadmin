@@ -103,7 +103,9 @@ class AjaxController extends BaseController {
 
             //->where('appname','=', Config::get('jex.tracker_app'))
 
-            $locs = $model->get();
+            $locs = $model
+                        ->orderBy('mtimestamp','desc')
+                        ->get();
 
             //print_r($locs);
 
