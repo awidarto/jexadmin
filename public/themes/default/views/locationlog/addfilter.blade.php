@@ -186,7 +186,7 @@
                                 markers.push(m);
 
                             }else{
-                                if(this.data.status != 'loc_update'){
+                                if(this.data.status != 'record'){
                                     var m = L.marker(new L.LatLng( this.data.lat, this.data.lng ), { icon: icon }).addTo(map).bindPopup(content);
                                     markers.push(m);
                                 }
