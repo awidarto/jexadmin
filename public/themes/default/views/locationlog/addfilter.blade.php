@@ -168,7 +168,7 @@
 
                         $.each(data.locations,function(){
 
-                            if(this.data.status == 'record'){
+                            if(this.data.status == 'report'){
                                 icon = icon_green;
                             }else if(this.data.status == 'delivered'){
                                 icon = icon_yellow;
@@ -178,7 +178,7 @@
 
                             var content = '<div style="background-color:white;padding:3px;width:150px;">' +
                                 '<div class="bg"></div>' +
-                                '<div class="text">' + this.data.identifier + '<br />' + this.data.timestamp + '<br />' + this.data.status + '</div>' +
+                                '<div class="text">' + this.data.identifier + '<br />' + this.data.timestamp + '<br />' + this.data.delivery_id + '<br />' + this.data.status +  '</div>' +
                             '</div>';
 
                             if($('#showLocUpdate').is(':checked')){
@@ -186,7 +186,7 @@
                                 markers.push(m);
 
                             }else{
-                                if(this.data.status != 'record'){
+                                if(this.data.status != 'report'){
                                     var m = L.marker(new L.LatLng( this.data.lat, this.data.lng ), { icon: icon }).addTo(map).bindPopup(content);
                                     markers.push(m);
                                 }

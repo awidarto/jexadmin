@@ -122,6 +122,7 @@ class AjaxController extends BaseController {
                                     'lng'=>$lng,
                                     'timestamp'=>$l->datetimestamp,
                                     'identifier'=>$l->deviceId,
+                                    'delivery_id'=>$l->deliveryId,
                                     'status'=>$l->status
                                 )
                             );
