@@ -997,8 +997,10 @@ class SyncapiController extends \Controller {
                         if( $olog->status == 'delivered' ){
                             if($olog->deliverytime == '' || $olog->deliverytime == '0000-00-00 00:00:00'){
                                 $shipment->deliverytime = date('Y-m-d H:i:s',time());
+                                $shipment->eventtime = date('Y-m-d H:i:s',time());
                             }else{
                                 $shipment->deliverytime = $olog->deliverytime;
+                                $shipment->eventtime = $olog->deliverytime;
                             }
                         }else{
                             if($olog->deliverytime == '' || $olog->deliverytime == '0000-00-00 00:00:00'){
