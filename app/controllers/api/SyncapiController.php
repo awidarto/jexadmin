@@ -994,11 +994,18 @@ class SyncapiController extends \Controller {
                             }
                         }
 
-
-                        if($olog->deliverytime == '' || $olog->deliverytime == '0000-00-00 00:00:00'){
-                            $shipment->deliverytime = date('Y-m-d H:i:s',time());
+                        if( $olog->status == 'delivered' ){
+                            if($olog->deliverytime == '' || $olog->deliverytime == '0000-00-00 00:00:00'){
+                                $shipment->deliverytime = date('Y-m-d H:i:s',time());
+                            }else{
+                                $shipment->deliverytime = $olog->deliverytime;
+                            }
                         }else{
-                            $shipment->deliverytime = $olog->deliverytime;
+                            if($olog->deliverytime == '' || $olog->deliverytime == '0000-00-00 00:00:00'){
+                                $shipment->eventtime = date('Y-m-d H:i:s',time());
+                            }else{
+                                $shipment->eventtime = $olog->deliverytime;
+                            }
                         }
 
                         if($olog->deliveryNote != ''){
