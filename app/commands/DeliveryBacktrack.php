@@ -54,14 +54,16 @@ class DeliveryBacktrack extends Command {
 
         $count = 0;
 
+        $data = '';
         foreach ($delivereds as $d) {
 
             $shipment = \Shipment::where('delivery_id','=',$d->deliveryId)->first();
 
             if($shipment){
                 if(date( 'Y-m-d', strtotime($d->deliverytime) ) != date( 'Y-m-d', strtotime($shipment->deliverytime) ) ){
-                    print $d->deliveryId." ".$d->deliverytime." ".$shipment->deliverytime."\r\n";
+                    //print $d->deliveryId." ".$d->deliverytime." ".$shipment->deliverytime."\r\n";
 
+                    $data .= '"'.$d->deliveryId.'","'.$d->deliverytime.'","'.$shipment->deliverytime.'"'."\r\n";
                     $count++;
                 }
 
@@ -69,7 +71,9 @@ class DeliveryBacktrack extends Command {
 
         }
 
-        print "\r\ndifferent date : ".$count;
+        print $data;
+
+        //print "\r\ndifferent date : ".$count;
 
         /*
         $pc = array();
