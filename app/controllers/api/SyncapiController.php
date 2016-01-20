@@ -968,6 +968,8 @@ class SyncapiController extends \Controller {
 
                 $olog->appname = $appname;
 
+                $olog->deviceActor = (isset($user->identifier))?$user->identifier:'';
+
                 $r = $olog->save();
 
                 $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)
