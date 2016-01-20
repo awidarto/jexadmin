@@ -81,6 +81,8 @@ Route::controller('deliverybydate', 'DeliverybydateController');
 Route::controller('orderlog', 'OrderlogController');
 Route::controller('locationlog', 'LocationlogController');
 
+Route::controller('route', 'RouteController');
+
 
 Route::controller('upload', 'UploadController');
 Route::controller('ajax', 'AjaxController');

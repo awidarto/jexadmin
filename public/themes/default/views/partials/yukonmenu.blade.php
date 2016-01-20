@@ -76,6 +76,14 @@
                         </li>
                         <li class="first_level {{ hsa( array('logs') ) }} ">
                           <a href=""><span class="fa fa-table"></span>
+                            <span>Location</span><span class="fa arrow"></span></a>
+                          <ul>
+                            <li class="{{ sa('route') }}" ><a href="{{ URL::to('route') }}"> Routing</a></li>
+                            <li class="{{ sa('locationlog') }}" ><a href="{{ URL::to('locationlog') }}"> Location Log</a></li>
+                          </ul>
+                        </li>
+                        <li class="first_level {{ hsa( array('logs') ) }} ">
+                          <a href=""><span class="fa fa-table"></span>
                             <span>Logs</span><span class="fa arrow"></span></a>
                           <ul>
                             <li class="{{ sa('orderlog') }}" ><a href="{{ URL::to('orderlog') }}"> Order Log</a></li>

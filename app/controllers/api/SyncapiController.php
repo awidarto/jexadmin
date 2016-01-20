@@ -438,7 +438,9 @@ class SyncapiController extends \Controller {
 
                 $r = $olog->save();
 
-                $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)->first();
+                $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)
+                                ->where('status','!=','delivered')
+                                ->first();
 
                 if($shipment){
 
@@ -965,7 +967,9 @@ class SyncapiController extends \Controller {
 
                 $r = $olog->save();
 
-                $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)->first();
+                $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)
+                                ->where('status','!=','delivered')
+                                ->first();
 
                 if($shipment){
 
