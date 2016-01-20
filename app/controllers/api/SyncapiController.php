@@ -743,6 +743,8 @@ class SyncapiController extends \Controller {
 
                 $olog->appname = $appname;
 
+                $olog->deviceActor = (isset($user->identifier))?$user->identifier:'';
+
                 $olog->mtimestamp = new \MongoDate(time());
 
                 $olog->warehouseDevId = $user->identifier;
@@ -862,6 +864,8 @@ class SyncapiController extends \Controller {
 
                 $olog->appname = $appname;
 
+                $olog->deviceActor = (isset($user->identifier))?$user->identifier:'';
+
                 $olog->pickupDevId = $user->identifier;
 
                 if($olog->disposition == $key && isset($user->node_id)){
@@ -969,6 +973,8 @@ class SyncapiController extends \Controller {
                 $olog->appname = $appname;
 
                 $olog->deviceActor = (isset($user->identifier))?$user->identifier:'';
+
+                $olog->deliveryDevId = $user->identifier;
 
                 $r = $olog->save();
 
