@@ -97,16 +97,10 @@ class OrderlogController extends AdminController {
 
         $this->fields = $this->def_fields;
 
-        $db = Config::get('jayon.main_db');
-
         $this->def_order_by = 'ordertime';
         $this->def_order_dir = 'desc';
         $this->place_action = 'first';
         $this->show_select = true;
-
-        $this->sql_key = 'delivery_id';
-        $this->sql_table_name = Config::get('jayon.incoming_delivery_table');
-        $this->sql_connection = 'mysql';
 
         return parent::postDlxl();
     }
