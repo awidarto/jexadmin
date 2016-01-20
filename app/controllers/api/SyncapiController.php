@@ -545,6 +545,8 @@ class SyncapiController extends \Controller {
 
         $user = \Device::where('key','=',$key)->first();
 
+        $appname = (\Input::has('app'))?\Input::get('app'):'app.name';
+
         if(!$user){
             $actor = 'no id : no name';
             \Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found, upload image meta failed'));
@@ -569,6 +571,7 @@ class SyncapiController extends \Controller {
                     $blog->{$k} = $v;
                 }
 
+                $blog->appname = $appname;
                 $blog->mtimestamp = new \MongoDate(time());
 
                 $r = $blog->save();
@@ -1194,6 +1197,9 @@ class SyncapiController extends \Controller {
         foreach( $json as $j){
 
             if(isset( $j['logId'] )){
+
+                $j['appname'] = $appname;
+
                 if(isset($j['datetimestamp'])){
                     $j['mtimestamp'] = new \MongoDate(strtotime($j['datetimestamp']));
                 }
