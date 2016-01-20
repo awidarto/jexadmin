@@ -42,7 +42,7 @@ class DeliveryBacktrack extends Command {
                         ->orderBy('deliveryId','desc')
                         ->orderBy('created_at','desc')
                         ->groupBy('deliveryId')
-                        ->get(array( 'deliveryId', 'deliverytime' ));
+                        ->get(array( 'deliveryId', 'merchantTransId' ,'deliverytime' ));
         /*
         $pendingan = Orderlog::where('appname','=',Config::get('jex.tracker_app'))
                         ->where('pendingCount','!=', strval(0))
@@ -63,7 +63,7 @@ class DeliveryBacktrack extends Command {
                 if(date( 'Y-m-d', strtotime($d->deliverytime) ) != date( 'Y-m-d', strtotime($shipment->deliverytime) ) ){
                     //print $d->deliveryId." ".$d->deliverytime." ".$shipment->deliverytime."\r\n";
 
-                    $data .= '"'.$d->deliveryId.'","'.$d->deliverytime.'","'.$shipment->deliverytime.'"'."\r\n";
+                    $data .= '"'.$d->deliveryId.'","'.$d->merchantTransId.'","'.$d->deliverytime.'","'.$shipment->deliverytime.'"'."\r\n";
                     $count++;
                 }
 
