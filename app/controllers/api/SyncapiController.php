@@ -439,7 +439,7 @@ class SyncapiController extends \Controller {
                 $r = $olog->save();
 
                 $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)
-                                ->where('status','!=','delivered')
+                                //->where('status','!=','delivered')
                                 ->first();
 
                 if($shipment){
@@ -458,20 +458,28 @@ class SyncapiController extends \Controller {
                         $changes = true;
 
                     }elseif($appname == \Config::get('jex.tracker_app')){
-                        $shipment->status = $olog->status;
-                        $shipment->courier_status = $olog->courierStatus;
 
-                        if($olog->status == 'pending'){
-                            $shipment->pending_count = $shipment->pending_count + 1;
-                        }elseif($olog->status == 'delivered'){
-                            if($olog->deliverytime == '' || $olog->deliverytime == '0000-00-00 00:00:00'){
-                                $shipment->deliverytime = date('Y-m-d H:i:s',time());
-                            }else{
-                                $shipment->deliverytime = $olog->deliverytime;
+                        if($shipment->status == 'delivered'){
+                            $changes = false;
+                        }else{
+                            $shipment->status = $olog->status;
+                            $shipment->courier_status = $olog->courierStatus;
+
+                            if($olog->status == 'pending'){
+                                $shipment->pending_count = $shipment->pending_count + 1;
+                            }elseif($olog->status == 'delivered'){
+                                if($olog->deliverytime == '' || $olog->deliverytime == '0000-00-00 00:00:00'){
+                                    $shipment->deliverytime = date('Y-m-d H:i:s',time());
+                                }else{
+                                    $shipment->deliverytime = $olog->deliverytime;
+                                }
                             }
+
+                            $changes = true;
+
                         }
 
-                        $changes = true;
+
 
                     }
 
@@ -982,9 +990,19 @@ class SyncapiController extends \Controller {
                                 //->where('status','!=','delivered')
                                 ->first();
 
+                $changes = false;
+
                 if($shipment){
 
+                    if($shipment->status == 'delivered'){
+                        $changes = false;
+                    }else{
+                        $changes = true;
+                    }
+
                     $shipment->courier_status = $olog->courierStatus;
+
+
 
                     /*
                     if($olog->status == 'pending'){
@@ -1056,7 +1074,9 @@ class SyncapiController extends \Controller {
                         $shipment->pickup_status = \Config::get('jayon.trans_status_pickup');
                     }
                     */
-                    $shipment->save();
+                    if($changes == true){
+                        $shipment->save();
+                    }
 
                     $is_there = \Geolog::where('datetimestamp','=',$shipment->deliverytime)
                                         ->where('deliveryId' ,'=',  $shipment->delivery_id)
