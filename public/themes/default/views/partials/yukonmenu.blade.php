@@ -87,7 +87,7 @@
                             <span>Logs</span><span class="fa arrow"></span></a>
                           <ul>
                             <li class="{{ sa('orderlog') }}" ><a href="{{ URL::to('orderlog') }}"> Order Log</a></li>
-                            <li class="{{ sa('locationlog') }}" ><a href="{{ URL::to('locationlog') }}"> Location Log</a></li>
+                            <li class="{{ sa('notelog') }}" ><a href="{{ URL::to('notelog') }}"> Note Log</a></li>
                           </ul>
                         </li>
                         <li class="first_level">
