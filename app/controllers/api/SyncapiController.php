@@ -476,7 +476,7 @@ class SyncapiController extends \Controller {
                     }
 
                     if($changes){
-                        $shipment->save();
+                        //$shipment->save();
                     }
 
                     $hdata = array();

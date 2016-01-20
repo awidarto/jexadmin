@@ -27,7 +27,7 @@
         "sleeping-owl/with-join": "1.*",
         "parse/php-sdk" : "1.1.*",
         "passioncoder/simplecurl": "dev-master",
-        "guzzlehttp/guzzle": "6.1.0"
+        "guzzlehttp/guzzle": "5.3.*"
 	},
 	"autoload": {
 		"classmap": [
