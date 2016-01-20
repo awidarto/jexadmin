@@ -2,32 +2,7 @@
 
 class OrderlogController extends AdminController {
 
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->controller_name = str_replace('Controller', '', get_class());
-
-        //$this->crumb = new Breadcrumb();
-        //$this->crumb->append('Home','left',true);
-        //$this->crumb->append(strtolower($this->controller_name));
-
-        $this->model = new Orderlog();
-        //$this->model = DB::collection('documents');
-
-    }
-
-    public function getTest()
-    {
-        $raw = $this->model->where('docFormat','like','picture')->get();
-
-        print $raw->toJSON();
-    }
-
-
-    public function getIndex()
-    {
-        $this->heads = array(
+    private $def_heads = array(
             array('Timestamp',array('search'=>true,'sort'=>true,'datetimerange'=>true)),
             array('Merchant Id',array('search'=>true,'sort'=>true)),
             array('Delivery Id',array('search'=>true,'sort'=>true)),
@@ -48,22 +23,7 @@ class OrderlogController extends AdminController {
 
         );
 
-        //print $this->model->where('docFormat','picture')->get()->toJSON();
-
-        $this->title = 'Order Status Log';
-
-        $this->show_select = false;
-
-        $this->place_action = 'none';
-
-        return parent::getIndex();
-
-    }
-
-    public function postIndex()
-    {
-
-        $this->fields = array(
+    private $def_fields = array(
             array('created_at',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
             array('merchantId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('deliveryId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
@@ -83,6 +43,44 @@ class OrderlogController extends AdminController {
             array('appname',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
         );
 
+
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->controller_name = str_replace('Controller', '', get_class());
+
+        //$this->crumb = new Breadcrumb();
+        //$this->crumb->append('Home','left',true);
+        //$this->crumb->append(strtolower($this->controller_name));
+
+        $this->model = new Orderlog();
+        //$this->model = DB::collection('documents');
+
+    }
+
+    public function getIndex()
+    {
+        $this->heads = $this->def_heads;
+
+        //print $this->model->where('docFormat','picture')->get()->toJSON();
+
+        $this->title = 'Order Status Log';
+
+        $this->show_select = false;
+
+        $this->place_action = 'none';
+
+        return parent::getIndex();
+
+    }
+
+    public function postIndex()
+    {
+
+        $this->fields = $this->def_fields;
+
         $this->def_order_by = 'created_at';
         $this->def_order_dir = 'desc';
         $this->show_select = false;
@@ -92,72 +90,28 @@ class OrderlogController extends AdminController {
         return parent::postIndex();
     }
 
-    public function postAdd($data = null)
+    public function postDlxl()
     {
 
-        $this->validator = array(
-            'firstname' => 'required',
-            'lastname' => 'required',
-            'email'=> 'required|unique:agents',
-            'pass'=>'required|same:repass'
-        );
+        $this->heads = $this->def_heads;
 
-        return parent::postAdd($data);
+        $this->fields = $this->def_fields;
+
+        $db = Config::get('jayon.main_db');
+
+        $this->def_order_by = 'ordertime';
+        $this->def_order_dir = 'desc';
+        $this->place_action = 'first';
+        $this->show_select = true;
+
+        $this->sql_key = 'delivery_id';
+        $this->sql_table_name = Config::get('jayon.incoming_delivery_table');
+        $this->sql_connection = 'mysql';
+
+        return parent::postDlxl();
     }
 
-    public function beforeSave($data)
-    {
-        unset($data['repass']);
-        $data['pass'] = Hash::make($data['pass']);
-        return $data;
-    }
 
-    public function beforeUpdate($id,$data)
-    {
-        //print_r($data);
-
-        if(isset($data['pass']) && $data['pass'] != ''){
-            unset($data['repass']);
-            $data['pass'] = Hash::make($data['pass']);
-
-        }else{
-            unset($data['pass']);
-            unset($data['repass']);
-        }
-
-        //print_r($data);
-
-        //exit();
-
-        return $data;
-    }
-
-    public function postEdit($id,$data = null)
-    {
-        $this->validator = array(
-            'firstname' => 'required',
-            'lastname' => 'required',
-            'email'=> 'required'
-        );
-
-        if($data['pass'] == ''){
-            unset($data['pass']);
-            unset($data['repass']);
-        }else{
-            $this->validator['pass'] = 'required|same:repass';
-        }
-
-        return parent::postEdit($id,$data);
-    }
-
-    public function makeActions($data)
-    {
-        $delete = '<span class="del" id="'.$data['_id'].'" ><i class="icon-trash"></i>Delete</span>';
-        $edit = '<a href="'.URL::to('agent/edit/'.$data['_id']).'"><i class="icon-edit"></i>Update</a>';
-
-        $actions = $edit.'<br />'.$delete;
-        return $actions;
-    }
 
     public function splitTag($data){
         $tags = explode(',',$data['docTag']);

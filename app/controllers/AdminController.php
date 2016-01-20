@@ -2544,7 +2544,7 @@ class AdminController extends Controller {
                 $subfield = $sfields[1];
             }
 
-            if($infilter[$i])
+            if(isset($infilter[$i]) && $infilter[$i])
             {
                 //print $infilter[$i];
 
