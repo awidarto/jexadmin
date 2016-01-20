@@ -99,8 +99,8 @@ class OrderlogController extends AdminController {
 
         $this->def_order_by = 'ordertime';
         $this->def_order_dir = 'desc';
-        $this->place_action = 'first';
-        $this->show_select = true;
+        $this->place_action = 'none';
+        $this->show_select = false;
 
         return parent::postDlxl();
     }

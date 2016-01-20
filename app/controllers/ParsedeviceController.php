@@ -7,6 +7,32 @@ use Parse\ParsePush;
 
 class ParsedeviceController extends AdminController {
 
+    public $heads = array(
+        array('JEX Device Identifier',array('search'=>true,'sort'=>true)),
+        array('App Identifier',array('search'=>true,'sort'=>true)),
+        array('App Name',array('search'=>true,'sort'=>true)),
+        array('App Version',array('search'=>true,'sort'=>true)),
+        array('Device Brand',array('search'=>true,'sort'=>true)),
+        array('Device Type',array('search'=>true,'sort'=>true)),
+        array('Installation Id',array('search'=>true,'sort'=>true)),
+        array('Parse Version',array('search'=>true,'sort'=>true)),
+        array('Time Zone',array('search'=>true,'sort'=>true)),
+    );
+
+    public $fields = array(
+        array('JEXDeviceId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+        array('appIdentifier',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+        array('appName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+        array('appVersion',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+        array('deviceBrand',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+        array('deviceType',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+        array('installationId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+        array('parseVersion',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+        array('timeZone_on',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
+    );
+
+
+
     public function __construct()
     {
         parent::__construct();
@@ -91,17 +117,6 @@ class ParsedeviceController extends AdminController {
     {
 
 
-        $this->heads = array(
-            array('JEX Device Identifier',array('search'=>true,'sort'=>true)),
-            array('App Identifier',array('search'=>true,'sort'=>true)),
-            array('App Name',array('search'=>true,'sort'=>true)),
-            array('App Version',array('search'=>true,'sort'=>true)),
-            array('Device Brand',array('search'=>true,'sort'=>true)),
-            array('Device Type',array('search'=>true,'sort'=>true)),
-            array('Installation Id',array('search'=>true,'sort'=>true)),
-            array('Parse Version',array('search'=>true,'sort'=>true)),
-            array('Time Zone',array('search'=>true,'sort'=>true)),
-        );
 
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
@@ -134,17 +149,6 @@ class ParsedeviceController extends AdminController {
     public function postIndex()
     {
 
-        $this->fields = array(
-            array('JEXDeviceId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('appIdentifier',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('appName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('appVersion',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('deviceBrand',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('deviceType',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('installationId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('parseVersion',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('timeZone_on',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
-        );
 
         $this->place_action = 'first';
 
@@ -794,37 +798,8 @@ class ParsedeviceController extends AdminController {
     public function postDlxl()
     {
 
-        $this->heads = null;
-
-        $this->fields = array(
-            array('ordertime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('pickuptime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('buyerdeliverytime',array('kind'=>'daterange','query'=>'like','pos'=>'both','show'=>true)),
-            array('buyerdeliveryslot',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-            array('buyerdeliveryzone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('buyerdeliverycity',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('shipping_address',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('merchant_trans_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('delivery_type',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array(Config::get('jayon.jayon_members_table').'.merchantname',array('kind'=>'text','alias'=>'merchant_name','query'=>'like','callback'=>'merchantInfo','pos'=>'both','show'=>true)),
-            array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('status',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('directions',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('delivery_cost',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('cod_cost',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('total_price',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('buyer_name',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('shipping_zip',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('phone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('volume',array('kind'=>'numeric','query'=>'like','pos'=>'both','show'=>true)),
-            array('weight',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
-        );
-
-        $this->def_order_by = 'ordertime';
-        $this->def_order_dir = 'desc';
+        //$this->def_order_by = 'ordertime';
+        //$this->def_order_dir = 'desc';
 
         return parent::postDlxl();
     }
