@@ -997,7 +997,6 @@ class SyncapiController extends \Controller {
                     }else
                     */
                     if($olog->status == 'delivered' || $olog->status == 'returned' || $olog->status == 'pending'){
-                        $shipment->status = $olog->status;
 
                         if($olog->status == 'pending'){
                             if($shipment->delivery_note != $olog->deliveryNote){
@@ -1005,7 +1004,7 @@ class SyncapiController extends \Controller {
                             }
                         }
 
-                        if( $olog->status == 'delivered' ){
+                        if( $olog->status == 'delivered' && $shipment->status != 'delivered' ){
                             if($olog->deliverytime == '' || $olog->deliverytime == '0000-00-00 00:00:00'){
                                 $shipment->deliverytime = date('Y-m-d H:i:s',time());
                                 $shipment->eventtime = date('Y-m-d H:i:s',time());
@@ -1020,6 +1019,8 @@ class SyncapiController extends \Controller {
                                 $shipment->eventtime = $olog->deliverytime;
                             }
                         }
+
+                        $shipment->status = $olog->status;
 
                         if($olog->deliveryNote != ''){
                             $shipment->delivery_note = $olog->deliveryNote;
