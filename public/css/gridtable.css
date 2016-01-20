@@ -138,8 +138,8 @@ div.dataTables_length label {
 
 .dataTables_processing {
     position: absolute;
+    top: 200px !important;
 /*
-    top: 50%;
     left: 50%;
 */
     width: 100%;
