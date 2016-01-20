@@ -59,13 +59,17 @@ class DeliveryBacktrack extends Command {
             $shipment = \Shipment::where('delivery_id','=',$d->deliveryId)->first();
 
             if($shipment){
+                if(date( 'Y-m-d', strtotime($d->deliverytime) ) != date( 'Y-m-d', strtotime($shipment->deliverytime) ) ){
+                    print $d->deliveryId." ".$d->deliverytime." ".$shipment->deliverytime."\r\n";
 
-                print $d->deliveryId." ".$d->deliverytime." ".$shipment->deliverytime."\r\n";
+                    $count++;
+                }
 
             }
 
         }
 
+        print "\r\ndifferent date : ".$count;
 
         /*
         $pc = array();
