@@ -2,7 +2,7 @@
 
 class OrderlogController extends AdminController {
 
-    private $def_heads = array(
+    public $heads = array(
             array('Timestamp',array('search'=>true,'sort'=>true,'datetimerange'=>true)),
             array('Merchant Id',array('search'=>true,'sort'=>true)),
             array('Delivery Id',array('search'=>true,'sort'=>true)),
@@ -23,7 +23,7 @@ class OrderlogController extends AdminController {
 
         );
 
-    private $def_fields = array(
+    public $fields = array(
             array('created_at',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
             array('merchantId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('deliveryId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
@@ -62,7 +62,7 @@ class OrderlogController extends AdminController {
 
     public function getIndex()
     {
-        $this->heads = $this->def_heads;
+        //$this->heads = $this->def_heads;
 
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
@@ -79,7 +79,7 @@ class OrderlogController extends AdminController {
     public function postIndex()
     {
 
-        $this->fields = $this->def_fields;
+        //$this->fields = $this->def_fields;
 
         $this->def_order_by = 'created_at';
         $this->def_order_dir = 'desc';
@@ -92,15 +92,6 @@ class OrderlogController extends AdminController {
 
     public function postDlxl()
     {
-
-        $this->heads = $this->def_heads;
-
-        $this->fields = $this->def_fields;
-
-        $this->def_order_by = 'ordertime';
-        $this->def_order_dir = 'desc';
-        $this->place_action = 'none';
-        $this->show_select = false;
 
         return parent::postDlxl();
     }

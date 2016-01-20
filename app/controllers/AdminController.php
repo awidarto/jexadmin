@@ -3327,11 +3327,18 @@ class AdminController extends Controller {
 
         //print_r($titles);
 
-        array_unshift($fields, array('seq',array('kind'=>false)));
-        array_unshift($fields, array('action',array('kind'=>false)));
+        //array_unshift($fields, array('seq',array('kind'=>false)));
+        //if($this->place_action == 'both' || $this->place_action == 'first'){
+        //    array_unshift($fields, array('action',array('kind'=>false)));
+        //}
 
-        array_unshift($titles, array('seq',array('kind'=>false)));
-        array_unshift($titles, array('action',array('kind'=>false)));
+        //array_unshift($fields, array('seq',array('kind'=>false)));
+        //array_unshift($fields, array('action',array('kind'=>false)));
+
+        //array_unshift($titles, array('seq',array('kind'=>false)));
+        //array_unshift($titles, array('action',array('kind'=>false)));
+
+
 
         $infilters = Input::get('filter');
         $insorting = Input::get('sort');
