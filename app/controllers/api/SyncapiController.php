@@ -1002,7 +1002,21 @@ class SyncapiController extends \Controller {
 
                     $shipment->courier_status = $olog->courierStatus;
 
+                    if($olog->deliveryNote != ''){
+                        $shipment->delivery_note = $olog->deliveryNote;
+                    }
 
+                    if($olog->latitude != ''){
+                        $shipment->latitude = doubleval($olog->latitude);
+                        $shipment->dir_lat = doubleval($olog->latitude);
+                    }
+
+                    if($olog->longitude != ''){
+                        $shipment->longitude = doubleval($olog->longitude);
+                        $shipment->dir_lon = doubleval($olog->longitude);
+                    }
+
+                    $shipment->save();
 
                     /*
                     if($olog->status == 'pending'){
@@ -1039,21 +1053,6 @@ class SyncapiController extends \Controller {
                         }
 
                         $shipment->status = $olog->status;
-
-                        if($olog->deliveryNote != ''){
-                            $shipment->delivery_note = $olog->deliveryNote;
-                        }
-
-                        if($olog->latitude != ''){
-                            $shipment->latitude = doubleval($olog->latitude);
-                            $shipment->dir_lat = doubleval($olog->latitude);
-                        }
-
-                        if($olog->longitude != ''){
-                            $shipment->longitude = doubleval($olog->longitude);
-                            $shipment->dir_lon = doubleval($olog->longitude);
-                        }
-
 
                     }
 
