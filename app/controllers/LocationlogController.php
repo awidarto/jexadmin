@@ -35,6 +35,7 @@ class LocationlogController extends AdminController {
             array('Longitude',array('search'=>true,'sort'=>false)),
             array('Delivery Id',array('search'=>true,'sort'=>false)),
             array('Status',array('search'=>true,'sort'=>false)),
+            array('Event',array('search'=>true,'sort'=>false)),
             array('App Name',array('search'=>true,'sort'=>true)),
 
         );
@@ -66,6 +67,7 @@ class LocationlogController extends AdminController {
             array('longitude',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('deliveryId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('status',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('event',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('appname',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
         );
 
