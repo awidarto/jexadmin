@@ -13,7 +13,7 @@ class PhotologController extends AdminController {
             array('Longitude',array('search'=>true,'sort'=>false)),
             array('Name',array('search'=>true,'sort'=>true)),
             array('Namespace',array('search'=>true,'sort'=>true)),
-            array('Parent Class',array('search'=>true,'sort'=>true))
+            array('Parent Class',array('search'=>true,'sort'=>true)),
             array('Size',array('search'=>true,'sort'=>true)),
             array('Type',array('search'=>true,'sort'=>false)),
             array('Original URL',array('search'=>true,'sort'=>true)),
