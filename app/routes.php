@@ -80,6 +80,7 @@ Route::controller('deliverybydate', 'DeliverybydateController');
 
 Route::controller('orderlog', 'OrderlogController');
 Route::controller('notelog', 'NotelogController');
+Route::controller('photolog', 'PhotologController');
 Route::controller('locationlog', 'LocationlogController');
 
 Route::controller('route', 'RouteController');

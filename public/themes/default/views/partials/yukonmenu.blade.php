@@ -88,6 +88,7 @@
                           <ul>
                             <li class="{{ sa('orderlog') }}" ><a href="{{ URL::to('orderlog') }}"> Order Log</a></li>
                             <li class="{{ sa('notelog') }}" ><a href="{{ URL::to('notelog') }}"> Note Log</a></li>
+                            <li class="{{ sa('photolog') }}" ><a href="{{ URL::to('photolog') }}"> Photo Log</a></li>
                           </ul>
                         </li>
                         <li class="first_level">
