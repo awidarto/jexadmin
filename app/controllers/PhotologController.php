@@ -23,7 +23,7 @@ class PhotologController extends AdminController {
 
     public $fields = array(
             array('createdDate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
-            array('thumbnail_url',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('thumbnail_url',array('kind'=>'text', 'callback'=>'showThumb','query'=>'like','pos'=>'both','show'=>true)),
             array('parent_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('deviceId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('file_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
@@ -122,6 +122,13 @@ class PhotologController extends AdminController {
         }
     }
 
+    public function showThumb($data)
+    {
+        $display = HTML::image($data['thumbnail_url'].'?'.time(), $data['filename'], array('id' => $data['_id']));
+
+        return $display;
+    }
+
     public function namePic($data)
     {
         $name = HTML::link('products/view/'.$data['_id'],$data['productName']);
@@ -143,6 +150,8 @@ class PhotologController extends AdminController {
             return $name;
         }
     }
+
+
 
     public function getViewpics($id)
     {
