@@ -77,7 +77,7 @@ class PhotologController extends AdminController {
 
         //$this->fields = $this->def_fields;
 
-        $this->def_order_by = 'mtimestamp';
+        $this->def_order_by = 'createdDate';
         $this->def_order_dir = 'desc';
         $this->show_select = false;
 
