@@ -8,7 +8,7 @@ class PhotologController extends AdminController {
             array('Delivery ID',array('search'=>true,'sort'=>false)),
             array('Device ID',array('search'=>true,'sort'=>false)),
             array('File ID',array('search'=>true,'sort'=>true)),
-            array('Is Signature',array('search'=>true,'sort'=>true))
+            array('Is Signature',array('search'=>true,'sort'=>true)),
             array('Latitude',array('search'=>true,'sort'=>true)),
             array('Longitude',array('search'=>true,'sort'=>false)),
             array('Name',array('search'=>true,'sort'=>true)),
