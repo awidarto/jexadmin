@@ -30,6 +30,9 @@ class UploadapiController extends \Controller {
 
         $user = \Device::where('key','=',$key)->first();
 
+        $appname = (\Input::has('app'))?\Input::get('app'):'app.name';
+
+
         if(!$user){
             $actor = 'no id : no name';
             \Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found, upload image failed'));
@@ -170,6 +173,7 @@ class UploadapiController extends \Controller {
                     'deleted'=>0,
                     'deviceId'=>$deviceId,
                     'deviceKey'=>$deviceKey,
+                    'appname'=>$appname,
                     'createdDate'=>new \MongoDate(),
                     'lastUpdate'=>new \MongoDate()
                 );
