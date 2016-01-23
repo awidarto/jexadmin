@@ -62,7 +62,7 @@ class PhotologController extends AdminController {
 
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
-        $this->title = 'Delivery Note Log';
+        $this->title = 'Photo Log';
 
         $this->show_select = false;
 

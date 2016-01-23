@@ -59,6 +59,10 @@ class UploadapiController extends \Controller {
             $rstring = str_random(15);
         }
 
+        $deviceId = Input::get('deviceid');
+        $deviceKey = Input::get('deviceid');
+
+
         $result = '';
 
         //$destinationPath = realpath('storage/media').'/'.$rstring;
@@ -164,6 +168,8 @@ class UploadapiController extends \Controller {
                     'type'=> $filemime,
                     'size'=> $filesize,
                     'deleted'=>0,
+                    'deviceId'=>$deviceId,
+                    'deviceKey'=>$deviceKey,
                     'createdDate'=>new \MongoDate(),
                     'lastUpdate'=>new \MongoDate()
                 );
