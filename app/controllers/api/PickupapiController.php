@@ -201,6 +201,10 @@ class PickupapiController extends \BaseController {
             ->orderBy('ordertime','desc')
             ->get();
 
+        $total_billing = 0;
+        $total_delivery = 0;
+        $total_cod = 0;
+
         $norders = array();
         for($n = 0; $n < count($orders);$n++){
             $or = new \stdClass();
@@ -226,6 +230,81 @@ class PickupapiController extends \BaseController {
             $or->boxList = $this->boxList('delivery_id',$or->deliveryId,$key,$or->merchantId);
             $or->boxObjects = $this->boxList('delivery_id',$or->deliveryId, $key, $or->merchantId , true);
             $or->merchantObject = $this->merchantObject($or->merchantId);
+
+            /* chargeable */
+
+            $total = doubleval( $or->totalPrice );
+            $dsc = doubleval( $or->totalDiscount );
+            $tax = doubleval( $or->totalTax );
+            $dc = doubleval( $or->deliveryCost );
+            $cod = doubleval( $or->codCost );
+
+            $total = (is_nan($total))?0:$total;
+            $dsc = (is_nan($dsc))?0:$dsc;
+            $tax = (is_nan($tax))?0:$tax;
+            $dc = (is_nan($dc))?0:$dc;
+            $cod = (is_nan($cod))?0:$cod;
+
+            //print $total.' '.$dsc.' '.$tax.' '.$dc.' '.$cod."\r\n";
+
+            $payable = 0;
+
+            $details = \Deliverydetail::where('delivery_id','=',$or->deliveryId)->orderBy('unit_sequence','asc')->get();
+
+            $details = $details->toArray();
+
+
+            $d = 0;
+            $gt = 0;
+
+            foreach($details as $value => $key)
+            {
+
+                $u_total = doubleval($key['unit_total']);
+                $u_discount = doubleval($key['unit_discount']);
+                $gt += (is_nan($u_total))?0:$u_total;
+                $d += (is_nan($u_discount))?0:$u_discount;
+
+            }
+
+
+            if($gt == 0 ){
+                if($total > 0 && $payable)
+                $gt = $total;
+            }
+
+            //print $gt.' '.$dsc.' '.$tax.' '.$dc.' '.$cod."\r\n";
+
+            $payable = $gt;
+
+            $db = '';
+            if($or->deliveryBearer == 'merchant'){
+                $dc = 0;
+            }
+
+            //force all DO to zero
+
+            $cb = '';
+            if($or->codBearer == 'merchant'){
+                $cod = 0;
+            }
+
+            $codclass = '';
+
+
+            if($or->deliveryType == 'COD' || $or->deliveryType == 'CCOD'){
+                $chg = ($gt - $dsc) + $tax + $dc + $cod;
+            }else{
+                $dc = 0;
+                $cod = 0;
+                $chg = $dc;
+            }
+
+            $or->totalPrice = strval($payable);
+            $or->deliveryCost = strval($dc);
+            $or->codCost = strval($cod);
+            $or->chargeableAmount = strval($chg);
+
             $orders[$n] = $or;
             //$norders[] = $or;
         }
