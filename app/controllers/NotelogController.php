@@ -6,16 +6,19 @@ class NotelogController extends AdminController {
             array('Timestamp',array('search'=>true,'sort'=>true,'datetimerange'=>true)),
             array('Delivery Id',array('search'=>true,'sort'=>true)),
             array('Status',array('search'=>true,'sort'=>false)),
+            array('Latitude',array('search'=>true,'sort'=>false)),
+            array('Longitude',array('search'=>true,'sort'=>false)),
             array('Delivery Note',array('search'=>true,'sort'=>true)),
             array('Device Name',array('search'=>true,'sort'=>true)),
             array('App Name',array('search'=>true,'sort'=>true))
-
         );
 
     public $fields = array(
             array('mtimestamp',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
             array('deliveryId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('status',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('latitude',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('longitude',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('note',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('deviceId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('appname',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
