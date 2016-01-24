@@ -109,6 +109,11 @@ class PickupapiController extends \BaseController {
     {
         $key = Input::get('key');
         $deliverydate = Input::get('date');
+        $until = Input::get('until');
+
+        if(is_null($until) || $until == ''){
+            $until = date('Y-m-d',time());
+        }
 
         /*
                     ->join('members as m','d.merchant_id=m.id','left')
@@ -182,11 +187,12 @@ class PickupapiController extends \BaseController {
 
             })
             */
-            ->where(function($query) use($deliverydate){
+            ->where(function($query) use($deliverydate,$until){
                 $query->where('pickup_status','=', \Config::get('jayon.trans_status_tobepickup') )
                     ->where('status','!=', \Config::get('jayon.trans_status_canceled') )
                     ->where('status','!=', \Config::get('jayon.trans_status_mobile_delivered') )
-                    ->where('ordertime','>=',$deliverydate.' 00:00:00');
+                    ->whereBetween('ordertime',array( $deliverydate.' 00:00:00', $until.' 23:59:59' ));
+                    //->where('ordertime','>=',$deliverydate.' 00:00:00');
                     /*
                     ->orWhere('status','=', \Config::get('jayon.trans_status_mobile_pickedup') )
                     ->orWhere('status','=', \Config::get('jayon.trans_status_mobile_enroute') )
