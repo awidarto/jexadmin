@@ -403,7 +403,7 @@ class DeliverybydateController extends AdminController {
                     }else{
                         $currddev = $d;
                         $currdtotal = $tpd[$d];
-                        $box_count = $tpd[$d];
+                        $box_count = $bpd[$d];
                     }
 
                     $cd = $d;
