@@ -300,14 +300,38 @@ class DeliverybydateController extends AdminController {
 
         $dtotal = array();
 
+        $btotal = array();
+
+        $wtotal = array();
+
         foreach($tpd as $dk=>$dv){
             $dtotal[] = $dv;
+        }
+
+        foreach($bpd as $dk=>$dv){
+            $btotal[] = $dv;
+        }
+
+        foreach($wpd as $dk=>$dv){
+            $wtotal[] = $dv;
         }
 
         if(count($dtotal) > 0){
             $dmax = max($dtotal);
         }else{
             $dmax = 1;
+        }
+
+        if(count($btotal) > 0){
+            $bmax = max($btotal);
+        }else{
+            $bmax = 1;
+        }
+
+        if(count($wtotal) > 0){
+            $wmax = max($wtotal);
+        }else{
+            $wmax = 1;
         }
 
         $headvar1 = array(
@@ -449,8 +473,12 @@ class DeliverybydateController extends AdminController {
                     $maxattr = ($dmax == $currdtotal)?'style="background-color:red;"':'';
                     $row[] = array('value'=>$currdtotal,'attr'=>$maxattr);
 
-                    $row[] = array('value'=>$box_count,'attr'=>'');
-                    $row[] = array('value'=>$weight_sum,'attr'=>'');
+
+                    $maxattr = ($bmax == $box_count)?'style="background-color:red;"':'';
+                    $row[] = array('value'=>$box_count,'attr'=>$maxattr);
+
+                    $maxattr = ($wmax == $weight_sum)?'style="background-color:red;"':'';
+                    $row[] = array('value'=>$weight_sum,'attr'=>$maxattr);
 
 
                     $row[] = array('value'=>$ct,'attr'=>'');
