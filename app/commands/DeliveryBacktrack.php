@@ -64,6 +64,11 @@ class DeliveryBacktrack extends Command {
                     //print $d->deliveryId." ".$d->deliverytime." ".$shipment->deliverytime."\r\n";
 
                     $data .= '"'.$d->deliveryId.'","'.$d->merchantTransId.'","'.$d->deliverytime.'","'.$shipment->deliverytime.'"'."\r\n";
+
+                    $shipment->deliverytime = $d->deliverytime;
+
+                    $shipment->save();
+
                     $count++;
                 }
 

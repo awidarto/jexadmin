@@ -1,6 +1,6 @@
 <?php
 
-class DeliverybydateController extends AdminController {
+class DeliveryreportController extends AdminController {
 
     public function __construct()
     {
@@ -14,7 +14,7 @@ class DeliverybydateController extends AdminController {
 
         $this->model = new Shipment();
         //$this->model = DB::collection('documents');
-        $this->title = 'Delivery Time';
+        $this->title = 'Delivery Report';
 
     }
 
@@ -386,8 +386,6 @@ class DeliverybydateController extends AdminController {
         $tdo = 0;
         $tps = 0;
         $treturn = 0;
-
-        $tbox = 0;
 
         $totalrow = array();
 

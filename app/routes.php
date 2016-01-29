@@ -77,6 +77,8 @@ Route::controller('manifest', 'ManifestController');
 Route::controller('devmanifest', 'DevmanifestController');
 Route::controller('deliverytime', 'DeliverytimeController');
 Route::controller('deliverybydate', 'DeliverybydateController');
+Route::controller('deliveryreport', 'DeliveryreportController');
+
 
 Route::controller('orderlog', 'OrderlogController');
 Route::controller('notelog', 'NotelogController');
