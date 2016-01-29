@@ -138,7 +138,7 @@ class DeliverybydateController extends AdminController {
 
         $model = $this->model;
 
-        $model = $model->select('assignment_date','ordertime','deliverytime','delivery_note','pending_count','recipient_name','delivery_id',$mtab.'.merchant_id as merchant_id','cod_bearer','delivery_bearer','buyer_name','buyerdeliverycity','buyerdeliveryzone','c.fullname as courier_name','d.identifier as device_name', $mtab.'.phone', $mtab.'.mobile1',$mtab.'.mobile2','merchant_trans_id','m.merchantname as merchant_name','m.fullname as fullname','a.application_name as app_name','a.domain as domain ','delivery_type','shipping_address','status','pickup_status','warehouse_status','cod_cost','delivery_cost','total_price','total_tax','total_discount','box_count')
+        $model = $model->select('assignment_date','ordertime','deliverytime','delivery_note','pending_count','recipient_name','delivery_id',$mtab.'.merchant_id as merchant_id','cod_bearer','delivery_bearer','buyer_name','buyerdeliverycity','buyerdeliveryzone','c.fullname as courier_name','d.identifier as device_name', $mtab.'.phone', $mtab.'.mobile1',$mtab.'.mobile2','application_id','weight','merchant_trans_id','m.merchantname as merchant_name','m.fullname as fullname','a.application_name as app_name','a.domain as domain ','delivery_type','shipping_address','status','pickup_status','warehouse_status','cod_cost','delivery_cost','total_price','total_tax','total_discount','box_count')
             ->leftJoin('members as m',Config::get('jayon.incoming_delivery_table').'.merchant_id','=','m.id')
             ->leftJoin('applications as a',Config::get('jayon.assigned_delivery_table').'.application_id','=','a.id')
             ->leftJoin('devices as d',Config::get('jayon.assigned_delivery_table').'.device_id','=','d.id')
@@ -270,14 +270,31 @@ class DeliverybydateController extends AdminController {
 
         $bpd = array();
 
+        $wpd = array();
+
         foreach($actualresult as $dc){
             $bydc[$dc->device_name][$dc->buyerdeliverycity][$dc->buyerdeliveryzone][] = $dc;
+
+            if( is_null($dc->actual_weight) || $dc->actual_weight == ''){
+
+                $actual_weight =  Prefs::getWeightNominal($dc->weight,$dc->application_id);
+
+            }else{
+                $actual_weight = $dc->actual_weight;
+            }
+
+            //print $dc->weight."\r\n";
+            //print $dc->application_id."\r\n";
+            //print $actual_weight."\r\n";
+
             if(isset($tpd[$dc->device_name])){
                 $tpd[$dc->device_name] += 1;
                 $bpd[$dc->device_name] += $dc->box_count;
+                $wpd[$dc->device_name] += $actual_weight;
             }else{
                 $tpd[$dc->device_name] = 1;
                 $bpd[$dc->device_name] = $dc->box_count;
+                $wpd[$dc->device_name] = $actual_weight;
             }
         }
 
@@ -298,12 +315,14 @@ class DeliverybydateController extends AdminController {
             array('value'=>'Device','attr'=>''),
             array('value'=>'Total per Device','attr'=>''),
             array('value'=>'Jumlah Box','attr'=>''),
+            array('value'=>'Berat','attr'=>''),
             array('value'=>'Kota','attr'=>''),
             array('value'=>'Kecamatan','attr'=>''),
             array('value'=>'Total','attr'=>'')
         );
 
         $headvar2 = array(
+            array('value'=>'','attr'=>''),
             array('value'=>'','attr'=>''),
             array('value'=>'','attr'=>''),
             array('value'=>'','attr'=>''),
@@ -380,6 +399,8 @@ class DeliverybydateController extends AdminController {
 
         $box_count = 0;
 
+        $weight_sum = 0;
+
         //total per columns
         $tcod = 0;
         $tccod = 0;
@@ -388,6 +409,8 @@ class DeliverybydateController extends AdminController {
         $treturn = 0;
 
         $tbox = 0;
+
+        $tweight = 0;
 
         $totalrow = array();
 
@@ -402,13 +425,18 @@ class DeliverybydateController extends AdminController {
                         $currddev = '';
                         $currdtotal = '';
                         $box_count = '';
+                        $weight_sum = '';
                     }else{
                         $currddev = $d;
                         $currdtotal = $tpd[$d];
                         $box_count = $bpd[$d];
+                        $weight_sum = $wpd[$d];
                     }
 
                     $tbox += $box_count;
+
+                    $tweight += $weight_sum;
+
 
                     $cd = $d;
 
@@ -422,6 +450,7 @@ class DeliverybydateController extends AdminController {
                     $row[] = array('value'=>$currdtotal,'attr'=>$maxattr);
 
                     $row[] = array('value'=>$box_count,'attr'=>'');
+                    $row[] = array('value'=>$weight_sum,'attr'=>'');
 
 
                     $row[] = array('value'=>$ct,'attr'=>'');
@@ -476,10 +505,11 @@ class DeliverybydateController extends AdminController {
                 array('value'=>'','attr'=>''),
                 array('value'=>'','attr'=>''),
                 array('value'=>$tbox,'attr'=>''),
+                array('value'=>$tweight,'attr'=>''),
                 array('value'=>'','attr'=>'')
             );
 
-        $coloffset = 5;
+        $coloffset = 6;
         $colc = 0;
         foreach($tabdata as $td){
             //print_r($td);
