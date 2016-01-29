@@ -474,8 +474,8 @@ class DeliverybydateController extends AdminController {
         $totalrow = array(
                 array('value'=>'','attr'=>''),
                 array('value'=>'','attr'=>''),
-                array('value'=>$tbox,'attr'=>''),
                 array('value'=>'','attr'=>''),
+                array('value'=>$tbox,'attr'=>''),
                 array('value'=>'','attr'=>'')
             );
 
