@@ -889,7 +889,13 @@ class SyncapiController extends \Controller {
 
                     $check = $this->checkPickedUp($olog->deliveryId, 'pickupStatus' ,'sudah diambil' ,\Config::get('jex.pickup_app') , $user->identifier  );
 
-                    if($shipment->pickup_status != \Config::get('jayon.trans_status_pickup') ){
+                    //if($shipment->pickup_status != \Config::get('jayon.trans_status_pickup') ||
+                    //    ($olog->pickupStatus != \Config::get('jayon.trans_status_pickup') && trim($olog->deliveryNote) != '' )
+                    //){
+
+                    if($olog->pickup_status == \Config::get('jayon.trans_status_pickup') ||
+                        ($olog->pickupStatus != \Config::get('jayon.trans_status_pickup') && trim($olog->deliveryNote) != '' )
+                     ){
 
                         $shipment->pickup_status = $olog->pickupStatus;
 
@@ -899,6 +905,10 @@ class SyncapiController extends \Controller {
                                 $pickuptime = date('Y-m-d H:i:s',time());
                             }else{
                                 $pickuptime = $olog->pickuptime;
+                            }
+
+                            if( trim($olog->deliveryNote) != '' ){
+                                $shipment->delivery_note = trim($olog->deliveryNote);
                             }
 
                             if($shipment->pickuptime == '' || $shipment->pickuptime == '0000-00-00 00:00:00' ){

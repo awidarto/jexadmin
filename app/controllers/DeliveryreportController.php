@@ -97,7 +97,7 @@ class DeliveryreportController extends AdminController {
 
         Breadcrumbs::addCrumb('Manifest',URL::to( strtolower($this->controller_name) ));
 
-        $this->additional_filter = View::make('shared.addfilter')->with('submit_url','deliverybydate')->render();
+        $this->additional_filter = View::make('shared.addfilter')->with('submit_url','deliveryreport')->render();
 
 
         $db = Config::get('lundin.main_db');
@@ -138,7 +138,7 @@ class DeliveryreportController extends AdminController {
 
         $model = $this->model;
 
-        $model = $model->select('assignment_date','ordertime','deliverytime','delivery_note','pending_count','recipient_name','delivery_id',$mtab.'.merchant_id as merchant_id','cod_bearer','delivery_bearer','buyer_name','buyerdeliverycity','buyerdeliveryzone','c.fullname as courier_name','d.identifier as device_name', $mtab.'.phone', $mtab.'.mobile1',$mtab.'.mobile2','merchant_trans_id','m.merchantname as merchant_name','m.fullname as fullname','a.application_name as app_name','a.domain as domain ','delivery_type','shipping_address','status','pickup_status','warehouse_status','cod_cost','delivery_cost','total_price','total_tax','total_discount','box_count')
+        $model = $model->select(DB::raw('date(ordertime) as orderdate'),DB::raw('week(ordertime) as week'),'assignment_date','ordertime','delivery_type','deliverytime','delivery_note','pending_count','recipient_name','delivery_id',$mtab.'.merchant_id as merchant_id','cod_bearer','delivery_bearer','buyer_name','buyerdeliverycity','buyerdeliveryzone','c.fullname as courier_name','d.identifier as device_name', $mtab.'.phone', $mtab.'.mobile1',$mtab.'.mobile2','merchant_trans_id','m.merchantname as merchant_name','m.fullname as fullname','a.application_name as app_name','a.domain as domain ','delivery_type','shipping_address','status','pickup_status','warehouse_status','cod_cost','delivery_cost','total_price','total_tax','total_discount','box_count')
             ->leftJoin('members as m',Config::get('jayon.incoming_delivery_table').'.merchant_id','=','m.id')
             ->leftJoin('applications as a',Config::get('jayon.assigned_delivery_table').'.application_id','=','a.id')
             ->leftJoin('devices as d',Config::get('jayon.assigned_delivery_table').'.device_id','=','d.id')
@@ -160,14 +160,14 @@ class DeliveryreportController extends AdminController {
         */
 
         if($status == '' || is_null($status) ){
-            $status = Config::get('jayon.devmanifest_default_status');
+            //$status = Config::get('jayon.devmanifest_default_status');
         }else{
             $status = explode(',', $status);
         }
 
 
         if(empty($status)){
-            $exstatus = Config::get('jayon.devmanifest_default_excl_status');
+            //$exstatus = Config::get('jayon.devmanifest_default_excl_status');
 
             if(!empty($exstatus)){
                 //$model = $model->whereNotIn('status', $exstatus);
@@ -204,7 +204,7 @@ class DeliveryreportController extends AdminController {
             $dateto = date( 'Y-m-d 23:59:59', strtotime($period_to) );
 
             $model = $model->where(function($q) use($datefrom,$dateto){
-                $q->whereBetween('assignment_date',array($datefrom,$dateto));
+                $q->whereBetween('ordertime',array($datefrom,$dateto));
             });
 
         }
@@ -233,6 +233,7 @@ class DeliveryreportController extends AdminController {
             $model = $model->where('logistic','=', $logistic);
         }
 
+        /*
         $model = $model->where(function($qr){
             $qr->where('status',Config::get('jayon.trans_status_admin_courierassigned'))
             ->orWhere('status',Config::get('jayon.trans_status_mobile_pickedup'))
@@ -243,26 +244,47 @@ class DeliveryreportController extends AdminController {
             });
 
         });
+        */
 
-        $model->orderBy('device_name','asc')
-                ->orderBy('buyerdeliverycity','asc')
-                ->orderBy('buyerdeliveryzone','asc')
-                ->orderBy('merchant_name','asc');
+        $model->orderBy('merchant_id','asc')
+                ->orderBy('week', 'asc');
+
+        $model->groupBy('merchant_id')
+            ->groupBy('week')
+            ->groupBy('delivery_type');
 
 
         $actualresult = $model->get();
+
+        //print_r($actualresult->toArray());
+
+        //die();
 
         $tattrs = array('width'=>'100%','class'=>'table table-bordered table-striped');
 
 
         $bymc = array();
 
+        $weeks = array();
 
         foreach($actualresult as $mc){
-            $bymc[$mc->merchant_name][] = $mc;
+
+            $weeks[] = $mc->week;
+
+            if(isset($bymc[$mc->merchant_name][$mc->week][$mc->delivery_type])){
+                $bymc[$mc->merchant_name][$mc->week][$mc->delivery_type] += 1 ;
+            }else{
+                $bymc[$mc->merchant_name][$mc->week][$mc->delivery_type] = 1 ;
+            }
         }
 
-        //print_r($bymc);
+        $weeks = array_unique($weeks);
+
+        print_r($weeks);
+
+        print_r($bymc);
+
+        die();
 
         $bydc = array();
 
