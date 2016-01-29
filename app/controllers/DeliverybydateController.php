@@ -408,6 +408,8 @@ class DeliverybydateController extends AdminController {
                         $box_count = $bpd[$d];
                     }
 
+                    $tbox += $box_count;
+
                     $cd = $d;
 
                     $row = array(
@@ -472,7 +474,7 @@ class DeliverybydateController extends AdminController {
         $totalrow = array(
                 array('value'=>'','attr'=>''),
                 array('value'=>'','attr'=>''),
-                array('value'=>'','attr'=>''),
+                array('value'=>$tbox,'attr'=>''),
                 array('value'=>'','attr'=>''),
                 array('value'=>'','attr'=>'')
             );
