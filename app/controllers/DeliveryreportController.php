@@ -138,7 +138,7 @@ class DeliveryreportController extends AdminController {
 
         $model = $this->model;
 
-        $model = $model->select(DB::raw('date(ordertime) as orderdate'),DB::raw('week(ordertime) as week'),DB::raw('month(ordertime) as month'),'assignment_date','ordertime','delivery_type','deliverytime','delivery_note','pending_count','recipient_name','delivery_id',$mtab.'.merchant_id as merchant_id','cod_bearer','delivery_bearer','buyer_name','buyerdeliverycity','buyerdeliveryzone','c.fullname as courier_name','d.identifier as device_name', $mtab.'.phone', $mtab.'.mobile1',$mtab.'.mobile2','merchant_trans_id','m.merchantname as merchant_name','m.fullname as fullname','a.application_name as app_name','a.domain as domain ','delivery_type','shipping_address','status','pickup_status','warehouse_status','cod_cost','delivery_cost','total_price','total_tax','total_discount','box_count')
+        $model = $model->select(DB::raw('count(*) as count'),DB::raw('date(ordertime) as orderdate'),DB::raw('week(ordertime) as week'),DB::raw('month(ordertime) as month'),'assignment_date','ordertime','delivery_type','deliverytime','delivery_note','pending_count','recipient_name','delivery_id',$mtab.'.merchant_id as merchant_id','cod_bearer','delivery_bearer','buyer_name','buyerdeliverycity','buyerdeliveryzone','c.fullname as courier_name','d.identifier as device_name', $mtab.'.phone', $mtab.'.mobile1',$mtab.'.mobile2','merchant_trans_id','m.merchantname as merchant_name','m.fullname as fullname','a.application_name as app_name','a.domain as domain ','delivery_type','shipping_address','status','pickup_status','warehouse_status','cod_cost','delivery_cost','total_price','total_tax','total_discount','box_count')
             ->leftJoin('members as m',Config::get('jayon.incoming_delivery_table').'.merchant_id','=','m.id')
             ->leftJoin('applications as a',Config::get('jayon.assigned_delivery_table').'.application_id','=','a.id')
             ->leftJoin('devices as d',Config::get('jayon.assigned_delivery_table').'.device_id','=','d.id')
@@ -280,9 +280,9 @@ class DeliveryreportController extends AdminController {
             $months[] = $mc->month;
 
             if(isset($bymc[$mc->delivery_type][$mc->merchant_name][$mc->month][$mc->week])){
-                $bymc[$mc->delivery_type][$mc->merchant_name][$mc->month][$mc->week] += 1 ;
+                $bymc[$mc->delivery_type][$mc->merchant_name][$mc->month][$mc->week] += $mc->count ;
             }else{
-                $bymc[$mc->delivery_type][$mc->merchant_name][$mc->month][$mc->week] = 1 ;
+                $bymc[$mc->delivery_type][$mc->merchant_name][$mc->month][$mc->week] = $mc->count ;
             }
 
         }
