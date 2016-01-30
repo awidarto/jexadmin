@@ -159,6 +159,16 @@ class AdminController extends Controller {
 
     public $report_filter_input = null;
 
+    public $import_validate_list = null;
+
+    public $import_commit_submit = null;
+
+    public $import_update_exclusion = array();
+
+    public $import_commit_url = null;
+
+    public $search_fields = null;
+
 	public function __construct(){
 
 		date_default_timezone_set('Asia/Jakarta');
@@ -2223,17 +2233,28 @@ class AdminController extends Controller {
     public function DLcompileSearch($fields,$model,$infilter){
 
         $q = array();
+        $inputarray = array();
+
+        //rprint_r($infilter);
+
+        //array_shift($infilters);
+        //array_shift($infilters);
+
+        //print count($fields);
+
+        //print count($infilter);
 
         //print_r($infilter);
 
-        for($i = 1;$i < count($fields);$i++){
+        for($i = 0;$i < count($fields);$i++){
             $idx = $i;
-
-            //print_r($fields[$i]);
 
             $field = $fields[$i][0];
             $type = $fields[$i][1]['kind'];
 
+            $inputarray[$fields[$i][0]] = $infilter[$i];
+
+            //print $field."\r\n";
 
             $qval = '';
 
@@ -2246,6 +2267,8 @@ class AdminController extends Controller {
 
             if($infilter[$i])
             {
+
+                //print $field.':'.$infilter[$i]."\r\n";
                 //print $infilter[$i];
 
                 $multi = (isset($fields[$i][1]['multi']))?$fields[$i][1]['multi']:false;
@@ -2517,7 +2540,312 @@ class AdminController extends Controller {
 
         }
 
-        return array('model'=>$model, 'q'=>$q);
+        //print_r($inputarray);
+
+        return array('model'=>$model, 'q'=>$q, 'in'=>$inputarray );
+    }
+
+    public function SQLDLcompileSearch($fields,$model,$infilter){
+
+        $q = array();
+        $inputarray = array();
+
+        for($i = 0;$i < count($fields);$i++){
+            $idx = $i;
+
+            $field = $fields[$i][0];
+            $type = $fields[$i][1]['kind'];
+
+            $inputarray[$fields[$i][0]] = $infilter[$i];
+
+            //print $field."\r\n";
+
+            $qval = '';
+
+            $sfields = explode('.',$field);
+            $sub = '';
+            if(count($sfields) > 1){
+                $sub = $sfields[0];
+                $subfield = $sfields[1];
+            }
+
+            if($infilter[$i])
+            {
+
+                //print $field.':'.$infilter[$i]."\r\n";
+                //print $infilter[$i];
+
+                $multi = (isset($fields[$i][1]['multi']))?$fields[$i][1]['multi']:false;
+                $multirel = (isset($fields[$i][1]['multi']))?$fields[$i][1]['multirel']:'AND';
+
+                if( $type == 'text'){
+                    if($fields[$i][1]['query'] == 'like'){
+                        $pos = $fields[$i][1]['pos'];
+                        if($pos == 'both'){
+
+                            $model = $model->where(function($q) use($infilter,$field,$multi,$multirel,$idx){
+
+                                if($multi){
+                                    $n = 0;
+                                    foreach($multi as $mf){
+                                        if($n == 0){
+                                            $q = $q->where($mf,'like','%'.$infilter[$idx].'%');
+                                        }else{
+                                            if($multirel == 'OR'){
+                                                $q = $q->orWhere($mf,'like','%'.$infilter[$idx].'%');
+                                            }else{
+                                                $q = $q->where($mf,'like','%'.$infilter[$idx].'%');
+                                            }
+                                        }
+                                        $n++;
+                                    }
+                                }else{
+                                    $q->where($field,'like','%'.$infilter[$idx].'%');
+                                    $qval = new MongoRegex('/'.$infilter[$idx].'/i');
+                                }
+
+                            });
+
+                        }else if($pos == 'before'){
+
+                            $model = $model->where(function($q) use($infilter,$field,$multi,$multirel,$idx){
+
+                                if($multi){
+                                    $n = 0;
+                                    foreach($multi as $mf){
+                                        if($n == 0){
+                                            $q = $q->where($mf,'like','%'.$infilter[$idx]);
+                                        }else{
+                                            if($multirel == 'OR'){
+                                                $q = $q->orWhere($mf,'like','%'.$infilter[$idx]);
+                                            }else{
+                                                $q = $q->where($mf,'like','%'.$infilter[$idx]);
+                                            }
+                                        }
+                                        $n++;
+                                    }
+                                }else{
+                                    $q->where($field,'like','%'.$infilter[$idx]);
+                                    $qval = new MongoRegex('/'.$infilter[$idx].'/i');
+                                }
+
+                            });
+
+
+                        }else if($pos == 'after'){
+
+                            $model = $model->where(function($q) use($infilter,$field,$multi,$multirel,$idx){
+
+                                if($multi){
+                                    $n = 0;
+                                    foreach($multi as $mf){
+                                        if($n == 0){
+                                            $q = $q->where($mf,'like',$infilter[$idx].'%');
+                                        }else{
+                                            if($multirel == 'OR'){
+                                                $q = $q->orWhere($mf,'like',$infilter[$idx].'%');
+                                            }else{
+                                                $q = $q->where($mf,'like',$infilter[$idx].'%');
+                                            }
+                                        }
+                                        $n++;
+                                    }
+                                }else{
+                                    $q->where($field,'like',$infilter[$idx].'%');
+                                    $qval = new MongoRegex('/'.$infilter[$idx].'/i');
+                                }
+
+                            });
+
+                        }
+                    }else{
+
+                        $model = $model->where(function($q) use($infilter,$field,$multi,$multirel,$idx){
+
+                            if($multi){
+                                $n = 0;
+                                foreach($multi as $mf){
+                                    if($n == 0){
+                                        $q = $q->where($mf,'=',$infilter[$idx]);
+                                    }else{
+                                        if($multirel == 'OR'){
+                                            $q = $q->orWhere($mf,'=',$infilter[$idx]);
+                                        }else{
+                                            $q = $q->where($mf,'=',$infilter[$idx]);
+                                        }
+                                    }
+                                    $n++;
+                                }
+                            }else{
+                                $q->where($field,'=',$infilter[$idx]);
+                            }
+
+                        });
+
+
+                    }
+
+                    $q[$field] = $qval;
+
+                }elseif($type == 'numeric' || $type == 'currency'){
+
+                    $str = $infilter[$idx];
+
+                    $sign = null;
+
+                    $strval = trim(str_replace(array('<','>','='), '', $str));
+
+                    $qval = (double)$strval;
+
+                    if(strpos($str, "<=") !== false){
+                        $sign = '<=';
+                    }elseif(strpos($str, ">=") !== false){
+                        $sign = '>=';
+                    }elseif(strpos($str, ">") !== false){
+                        $sign = '>';
+                    }elseif(stripos($str, "<") !== false){
+                        $sign = '<';
+                    }else{
+                        $sign = '=';
+                    }
+
+
+                    $model = $model->where(function($q) use($infilter,$field,$qval,$sign,$multi,$multirel,$idx){
+
+                        if($multi){
+                            $n = 0;
+                            foreach($multi as $mf){
+                                if($n == 0){
+                                    $q = $q->where($mf,$sign,$qval);
+                                }else{
+                                    if($multirel == 'OR'){
+                                        $q = $q->orWhere($mf,$sign,$qval);
+                                    }else{
+                                        $q = $q->where($mf,$sign,$qval);
+                                    }
+                                }
+                                $n++;
+                            }
+                        }else{
+                            $q->where($field,$sign,$qval);
+                        }
+
+                    });
+
+
+
+                }elseif($type == 'date'|| $type == 'datetime'){
+                    $datestring = $infilter[$idx];
+                    $datestring = date('d-m-Y', $datestring / 1000);
+
+                    if (($timestamp = $datestring) === false) {
+
+                    } else {
+                        //$daystart = new MongoDate(strtotime($datestring.' 00:00:00'));
+                        //$dayend = new MongoDate(strtotime($datestring.' 23:59:59'));
+
+                        $daystart = $datestring.' 00:00:00';
+                        $dayend = $datestring.' 23:59:59';
+
+                        //$qval = array($field =>array('$gte'=>$daystart,'$lte'=>$dayend));
+                        //echo "$str == " . date('l dS \o\f F Y h:i:s A', $timestamp);
+
+                        $model = $model->where(function($q) use($infilter,$field,$daystart,$dayend){
+                            $q->whereBetween($field,array($daystart,$dayend));
+                        });
+
+                    }
+                    $qval = array('$gte'=>$daystart,'$lte'=>$dayend);
+                    //$qval = $infilter[$idx];
+
+                    $q[$field] = $qval;
+                }elseif($type == 'daterange'){
+                    $datestring = $infilter[$idx];
+
+                    //print $datestring;
+
+                    if($datestring != ''){
+                        $dates = explode(' - ', $datestring);
+
+                        if(count($dates) == 2){
+
+                            $daystart = date('Y-m-d',strtotime($dates[0])).' 00:00:00';
+                            $dayend = date('Y-m-d',strtotime($dates[1])).' 23:59:59';
+
+                            //$daystart = new MongoDate( strtotime($dates[0].' 00:00:00') );
+                            //$dayend = new MongoDate( strtotime($dates[1].' 23:59:59') );
+
+                            //print $daystart;
+                            //$qval = array($field =>array('$gte'=>$daystart,'$lte'=>$dayend));
+
+                            $qval = array('$gte'=>$daystart,'$lte'=>$dayend);
+                            //$qval = $infilter[$idx];
+
+                            $q[$field] = $qval;
+
+
+                            $model = $model->where(function($q) use($infilter,$field,$daystart,$dayend){
+                                $q->whereBetween($field,array($daystart,$dayend));
+                            });
+
+
+                        }
+
+                    }
+
+                }elseif($type == 'datetimerange'){
+                    $datestring = $infilter[$idx];
+
+                    if($datestring != ''){
+                        $dates = explode(' - ', $datestring);
+
+                        //print_r($dates);
+
+                        if(count($dates) == 2){
+                            //$daystart = date('Y-m-d H:i:s',strtotime($dates[0]));
+                            //$dayend = date('Y-m-d H:i:s',strtotime($dates[1]));
+
+                            if(stripos($dates[0], ':' ) === false){
+                                $datestart = $dates[0].' 00:00:00';
+                            }else{
+                                $datestart = $dates[0];
+                            }
+
+                            if(stripos($dates[1], ':' ) === false){
+                                $dateend = $dates[1].' 23:59:59';
+                            }else{
+                                $dateend = $dates[1];
+                            }
+
+                            //$daystart = new MongoDate( strtotime($datestart) );
+                            //$dayend = new MongoDate( strtotime($dateend) );
+
+                            //$qval = array($field =>array('$gte'=>$daystart,'$lte'=>$dayend));
+
+                            $qval = array('$gte'=>$daystart,'$lte'=>$dayend);
+                            //$qval = Input::get('sSearch_'.$idx);
+
+                            //$model = $model->whereBetween($field,array($daystart,$dayend));
+
+                            $model = $model->where(function($q) use($infilter,$field,$daystart,$dayend){
+                                $q->whereBetween($field,array($daystart,$dayend));
+                            });
+
+                            $q[$field] = $qval;
+                        }
+
+                    }
+
+                }
+
+
+            }
+
+        }
+
+        //print_r($inputarray);
+
+        return array('model'=>$model, 'q'=>$q, 'in'=>$inputarray );
     }
 
     public function MongoDLcompileSearch($fields,$model,$infilter){
@@ -3314,6 +3642,8 @@ class AdminController extends Controller {
 
         $fields = $this->fields; // fields set must align with search column index
 
+        $search_fields = (is_null($this->search_fields))?$this->fields:$this->search_fields;
+
         if(is_null($this->heads)){
             $titles = array();
             foreach ($this->fields as $fh) {
@@ -3325,26 +3655,8 @@ class AdminController extends Controller {
             $titles = $this->heads;
         }
 
-        //print_r($titles);
-
-        //array_unshift($fields, array('seq',array('kind'=>false)));
-        //if($this->place_action == 'both' || $this->place_action == 'first'){
-        //    array_unshift($fields, array('action',array('kind'=>false)));
-        //}
-
-        //array_unshift($fields, array('seq',array('kind'=>false)));
-        //array_unshift($fields, array('action',array('kind'=>false)));
-
-        //array_unshift($titles, array('seq',array('kind'=>false)));
-        //array_unshift($titles, array('action',array('kind'=>false)));
-
-
-
         $infilters = Input::get('filter');
         $insorting = Input::get('sort');
-
-        //print_r($infilters);
-        //print_r($fields);
 
         $defsort = 1;
         $defdir = -1;
@@ -3363,30 +3675,16 @@ class AdminController extends Controller {
 
         $model = $this->SQL_additional_query($model);
 
-        //$model = $this->SQL_make_join($model);
+        array_shift($infilters);
+        if($this->place_action == 'both' || $this->place_action == 'first'){
+            array_shift($infilters);
+        }
 
-        $comres = $this->MongoDLcompileSearch($fields, $model,$infilters);
+        $comres = $this->DLcompileSearch($search_fields, $model,$infilters);
 
         $model = $comres['model'];
         $q = $comres['q'];
-
-
-
-        //print_r($q);
-
-        /*
-        if(count($q) > 0){
-            $results = $model->skip( $pagestart )->take( $pagelength )->orderBy($sort_col, $sort_dir )->get();
-            $count_display_all = $model->count();
-        }else{
-            $results = $model->find(array(),array(),array($sort_col=>$sort_dir),$limit);
-            $count_display_all = $model->count();
-        }
-        */
-
-        //$model->where('docFormat','picture');
-
-        //array_unshift($fields, array('sel',array('kind'=>false)));
+        $searchpar = $comres['in'];
 
         if($insorting[0] == 0){
             $sort_col = $this->def_order_by;
@@ -3461,63 +3759,84 @@ class AdminController extends Controller {
 
             foreach($fields as $field){
                 if($field[1]['kind'] != false && ( isset($field[1]['show']) && $field[1]['show'] == true ) ){
-
+                    /*
                     $fieldarray = explode('.',$field[0]);
                     if(is_array($fieldarray) && count($fieldarray) > 1){
                         $fieldarray = implode('\'][\'',$fieldarray);
                         $cstring = '$label = (isset($doc[\''.$fieldarray.'\']))?true:false;';
                         eval($cstring);
                     }else{
+                    */
                         $label = (isset($doc[$field[0]]))?true:false;
-                    }
+                    //}
 
                     if($label){
 
-                        if( isset($field[1]['callback']) && $field[1]['callback'] != ''){
-                            $callback = $field[1]['callback'];
-                            $row[] = $this->$callback($doc, $field[0]);
-                        }else{
-                            if($field[1]['kind'] == 'datetime' || $field[1]['kind'] == 'datetimerange'){
-                                if($doc[$field[0]] instanceof MongoDate){
-                                    $rowitem = date('d-m-Y H:i:s',$doc[$field[0]]->sec);
-                                }elseif ($doc[$field[0]] instanceof Date) {
-                                    $rowitem = date('d-m-Y H:i:s',$doc[$field[0]]);
-                                }else{
-                                    //$rowitem = $doc[$field[0]];
-                                    if(is_array($doc[$field[0]])){
-                                        $rowitem = date('d-m-Y H:i:s', time() );
-                                    }else{
-                                        $rowitem = date('d-m-Y H:i:s',strtotime($doc[$field[0]]) );
-                                    }
-                                }
-                            }elseif($field[1]['kind'] == 'date' || $field[1]['kind'] == 'daterange'){
-                                if($doc[$field[0]] instanceof MongoDate){
-                                    $rowitem = date('d-m-Y',$doc[$field[0]]->sec);
-                                }elseif ($doc[$field[0]] instanceof Date) {
-                                    $rowitem = date('d-m-Y',$doc[$field[0]]);
-                                }else{
-                                    //$rowitem = $doc[$field[0]];
-                                    $rowitem = date('d-m-Y',strtotime($doc[$field[0]]) );
-                                }
-                            }elseif($field[1]['kind'] == 'currency'){
-                                $num = (double) $doc[$field[0]];
-                                $rowitem = number_format($num,2,',','.');
+                        try{
+
+                            if( isset($field[1]['callback']) && $field[1]['callback'] != ''){
+                                $callback = $field[1]['callback'];
+                                $row[] = $this->$callback($doc, $field[0]);
                             }else{
-                                $rowitem = $doc[$field[0]];
+
+                                $rowitem = '';
+
+                                if($field[1]['kind'] == 'datetime' || $field[1]['kind'] == 'datetimerange'){
+                                    if($doc[$field[0]] instanceof MongoDate){
+                                        $rowitem = date('d-m-Y H:i:s',$doc[$field[0]]->sec);
+                                    }elseif ($doc[$field[0]] instanceof Date) {
+                                        $rowitem = date('d-m-Y H:i:s',$doc[$field[0]]);
+                                    }else{
+                                        //$rowitem = $doc[$field[0]];
+                                        if(is_array($doc[$field[0]])){
+                                            $rowitem = date('d-m-Y H:i:s', time() );
+                                        }else{
+                                            $rowitem = date('d-m-Y H:i:s',strtotime($doc[$field[0]]) );
+                                        }
+                                    }
+                                }elseif($field[1]['kind'] == 'date' || $field[1]['kind'] == 'daterange'){
+                                    if($doc[$field[0]] instanceof MongoDate){
+                                        $rowitem = date('d-m-Y',$doc[$field[0]]->sec);
+                                    }elseif ($doc[$field[0]] instanceof Date) {
+                                        $rowitem = date('d-m-Y',$doc[$field[0]]);
+                                    }else{
+                                        //$rowitem = $doc[$field[0]];
+                                        $rowitem = date('d-m-Y',strtotime($doc[$field[0]]) );
+                                    }
+                                }elseif($field[1]['kind'] == 'currency'){
+                                    $num = $doc[$field[0]];
+
+                                    if(is_null($num) || trim($num) == ''){
+                                        $num = 0;
+                                    }else{
+                                        $num = doubleval($num);
+                                    }
+
+                                    $rowitem = number_format($num,2,',','.');
+                                }else{
+                                    $rowitem = $doc[$field[0]];
+                                }
+                                /*
+                                if(isset($field[1]['attr'])){
+                                    $attr = '';
+                                    foreach ($field[1]['attr'] as $key => $value) {
+                                        $attr .= $key.'="'.$value.'" ';
+                                    }
+                                    $row[] = '<span '.$attr.' >'.$rowitem.'</span>';
+                                }else{
+                                    $row[] = $rowitem;
+                                }
+                                */
+
+                                $row[] = $rowitem;
+
                             }
 
-                            if(isset($field[1]['attr'])){
-                                $attr = '';
-                                foreach ($field[1]['attr'] as $key => $value) {
-                                    $attr .= $key.'="'.$value.'" ';
-                                }
-                                $row[] = '<span '.$attr.' >'.$rowitem.'</span>';
-                            }else{
-                                $row[] = $rowitem;
-                            }
+                        }catch(Exception $e){
+
+                            $row[] = '';
 
                         }
-
 
                     }else{
                         $row[] = '';
@@ -3532,21 +3851,30 @@ class AdminController extends Controller {
 
         $sdata = $aadata;
 
-        array_shift($colheads);
-        array_shift($colheads);
-        array_shift($coltitles);
-        array_shift($coltitles);
+        //print_r($colheads);
+
+        //print_r($sdata);
+
+
+        //array_shift($colheads);
+        //array_shift($coltitles);
+        if($this->place_action == 'both' || $this->place_action == 'first'){
+            //array_shift($colheads);
+            //array_shift($coltitles);
+        }
+
 
         array_unshift($sdata,$colheads);
         array_unshift($sdata,$coltitles);
 
-        //print_r($sdata);
+
+
         //print public_path();
 
         $fname =  $this->controller_name.'_'.date('d-m-Y-H-m-s',time());
 
 
-
+        /*
         if(!is_null($this->export_output_fields) && count($this->export_output_fields) > 0){
             $tempdata = array();
             $sfields = $sdata[1];
@@ -3562,6 +3890,7 @@ class AdminController extends Controller {
 
             $sdata = $tempdata;
         }
+        */
 
         /*
         Excel::create( $fname )
@@ -3598,7 +3927,8 @@ class AdminController extends Controller {
             'filename'=>$fname,
             'urlxls'=>URL::to(strtolower($this->controller_name).'/dl/'.$path['file']),
             'urlcsv'=>URL::to(strtolower($this->controller_name).'/csv/'.$fname.'.csv'),
-            'q'=>$lastQuery
+            'q'=>$lastQuery,
+            'search'=>$searchpar
         );
 
         print json_encode($result);
@@ -3607,8 +3937,11 @@ class AdminController extends Controller {
 
     public function postSQLDlxl()
     {
+        set_time_limit(0);
 
         $fields = $this->fields; // fields set must align with search column index
+
+        $search_fields = (is_null($this->search_fields))?$this->fields:$this->search_fields;
 
         if(is_null($this->heads)){
             $titles = array();
@@ -3621,19 +3954,8 @@ class AdminController extends Controller {
             $titles = $this->heads;
         }
 
-        //print_r($titles);
-
-        array_unshift($fields, array('seq',array('kind'=>false)));
-        array_unshift($fields, array('action',array('kind'=>false)));
-
-        array_unshift($titles, array('seq',array('kind'=>false)));
-        array_unshift($titles, array('action',array('kind'=>false)));
-
         $infilters = Input::get('filter');
         $insorting = Input::get('sort');
-
-        //print_r($infilters);
-        //print_r($fields);
 
         $defsort = 1;
         $defdir = -1;
@@ -3652,30 +3974,16 @@ class AdminController extends Controller {
 
         $model = $this->SQL_additional_query($model);
 
-        //$model = $this->SQL_make_join($model);
+        array_shift($infilters);
+        if($this->place_action == 'both' || $this->place_action == 'first'){
+            array_shift($infilters);
+        }
 
-        $comres = $this->SQLcompileSearch($fields, $model);
+        $comres = $this->SQLDLcompileSearch($search_fields, $model,$infilters);
 
         $model = $comres['model'];
         $q = $comres['q'];
-
-
-
-        //print_r($q);
-
-        /*
-        if(count($q) > 0){
-            $results = $model->skip( $pagestart )->take( $pagelength )->orderBy($sort_col, $sort_dir )->get();
-            $count_display_all = $model->count();
-        }else{
-            $results = $model->find(array(),array(),array($sort_col=>$sort_dir),$limit);
-            $count_display_all = $model->count();
-        }
-        */
-
-        //$model->where('docFormat','picture');
-
-        //array_unshift($fields, array('sel',array('kind'=>false)));
+        $searchpar = $comres['in'];
 
         if($insorting[0] == 0){
             $sort_col = $this->def_order_by;
@@ -3870,7 +4178,8 @@ class AdminController extends Controller {
             'filename'=>$fname,
             'urlxls'=>URL::to(strtolower($this->controller_name).'/dl/'.$path['file']),
             'urlcsv'=>URL::to(strtolower($this->controller_name).'/csv/'.$fname.'.csv'),
-            'q'=>$lastQuery
+            'q'=>$lastQuery,
+            'search'=>$searchpar
         );
 
         print json_encode($result);

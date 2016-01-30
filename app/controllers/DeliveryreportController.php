@@ -279,11 +279,11 @@ class DeliveryreportController extends AdminController {
             $weeks[] = $mc->week;
             $months[] = $mc->month;
 
-            if(isset($bymc[$mc->delivery_type][$mc->merchant_name][$mc->month][$mc->week])){
-                $bymc[$mc->delivery_type][$mc->merchant_name][$mc->month][$mc->week] += $mc->count ;
-            }else{
+            //if(isset($bymc[$mc->delivery_type][$mc->merchant_name][$mc->month][$mc->week])){
+            //    $bymc[$mc->delivery_type][$mc->merchant_name][$mc->month][$mc->week] += $mc->count ;
+            //}else{
                 $bymc[$mc->delivery_type][$mc->merchant_name][$mc->month][$mc->week] = $mc->count ;
-            }
+            //}
 
         }
 
@@ -1388,8 +1388,8 @@ class DeliveryreportController extends AdminController {
 
         $model = new Shipment();
 
-        $start = $model->where( DB::raw('week(ordertime)'),'=',$week )->min('ordertime');
-        $end = $model->where( DB::raw('week(ordertime)'),'=',$week )->max('ordertime');
+        $start = $model->where( DB::raw('week(ordertime)'),'=',$week )->min( DB::raw('date(ordertime)'));
+        $end = $model->where( DB::raw('week(ordertime)'),'=',$week )->max( DB::raw('date(ordertime)'));
 
         return array($start, $end);
     }

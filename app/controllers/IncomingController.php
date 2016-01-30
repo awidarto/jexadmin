@@ -739,33 +739,7 @@ class IncomingController extends AdminController {
 
         $this->heads = null;
 
-        $this->fields = array(
-            array('ordertime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('pickuptime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('buyerdeliverytime',array('kind'=>'daterange','query'=>'like','pos'=>'both','show'=>true)),
-            array('buyerdeliveryslot',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-            array('buyerdeliveryzone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('buyerdeliverycity',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('shipping_address',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('merchant_trans_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('delivery_type',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('merchant_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('status',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('directions',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('delivery_cost',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('cod_cost',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('total_price',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('buyer_name',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('shipping_zip',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('phone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('volume',array('kind'=>'numeric','query'=>'like','pos'=>'both','show'=>true)),
-            array('actual_weight',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('weight',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
-        );
+        $this->fields = Config::get('jex.default_incoming_fields');
 
         $db = Config::get('jayon.main_db');
 
