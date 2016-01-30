@@ -246,14 +246,16 @@ class DeliveryreportController extends AdminController {
         });
         */
 
-        $model->orderBy('merchant_id','asc')
-                ->orderBy('month', 'asc')
-                ->orderBy('week', 'asc');
+        $model->orderBy('delivery_type','asc')
+            ->orderBy('merchant_id','asc')
+            ->orderBy('month', 'asc')
+            ->orderBy('week', 'asc');
 
-        $model->groupBy('merchant_id')
+        $model
+            ->groupBy('delivery_type')
+            ->groupBy('merchant_id')
             ->groupBy('month')
-            ->groupBy('week')
-            ->groupBy('delivery_type');
+            ->groupBy('week');
 
 
         $actualresult = $model->get();
@@ -268,23 +270,35 @@ class DeliveryreportController extends AdminController {
         $bymc = array();
 
         $weeks = array();
+        $months = array();
+
+        $effdates = array();
 
         foreach($actualresult as $mc){
 
             $weeks[] = $mc->week;
+            $months[] = $mc->month;
 
-            if(isset($bymc[$mc->merchant_name][$mc->month][$mc->week][$mc->delivery_type])){
-                $bymc[$mc->merchant_name][$mc->month][$mc->week][$mc->delivery_type] += 1 ;
+            if(isset($bymc[$mc->delivery_type][$mc->merchant_name][$mc->month][$mc->week])){
+                $bymc[$mc->delivery_type][$mc->merchant_name][$mc->month][$mc->week] += 1 ;
             }else{
-                $bymc[$mc->merchant_name][$mc->month][$mc->week][$mc->delivery_type] = 1 ;
+                $bymc[$mc->delivery_type][$mc->merchant_name][$mc->month][$mc->week] = 1 ;
             }
+
         }
 
         $weeks = array_unique($weeks);
+        $months = array_unique($months);
+
+        foreach($weeks as $w){
+            $effdates[$w] = $this->getEffDates($w);
+        }
 
         //print_r($weeks);
 
         print_r($bymc);
+
+        print_r($effdates);
 
         die();
 
@@ -1369,6 +1383,16 @@ class DeliveryreportController extends AdminController {
             ->with('labels', $labels);
     }
 
+    public function getEffDates($week)
+    {
+
+        $model = new Shipment();
+
+        $start = $model->where( DB::raw('week(ordertime)'),'=',$week )->min('ordertime');
+        $end = $model->where( DB::raw('week(ordertime)'),'=',$week )->max('ordertime');
+
+        return array($start, $end);
+    }
 
     public function getViewpics($id)
     {
