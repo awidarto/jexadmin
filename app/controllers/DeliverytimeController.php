@@ -410,6 +410,7 @@ class DeliverytimeController extends AdminController {
 
             if(is_null($pickuptime) || $pickuptime == '' || $r->pickuptime == '' || $r->pickuptime == date('Y-m-d H:i:s', 0) ){
                 $pickup2delivery->d = 0;
+                $r->pickuptime = '-';
                 $pickup2deliverydays += (int)$pickup2delivery->d;
             }else{
                 $pickup2deliverydays += (int)$pickup2delivery->d;
