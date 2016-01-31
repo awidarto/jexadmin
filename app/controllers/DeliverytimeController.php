@@ -84,6 +84,7 @@ class DeliverytimeController extends AdminController {
 
     public function getIndex()
     {
+        set_time_limit(0);
 
         $this->title = 'Delivery Time';
 
@@ -248,6 +249,7 @@ class DeliverytimeController extends AdminController {
                 array('value'=>'Type','attr'=>''),
                 array('value'=>'Tgl Upload','attr'=>''),
                 array('value'=>'Tgl Pick Up','attr'=>''),
+                array('value'=>'Tgl Penugasan','attr'=>''),
                 array('value'=>'Tgl Kirim','attr'=>''),
                 array('value'=>'Pick Up -> Diterima','attr'=>''),
                 array('value'=>'Kirim -> Diterima','attr'=>''),
@@ -507,6 +509,7 @@ class DeliverytimeController extends AdminController {
                     array('value'=>$r->delivery_type,'attr'=>''),
                     array('value'=>$r->ordertime,'attr'=>''),
                     array('value'=>$r->pickuptime,'attr'=>''),
+                    array('value'=>$r->assignment_date,'attr'=>''),
                     array('value'=>$assignment_date->format('Y-m-d'),'attr'=>''),
                     array('value'=>$pickup2delivery->d,'attr'=>''),
                     array('value'=>$assign2delivery->d,'attr'=>''),
