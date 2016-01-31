@@ -412,11 +412,11 @@ class DeliverytimeController extends AdminController {
             }
 
             if(is_null($pickuptime) || $pickuptime == '' || $r->pickuptime == '' || $r->pickuptime == '0000-00-00 00:00:00' ){
-                $r->pickuptime = $assignment_date->add(new DateInterval('P1D'))->format('Y-m-d');
+                //$r->pickuptime = $assignment_date->add(new DateInterval('P1D'))->format('Y-m-d');
 
-                $pickuptime = new DateTime($r->pickuptime);
+                //$pickuptime = new DateTime($r->pickuptime);
 
-                $pickup2delivery = $pickuptime->diff($deliverytime);
+                //$pickup2delivery = $pickuptime->diff($deliverytime);
 
                 $pickup2delivery->d = 0;
                 $pickup2deliverydays += (int)$pickup2delivery->d;
