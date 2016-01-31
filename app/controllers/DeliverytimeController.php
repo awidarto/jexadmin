@@ -249,6 +249,7 @@ class DeliverytimeController extends AdminController {
                 array('value'=>'Tgl Upload','attr'=>''),
                 array('value'=>'Tgl Pick Up','attr'=>''),
                 array('value'=>'Tgl Kirim','attr'=>''),
+                array('value'=>'Pick Up -> Diterima','attr'=>''),
                 array('value'=>'Kirim -> Diterima','attr'=>''),
                 array('value'=>'Tgl Diterima','attr'=>''),
                 array('value'=>'Status','attr'=>''),
@@ -338,6 +339,7 @@ class DeliverytimeController extends AdminController {
             $payable = 0;
 
             $otime = date('Y-m-d',strtotime($r->ordertime));
+            $ptime = date('Y-m-d',strtotime($r->pickuptime));
             $dtime = date('Y-m-d',strtotime($r->deliverytime));
 
             $ordertime = new DateTime($otime);
@@ -383,9 +385,13 @@ class DeliverytimeController extends AdminController {
 
             $deliverytime = new DateTime($dtime);
 
+            $pickuptime = new DateTime($ptime);
+
             $order2assign = $ordertime->diff($assignment_date);
 
             $assign2delivery = $assignment_date->diff($deliverytime);
+
+            $pickup2delivery = $pickuptime->diff($deliverytime);
 
             $order2delivery = $ordertime->diff($deliverytime);
 
@@ -399,6 +405,10 @@ class DeliverytimeController extends AdminController {
                 $order2deliverydays += (int)$order2delivery->d;
             }
 
+            if(is_null($pickuptime) || $pickuptime == '' || $r->pickuptime == '' || $r->pickuptime == date('Y-m-d H:i:s', 0) ){
+                $pickup2delivery->d = 0;
+                $pickup2deliverydays += (int)$pickup2delivery->d;
+            }
 
 
             $d = 0;
@@ -495,6 +505,7 @@ class DeliverytimeController extends AdminController {
                     array('value'=>$r->ordertime,'attr'=>''),
                     array('value'=>$r->pickuptime,'attr'=>''),
                     array('value'=>$assignment_date->format('Y-m-d'),'attr'=>''),
+                    array('value'=>$pickup2delivery->d,'attr'=>''),
                     array('value'=>$assign2delivery->d,'attr'=>''),
                     array('value'=>$r->deliverytime,'attr'=>''),
                     array('value'=>$r->status,'attr'=>''),
@@ -511,6 +522,7 @@ class DeliverytimeController extends AdminController {
 
             $avgdata = array(
                     array('value'=>'Rata-rata<br />( dlm satuan hari )','attr'=>'colspan="6"'),
+                    array('value'=>number_format($pickup2deliverydays / $seq, 2, ',','.' ),'attr'=>'style="font-size:18px;font-weight:bold;"'),
                     array('value'=>number_format($assign2deliverydays / $seq, 2, ',','.' ),'attr'=>'style="font-size:18px;font-weight:bold;"'),
                     array('value'=>'','attr'=>'colspan="7"'),
                 );
