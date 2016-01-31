@@ -146,7 +146,7 @@ class DeliverytimeController extends AdminController {
 
         $model = $this->model;
 
-        $model = $model->select('assignment_date','ordertime','pickuptime','deliverytime','delivery_note','pending_count','recipient_name','delivery_id',$mtab.'.merchant_id as merchant_id','cod_bearer','delivery_bearer','buyer_name','buyerdeliveryzone','c.fullname as courier_name', $mtab.'.phone', $mtab.'.mobile1',$mtab.'.mobile2','merchant_trans_id','m.merchantname as merchant_name','m.fullname as fullname','a.application_name as app_name','a.domain as domain ','delivery_type','shipping_address','status','pickup_status','warehouse_status','cod_cost','delivery_cost','total_price','total_tax','total_discount')
+        $model = $model->select('assignment_date','ordertime','pickuptime','deliverytime','delivery_note','pending_count','recipient_name','delivery_id',$mtab.'.merchant_id as merchant_id','cod_bearer','delivery_bearer','buyer_name','buyerdeliveryzone','c.fullname as courier_name', $mtab.'.phone', $mtab.'.mobile1',$mtab.'.mobile2','merchant_trans_id','fulfillment_code','m.merchantname as merchant_name','m.fullname as fullname','a.application_name as app_name','a.domain as domain ','delivery_type','shipping_address','status','pickup_status','warehouse_status','cod_cost','delivery_cost','total_price','total_tax','total_discount')
             ->leftJoin('members as m',Config::get('jayon.incoming_delivery_table').'.merchant_id','=','m.id')
             ->leftJoin('applications as a',Config::get('jayon.assigned_delivery_table').'.application_id','=','a.id')
             ->leftJoin('devices as d',Config::get('jayon.assigned_delivery_table').'.device_id','=','d.id')
