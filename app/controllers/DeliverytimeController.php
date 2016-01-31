@@ -284,6 +284,7 @@ class DeliverytimeController extends AdminController {
         $order2assigndays = 0;
         $assign2deliverydays = 0;
         $order2deliverydays = 0;
+        $pickup2deliverydays = 0;
 
         $csv_data = array();
 
