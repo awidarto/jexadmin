@@ -322,6 +322,9 @@ class DeliverytimeController extends AdminController {
         $cntdo = 0;
         $cntps = 0;
         $return = 0;
+
+        $valid_pickups = 0;
+
         foreach ($actualresult as $r) {
 
             $details = (isset($dlist[$r->delivery_id]))?$dlist[$r->delivery_id]:array();
@@ -409,15 +412,18 @@ class DeliverytimeController extends AdminController {
             }
 
             if(is_null($pickuptime) || $pickuptime == '' || $r->pickuptime == '' || $r->pickuptime == '0000-00-00 00:00:00' ){
-                $pickup2delivery->d = 0;
                 $r->pickuptime = $assignment_date->add(new DateInterval('P1D'))->format('Y-m-d');
 
                 $pickuptime = new DateTime($r->pickuptime);
 
                 $pickup2delivery = $pickuptime->diff($deliverytime);
+
+                $pickup2delivery->d = 0;
                 $pickup2deliverydays += (int)$pickup2delivery->d;
             }else{
+                $valid_pickups++;
                 $pickup2deliverydays += (int)$pickup2delivery->d;
+                $valid_pickups++;
             }
 
 
@@ -533,7 +539,7 @@ class DeliverytimeController extends AdminController {
 
             $avgdata = array(
                     array('value'=>'Rata-rata<br />( dlm satuan hari )','attr'=>'colspan="7"'),
-                    array('value'=>number_format($pickup2deliverydays / $seq, 2, ',','.' ),'attr'=>'style="font-size:18px;font-weight:bold;"'),
+                    array('value'=>number_format($pickup2deliverydays / $valid_pickups, 2, ',','.' ),'attr'=>'style="font-size:18px;font-weight:bold;"'),
                     array('value'=>number_format($assign2deliverydays / $seq, 2, ',','.' ),'attr'=>'style="font-size:18px;font-weight:bold;"'),
                     array('value'=>'','attr'=>'colspan="9"'),
                 );
