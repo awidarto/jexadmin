@@ -527,10 +527,10 @@ class DeliverytimeController extends AdminController {
         }
 
             $avgdata = array(
-                    array('value'=>'Rata-rata<br />( dlm satuan hari )','attr'=>'colspan="6"'),
+                    array('value'=>'Rata-rata<br />( dlm satuan hari )','attr'=>'colspan="7"'),
                     array('value'=>number_format($pickup2deliverydays / $seq, 2, ',','.' ),'attr'=>'style="font-size:18px;font-weight:bold;"'),
                     array('value'=>number_format($assign2deliverydays / $seq, 2, ',','.' ),'attr'=>'style="font-size:18px;font-weight:bold;"'),
-                    array('value'=>'','attr'=>'colspan="7"'),
+                    array('value'=>'','attr'=>'colspan="9"'),
                 );
 
             array_unshift($tabdata, $avgdata);
