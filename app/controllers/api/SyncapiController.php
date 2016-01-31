@@ -50,6 +50,13 @@ class SyncapiController extends \Controller {
         foreach( $json as $j){
 
             if(isset( $j['logId'] )){
+
+                $j['appname'] = $appname;
+
+                $j['deviceActor'] = (isset($user->identifier))?$user->identifier:'';
+
+                $j['deliveryDevId'] = $user->identifier;
+
                 if(isset($j['timestamp'])){
                     $j['mtimestamp'] = new \MongoDate(strtotime($j['timestamp']));
                 }
