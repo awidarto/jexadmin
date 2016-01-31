@@ -249,7 +249,7 @@ class DeliverytimeController extends AdminController {
                 array('value'=>'Type','attr'=>''),
                 array('value'=>'Tgl Upload','attr'=>''),
                 array('value'=>'Tgl Pick Up','attr'=>''),
-                array('value'=>'Tgl Penugasan Terakhir ( Last Assignment Date )','attr'=>''),
+                array('value'=>'Tgl Penugasan Terakhir <br />( Last Assignment Date )','attr'=>''),
                 array('value'=>'Tgl Kirim','attr'=>''),
                 array('value'=>'Pick Up -> Diterima','attr'=>''),
                 array('value'=>'Kirim -> Diterima','attr'=>''),
