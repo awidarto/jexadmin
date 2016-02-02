@@ -894,7 +894,7 @@ class SyncapiController extends \Controller {
 
                 if($shipment){
 
-                    $check = $this->checkPickedUp($olog->deliveryId, 'pickupStatus' ,'sudah diambil' ,\Config::get('jex.pickup_app') , $user->identifier  );
+                    //$check = $this->checkPickedUp($olog->deliveryId, 'pickupStatus' ,'sudah diambil' ,\Config::get('jex.pickup_app') , $user->identifier  );
 
                     $changes = false;
 
@@ -905,7 +905,22 @@ class SyncapiController extends \Controller {
                     }
 
                     $shipment->pickup_dev_id = $user->identifier;
+                    $shipment->pickup_status = $olog->pickupStatus;
+                    $shipment->pickuptime = $pickuptime;
 
+                    if($olog->pickupStatus == \Config::get('jayon.trans_status_pickup')){
+                        $changes = true;
+                    }else{
+                        if(trim($olog->deliveryNote) != ''){
+                            $changes = true;
+                        }
+                    }
+
+                    if($changes == true){
+                        $shipment->save();
+                    }
+
+                    /*
                     //order currently already pick up
                     if($shipment->pickup_status == \Config::get('jayon.trans_status_pickup')){
 
@@ -953,10 +968,8 @@ class SyncapiController extends \Controller {
                        }
 
                     }
+                    */
 
-                    if($changes == true){
-                        $shipment->save();
-                    }
 
                     //if($shipment->pickup_status != \Config::get('jayon.trans_status_pickup') ||
                     //    ($olog->pickupStatus != \Config::get('jayon.trans_status_pickup') && trim($olog->deliveryNote) != '' )
