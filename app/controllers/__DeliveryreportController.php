@@ -1,6 +1,6 @@
 <?php
 
-class DeliveryreportController extends AdminController {
+class __DeliveryreportController extends AdminController {
 
     public function __construct()
     {
@@ -18,10 +18,74 @@ class DeliveryreportController extends AdminController {
 
     }
 
+    public function getDetail($id)
+    {
+        $_id = new MongoId($id);
+        $history = History::where('historyObject._id',$_id)->where('historyObjectType','asset')
+                        ->orderBy('historyTimestamp','desc')
+                        ->orderBy('historySequence','desc')
+                        ->get();
+        $diffs = array();
+
+        foreach($history as $h){
+            $h->date = date( 'Y-m-d H:i:s', $h->historyTimestamp->sec );
+            $diffs[$h->date][$h->historySequence] = $h->historyObject;
+        }
+
+        $history = History::where('historyObject._id',$_id)->where('historyObjectType','asset')
+                        ->where('historySequence',0)
+                        ->orderBy('historyTimestamp','desc')
+                        ->get();
+
+        $tab_data = array();
+        foreach($history as $h){
+                $apv_status = Assets::getApprovalStatus($h->approvalTicket);
+                if($apv_status == 'pending'){
+                    $bt_apv = '<span class="btn btn-info change-approval '.$h->approvalTicket.'" data-id="'.$h->approvalTicket.'" >'.$apv_status.'</span>';
+                }else if($apv_status == 'verified'){
+                    $bt_apv = '<span class="btn btn-success" >'.$apv_status.'</span>';
+                }else{
+                    $bt_apv = '';
+                }
+
+                $d = date( 'Y-m-d H:i:s', $h->historyTimestamp->sec );
+                $tab_data[] = array(
+                    $d,
+                    $h->historyAction,
+                    $h->historyObject['itemDescription'],
+                    ($h->historyAction == 'new')?'NA':$this->objdiff( $diffs[$d] ),
+                    $bt_apv
+                );
+        }
+
+        $header = array(
+            'Modified',
+            'Event',
+            'Name',
+            'Diff',
+            'Approval'
+            );
+
+        $attr = array('class'=>'table', 'id'=>'transTab', 'style'=>'width:100%;', 'border'=>'0');
+        $t = new HtmlTable($tab_data, $attr, $header);
+        $itemtable = $t->build();
+
+        $asset = Asset::find($id);
+
+        Breadcrumbs::addCrumb('Ad Assets',URL::to( strtolower($this->controller_name) ));
+        Breadcrumbs::addCrumb('Detail',URL::to( strtolower($this->controller_name).'/detail/'.$asset->_id ));
+        Breadcrumbs::addCrumb($asset->SKU,URL::to( strtolower($this->controller_name) ));
+
+        return View::make('history.table')
+                    ->with('a',$asset)
+                    ->with('title','Asset Detail '.$asset->itemDescription )
+                    ->with('table',$itemtable);
+    }
+
     public function getIndex()
     {
 
-        $this->title = 'Delivery Report';
+        $this->title = 'Delivery Time';
 
         $this->place_action = 'none';
 
@@ -34,6 +98,11 @@ class DeliveryreportController extends AdminController {
         Breadcrumbs::addCrumb('Manifest',URL::to( strtolower($this->controller_name) ));
 
         $this->additional_filter = View::make('shared.addfilter')->with('submit_url','deliveryreport')->render();
+
+
+        $db = Config::get('lundin.main_db');
+
+        $company = Input::get('acc-company');
 
         //device=&courier=&logistic=&date-from=2015-10-24
 
@@ -63,14 +132,73 @@ class DeliveryreportController extends AdminController {
         $this->place_action = 'none';
         $this->show_select = false;
 
+        /* Start custom queries */
+
         $mtab = Config::get('jayon.assigned_delivery_table');
 
-        $model = new Shipment();
+        $model = $this->model;
+        /*
+        $model = $model->select(DB::raw('count(*) as count'),DB::raw('date(ordertime) as orderdate'),DB::raw('weekofyear(ordertime) as week'),DB::raw('month(ordertime) as month'),DB::raw('year(ordertime) as year'),'assignment_date','ordertime','delivery_type','deliverytime','delivery_note','pending_count','recipient_name','delivery_id',$mtab.'.merchant_id as merchant_id','cod_bearer','delivery_bearer','buyer_name','buyerdeliverycity','buyerdeliveryzone','c.fullname as courier_name','d.identifier as device_name', $mtab.'.phone', $mtab.'.mobile1',$mtab.'.mobile2','merchant_trans_id','m.merchantname as merchant_name','m.fullname as fullname','a.application_name as app_name','a.domain as domain ','delivery_type','shipping_address','status','pickup_status','warehouse_status','cod_cost','delivery_cost','total_price','total_tax','total_discount','box_count')
+            ->leftJoin('members as m',Config::get('jayon.incoming_delivery_table').'.merchant_id','=','m.id')
+            ->leftJoin('applications as a',Config::get('jayon.assigned_delivery_table').'.application_id','=','a.id')
+            ->leftJoin('devices as d',Config::get('jayon.assigned_delivery_table').'.device_id','=','d.id')
+            ->leftJoin('couriers as c',Config::get('jayon.assigned_delivery_table').'.courier_id','=','c.id');
 
-        $model = $model->select( DB::raw('count(*) as count, year(ordertime) as orderyear,weekofyear(ordertime) as orderweek, date(ordertime) as orderdate, m.merchantname as merchant_name, delivery_type') )
-                    ->leftJoin('members as m', $mtab.'.merchant_id','=','m.id')
-                    ->orderBy('m.merchantname', 'asc');
+        $model = $model->select('assignment_date','ordertime','deliverytime','delivery_note','pending_count','recipient_name','delivery_id',$mtab.'.merchant_id as merchant_id','cod_bearer','delivery_bearer','buyer_name','buyerdeliverycity','buyerdeliveryzone','c.fullname as courier_name','d.identifier as device_name', $mtab.'.phone', $mtab.'.mobile1',$mtab.'.mobile2','application_id','weight','merchant_trans_id','m.merchantname as merchant_name','m.fullname as fullname','a.application_name as app_name','a.domain as domain ','delivery_type','shipping_address','status','pickup_status','warehouse_status','cod_cost','delivery_cost','total_price','total_tax','total_discount','box_count')
+            ->leftJoin('members as m',Config::get('jayon.incoming_delivery_table').'.merchant_id','=','m.id')
+            ->leftJoin('applications as a',Config::get('jayon.assigned_delivery_table').'.application_id','=','a.id')
+            ->leftJoin('devices as d',Config::get('jayon.assigned_delivery_table').'.device_id','=','d.id')
+            ->leftJoin('couriers as c',Config::get('jayon.assigned_delivery_table').'.courier_id','=','c.id');
+        */
 
+        /*
+        $model = $model
+            ->where(function($query){
+                $query->where('status','=', Config::get('jayon.trans_status_admin_courierassigned') )
+                    ->orWhere('status','=', Config::get('jayon.trans_status_mobile_pickedup') )
+                    ->orWhere('status','=', Config::get('jayon.trans_status_mobile_enroute') )
+                    ->orWhere(function($q){
+                            $q->where('status', Config::get('jayon.trans_status_new'))
+                                ->where(Config::get('jayon.incoming_delivery_table').'.pending_count', '>', 0);
+                    });
+
+            });
+        */
+
+        if($status == '' || is_null($status) ){
+            //$status = Config::get('jayon.devmanifest_default_status');
+        }else{
+            $status = explode(',', $status);
+        }
+
+
+        if(empty($status)){
+            //$exstatus = Config::get('jayon.devmanifest_default_excl_status');
+
+            if(!empty($exstatus)){
+                //$model = $model->whereNotIn('status', $exstatus);
+            }
+        }else{
+            //$model = $model->whereIn('status', $status);
+        }
+
+        /*
+        if($courierstatus == '' || is_null($courierstatus) ){
+            $courierstatus = Config::get('jayon.devmanifest_default_courier_status');
+        }else{
+            $courierstatus = explode(',', $courierstatus);
+        }
+
+        if(empty($courierstatus)){
+            $excrstatus = Config::get('jayon.devmanifest_default_excl_courier_status');
+
+            if(!empty($excrstatus)){
+                $model = $model->whereNotIn('courier_status', $excrstatus);
+            }
+        }else{
+            $model = $model->whereIn('courier_status', $courierstatus);
+        }
+        */
 
         if($period_from == '' || is_null($period_from) ){
             $datefrom = date( 'Y-m-d 00:00:00', strtotime($period_from) );
@@ -87,114 +215,129 @@ class DeliveryreportController extends AdminController {
 
         }
 
-        $model->orderBy('ordertime','asc')
-                ->groupBy('orderdate')
-                ->groupBy('orderyear')
-                ->groupBy('merchant_id')
-                ->groupBy('delivery_type');
+        if($merchant == '' || is_null($merchant) ){
+
+        }else{
+            $model = $model->where(Config::get('jayon.incoming_delivery_table').'.merchant_id','=', $merchant);
+        }
+
+        if($device == '' || is_null($device) ){
+
+        }else{
+            $model = $model->where('device_id','=', $device);
+        }
+
+        if($courier == '' || is_null($courier) ){
+
+        }else{
+            $model = $model->where('courier_id','=', $courier);
+        }
+
+        if($logistic == '' || is_null($logistic) ){
+
+        }else{
+            $model = $model->where('logistic','=', $logistic);
+        }
+
+        /*
+        $model = $model->where(function($qr){
+            $qr->where('status',Config::get('jayon.trans_status_admin_courierassigned'))
+            ->orWhere('status',Config::get('jayon.trans_status_mobile_pickedup'))
+            ->orWhere('status',Config::get('jayon.trans_status_mobile_enroute'))
+            ->orWhere(function($q){
+                $q->where('status',Config::get('jayon.trans_status_new'))
+                  ->where('pending_count','>', 0);
+            });
+
+        });
+        */
+
+        $model->orderBy('delivery_type','asc')
+            ->orderBy('merchant_id','asc');
+            //->orderBy('year', 'asc')
+            //->orderBy('week', 'asc');
+
+        //$model->groupBy('delivery_type')
+        //    ->groupBy('merchant_id');
+
 
         $actualresult = $model->get();
 
-        /* Start custom queries */
+        print_r($actualresult->toArray());
 
+        die();
 
         $tattrs = array('width'=>'100%','class'=>'table table-bordered table-striped');
 
 
         $bymc = array();
 
-        $bytc = array();
+        $years = array();
+        $weeks = array();
+        $months = array();
+
+        $effdates = array();
+
+        $effweeks = array();
+
+
 
         foreach($actualresult as $mc){
-            if(isset($bymc[$mc->delivery_type][$mc->merchant_name][$mc->orderyear][$mc->orderweek][$mc->orderdate])){
-                $bymc[$mc->delivery_type][$mc->merchant_name][$mc->orderyear][$mc->orderweek][$mc->orderdate] += $mc->count;
-            }else{
-                $bymc[$mc->delivery_type][$mc->merchant_name][$mc->orderyear][$mc->orderweek][$mc->orderdate] = $mc->count;
+
+            $weeks[] = $mc->week;
+            $months[] = $mc->month;
+            $years[] = $mc->year;
+
+            $effweeks[$mc->year][$mc->week] = $mc->week;
+
+
+            //if(isset($bymc[$mc->delivery_type][$mc->merchant_name][$mc->month][$mc->week])){
+            //    $bymc[$mc->delivery_type][$mc->merchant_name][$mc->month][$mc->week] += $mc->count ;
+            //}else{
+                $bymc[$mc->delivery_type][$mc->merchant_name][$mc->year][$mc->week] = $mc->count ;
+
+                if(isset($effdates[$mc->year][$mc->week][0])){
+                    if(isset($effdates[$mc->year][$mc->week][1])){
+                        $effdates[$mc->year][$mc->week][1] = $mc->orderdate;
+                    }else{
+                        $effdates[$mc->year][$mc->week][] = $mc->orderdate;
+                    }
+                }else{
+                    $effdates[$mc->year][$mc->week][] = $mc->orderdate;
+                }
+
+            //}
+
+        }
+
+        $weeks = array_unique($weeks);
+        $months = array_unique($months);
+        $years = array_unique($years);
+
+        /*
+        foreach($effweeks as $yr=>$wr){
+            foreach($wr as $ir){
+                $effdates[$yr][$ir] = $this->getEffDates($yr, $ir);
             }
         }
+        */
 
+        print_r($effweeks);
 
+        //print_r($bymc);
 
-        print_r($bymc);
+        print_r($effdates);
 
-        $bydc = array();
-
-        $tpd = array();
-
-        $bpd = array();
-
-        $wpd = array();
-
-        foreach($actualresult as $dc){
-            $bydc[$dc->device_name][$dc->buyerdeliverycity][$dc->buyerdeliveryzone][] = $dc;
-
-            if( is_null($dc->actual_weight) || $dc->actual_weight == ''){
-
-                $actual_weight =  Prefs::getWeightNominal($dc->weight,$dc->application_id);
-
-            }else{
-                $actual_weight = $dc->actual_weight;
-            }
-
-            //print $dc->weight."\r\n";
-            //print $dc->application_id."\r\n";
-            //print $actual_weight."\r\n";
-
-            if(isset($tpd[$dc->device_name])){
-                $tpd[$dc->device_name] += 1;
-                $bpd[$dc->device_name] += $dc->box_count;
-                $wpd[$dc->device_name] += $actual_weight;
-            }else{
-                $tpd[$dc->device_name] = 1;
-                $bpd[$dc->device_name] = $dc->box_count;
-                $wpd[$dc->device_name] = $actual_weight;
-            }
-        }
-
-        $dtotal = array();
-
-        $btotal = array();
-
-        $wtotal = array();
-
-        foreach($tpd as $dk=>$dv){
-            $dtotal[] = $dv;
-        }
-
-        foreach($bpd as $dk=>$dv){
-            $btotal[] = $dv;
-        }
-
-        foreach($wpd as $dk=>$dv){
-            $wtotal[] = $dv;
-        }
-
-        if(count($dtotal) > 0){
-            $dmax = max($dtotal);
-        }else{
-            $dmax = 1;
-        }
-
-        if(count($btotal) > 0){
-            $bmax = max($btotal);
-        }else{
-            $bmax = 1;
-        }
-
-        if(count($wtotal) > 0){
-            $wmax = max($wtotal);
-        }else{
-            $wmax = 1;
-        }
+        die();
+        $headvar0 = array(
+            array('value'=>'No.','attr'=>''),
+            array('value'=>'Merchant','attr'=>''),
+            array('value'=>'Total','attr'=>'')
+        );
 
         $headvar1 = array(
             array('value'=>'No.','attr'=>''),
-            array('value'=>'Device','attr'=>''),
-            array('value'=>'Total per Device','attr'=>''),
-            array('value'=>'Jumlah Box','attr'=>''),
-            array('value'=>'Berat','attr'=>''),
-            array('value'=>'Kota','attr'=>''),
-            array('value'=>'Kecamatan','attr'=>''),
+            array('value'=>'Merchant','attr'=>''),
             array('value'=>'Total','attr'=>'')
         );
 
@@ -202,21 +345,20 @@ class DeliveryreportController extends AdminController {
             array('value'=>'','attr'=>''),
             array('value'=>'','attr'=>''),
             array('value'=>'','attr'=>''),
-            array('value'=>'','attr'=>''),
-            array('value'=>'','attr'=>''),
-            array('value'=>'','attr'=>''),
-            array('value'=>'','attr'=>''),
-            array('value'=>'','attr'=>'')
         );
 
-        foreach(array_keys($bymc) as $mctitle){
-            $headvar1[] = array('value'=>$mctitle,'attr'=>'colspan="3" class="vtext" style="min-height:100px;"');
-            $headvar2[] = array('value'=>'COD','attr'=>'');
-            $headvar2[] = array('value'=>'DO','attr'=>'');
-            $headvar2[] = array('value'=>'P','attr'=>'');
+        foreach ($effdates as $yk=>$wk) {
+            $span = 0;
+            foreach($wk as $wt=>$dt){
+                $headvar1[] = array('value'=>'Week '.$effweeks[$yk][$wt],'attr'=>'');
+                $headvar2[] = array('value'=>$dt[0].' to '.$dt[1],'attr'=>'');
+                $span++;
+            }
+            $headvar0[] = array('value'=>$yk,'attr'=>'colspan="'.$span.'"');
         }
 
         $thead = array();
+        $thead[] = $headvar0;
         $thead[] = $headvar1;
         $thead[] = $headvar2;
 
@@ -246,26 +388,7 @@ class DeliveryreportController extends AdminController {
             $dids[] = $ar->delivery_id;
         }
 
-        /*
-        $details = Deliverylog::whereIn('delivery_id',$dids)
 
-                        ->where(function($q){
-                            $q->where('status',Config::get('jayon.trans_status_mobile_delivered'))
-                                ->orWhere('status',Config::get('jayon.trans_status_admin_courierassigned'))
-                                ->orWhere('status',Config::get('jayon.trans_status_new'))
-                                ->orWhere('status',Config::get('jayon.trans_status_rescheduled'))
-                                ->orWhere('status',Config::get('jayon.trans_status_mobile_return'));
-                        })
-
-                        ->orderBy('timestamp','desc')
-                        ->get()->toArray();
-
-        $dlist = array();
-        foreach ($details as $dt) {
-            $dlist[$dt['delivery_id']][] = $dt;
-        }
-        */
-        //print_r($dlist);
         $tabdata = array();
 
         $cntcod = 0;
@@ -276,8 +399,6 @@ class DeliveryreportController extends AdminController {
 
         $box_count = 0;
 
-        $weight_sum = 0;
-
         //total per columns
         $tcod = 0;
         $tccod = 0;
@@ -285,135 +406,67 @@ class DeliveryreportController extends AdminController {
         $tps = 0;
         $treturn = 0;
 
-        $tbox = 0;
-
-        $tweight = 0;
-
         $totalrow = array();
 
         $mname = '';
         $cd = '';
 
-        foreach($bydc as $d=>$c){
-            foreach($c as $ct=>$zn){
-                foreach($zn as $z=>$o){
+        $effweeks = array_keys($effdates);
 
-                    if($d == $cd){
-                        $currddev = '';
-                        $currdtotal = '';
-                        $box_count = '';
-                        $weight_sum = '';
-                    }else{
-                        $currddev = $d;
-                        $currdtotal = $tpd[$d];
-                        $box_count = $bpd[$d];
-                        $weight_sum = $wpd[$d];
-                    }
+        foreach ($bymc as $t => $m) {
 
-                    $tbox += $box_count;
+            $pre = array();
 
-                    $tweight += $weight_sum;
-
-
-                    $cd = $d;
-
-                    $row = array(
-                            array('value'=>$seq,'attr'=>''),
-                            array('value'=>$currddev,'attr'=>''),
-                        );
-
-
-                    $maxattr = ($dmax == $currdtotal)?'style="background-color:red;"':'';
-                    $row[] = array('value'=>$currdtotal,'attr'=>$maxattr);
-
-
-                    $maxattr = ($bmax == $box_count)?'style="background-color:red;"':'';
-                    $row[] = array('value'=>$box_count,'attr'=>$maxattr);
-
-                    $maxattr = ($wmax == $weight_sum)?'style="background-color:red;"':'';
-                    $row[] = array('value'=>$weight_sum,'attr'=>$maxattr);
-
-
-                    $row[] = array('value'=>$ct,'attr'=>'');
-                    $row[] = array('value'=>$z,'attr'=>'');
-                    $row[] = array('value'=>count($o),'attr'=>'');
-
-                    if(isset($bydc[$d][$ct][$z])){
-                        $mv = $bydc[$d][$ct][$z];
-
-                        foreach($bymc as $mcx=>$mcv){
-
-
-                            $cod = 0;
-                            $do = 0;
-                            $p = 0;
-                            foreach($mv as $mo){
-
-                                //print $mo->merchant_name.' '.$mcx."/r/n";
-
-                                if($mo->merchant_name == $mcx){
-                                    if($mo->delivery_type == 'COD' || $mo->delivery_type == 'CCOD' ){
-                                        $cod++;
-                                    }
-                                    if($mo->delivery_type == 'Delivery Only' || $mo->delivery_type == 'DO' ){
-                                        $do++;
-                                    }
-                                    if($mo->status == 'pending'){
-                                        $p++;
-                                    }
-                                }
-
-                            }
-                            $row[] = array('value'=>$cod,'attr'=>'');
-                            $row[] = array('value'=>$do,'attr'=>'');
-                            $row[] = array('value'=>$p,'attr'=>'');
-                        }
-
-                    }
-
-                    $tabdata[] = $row;
-
-                    $seq++;
-
-                }
-
-            }
-
-        }
-
-        $totalrow = array(
-                array('value'=>'','attr'=>''),
-                array('value'=>'','attr'=>''),
-                array('value'=>'','attr'=>''),
-                array('value'=>$tbox,'attr'=>''),
-                array('value'=>$tweight,'attr'=>''),
+            $pre = array(
+                array('value'=>strtoupper($t),'attr'=>'colspan="2"'),
                 array('value'=>'','attr'=>'')
             );
 
-        $coloffset = 6;
-        $colc = 0;
-        foreach($tabdata as $td){
-            //print_r($td);
+            $blanks = array();
 
-            for($ci = 0; $ci < (count($td) - $coloffset);$ci++){
-                if(isset($totalrow[$coloffset + $ci])){
-                    $totalrow[$coloffset + $ci] += $td[$coloffset + $ci]['value'];
-                }else{
-                    $totalrow[$coloffset + $ci] = $td[$coloffset + $ci]['value'];
-                }
+            foreach($effweeks as $wk){
+                $blanks[] = array('value'=>'','attr'=>'');
             }
-        }
 
-        array_unshift($tabdata,$totalrow);
 
-            $avgdata = array(
-                    array('value'=>'Rata-rata<br />( dlm satuan hari )','attr'=>'colspan="6"'),
-                    array('value'=>number_format($assign2deliverydays / $seq, 2, ',','.' ),'attr'=>'style="font-size:18px;font-weight:bold;"'),
-                    array('value'=>'','attr'=>'colspan="7"'),
+            $tabdata[] = array_merge($pre, $blanks);
+
+            $seq = 1;
+
+            foreach ($m as $mn => $dt) {
+
+                $drow = array();
+
+                $tpm = 0;
+
+                foreach ($years as $y) {
+
+                }
+
+                foreach($effweeks as $wk){
+
+                    foreach( $dt as $md){
+                        if(isset($md[$wk])){
+                            $drow[] = array('value'=>$md[$wk],'attr'=>'');
+                            $tpm += $md[$wk];
+                        }else{
+                            $drow[] = array('value'=>0,'attr'=>'');
+                        }
+                    }
+                }
+
+                $pre = array(
+                    array('value'=>$seq,'attr'=>''),
+                    array('value'=>$mn,'attr'=>''),
+                    array('value'=>$tpm,'attr'=>'')
                 );
 
-            //array_unshift($tabdata, $avgdata);
-            //array_push($tabdata, $avgdata);
+                 $tabdata[] = array_merge($pre, $drow);
+
+                $seq++;
+            }
+
+        }
 
         $mtable = new HtmlTable($tabdata,$tattrs,$thead);
 
@@ -1260,6 +1313,16 @@ class DeliveryreportController extends AdminController {
             ->with('labels', $labels);
     }
 
+    public function getEffDates($year,$week)
+    {
+
+        $model = new Shipment();
+
+        $start = $model->where( DB::raw('year(ordertime)'),'=',$year )->where( DB::raw('weekofyear(ordertime)'),'=',$week )->min( DB::raw('date(ordertime)') );
+        $end = $model->where( DB::raw('year(ordertime)'),'=',$year )->where( DB::raw('weekofyear(ordertime)'),'=',$week )->max(DB::raw('date(ordertime)'));
+
+        return array($start, $end);
+    }
 
     public function getViewpics($id)
     {

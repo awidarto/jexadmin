@@ -214,7 +214,7 @@ class SyncapiController extends \Controller {
                         $shipment->position = $user->node_id;
                     }
 
-                    //$shipment->save();
+                    $shipment->save();
 
                     $hdata = array();
                     $hdata['historyTimestamp'] = $ts;
