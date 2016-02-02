@@ -214,7 +214,7 @@ class SyncapiController extends \Controller {
                         $shipment->position = $user->node_id;
                     }
 
-                    $shipment->save();
+                    //$shipment->save();
 
                     $hdata = array();
                     $hdata['historyTimestamp'] = $ts;
@@ -896,10 +896,67 @@ class SyncapiController extends \Controller {
 
                     $check = $this->checkPickedUp($olog->deliveryId, 'pickupStatus' ,'sudah diambil' ,\Config::get('jex.pickup_app') , $user->identifier  );
 
+                    $changes = false;
+                    //order currently already pick up
+                    if($shipment->pickup_status == \Config::get('jayon.trans_status_pickup')){
+
+                        if($olog->pickupStatus == \Config::get('jayon.trans_status_pickup')){
+
+                        }else{
+                            // tries to cancel pick up
+                            // Note should not empty
+                            if(trim($olog->deliveryNote) != ''){
+                                //OK , allow status change
+                                $shipment->pickup_status = $olog->pickupStatus;
+                                $shipment->delivery_note = trim($olog->deliveryNote);
+
+                                if($shipment->pickuptime == '' || $shipment->pickuptime == '0000-00-00 00:00:00' ){
+                                    $shipment->pickuptime = $pickuptime;
+                                }
+
+                                $shipment->pickup_dev_id = $user->identifier;
+
+                                $changes = true;
+
+                            }
+                        }
+
+                    }else{
+
+                       if($olog->pickupStatus == \Config::get('jayon.trans_status_pickup')){
+
+                            if($olog->pickuptime == '' || $olog->pickuptime == '0000-00-00 00:00:00' ){
+                                $pickuptime = date('Y-m-d H:i:s',time());
+                            }else{
+                                $pickuptime = $olog->pickuptime;
+                            }
+
+                            if( trim($olog->deliveryNote) != '' ){
+                                $shipment->delivery_note = trim($olog->deliveryNote);
+                            }
+
+                            if($shipment->pickuptime == '' || $shipment->pickuptime == '0000-00-00 00:00:00' ){
+                                $shipment->pickuptime = $pickuptime;
+                            }
+
+                            $shipment->pickup_dev_id = $user->identifier;
+
+                            $changes = true;
+
+                       }else{
+
+                       }
+
+                    }
+
+                    if($changes){
+                        $shipment->save();
+                    }
+
                     //if($shipment->pickup_status != \Config::get('jayon.trans_status_pickup') ||
                     //    ($olog->pickupStatus != \Config::get('jayon.trans_status_pickup') && trim($olog->deliveryNote) != '' )
                     //){
-
+                    /*
                     if($olog->pickup_status == \Config::get('jayon.trans_status_pickup') ||
                         ($olog->pickupStatus != \Config::get('jayon.trans_status_pickup') && trim($olog->deliveryNote) != '' )
                      ){
@@ -928,6 +985,7 @@ class SyncapiController extends \Controller {
 
                         $shipment->save();
                     }
+                    */
                     //$shipment->status = $olog->status;
                 }
 

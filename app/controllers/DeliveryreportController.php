@@ -103,7 +103,7 @@ class DeliveryreportController extends AdminController {
 
         $bymc = array();
 
-        $bytc = array();
+        $effdates = array();
 
         foreach($actualresult as $mc){
             if(isset($bymc[$mc->delivery_type][$mc->merchant_name][$mc->orderyear][$mc->orderweek][$mc->orderdate])){
@@ -111,9 +111,23 @@ class DeliveryreportController extends AdminController {
             }else{
                 $bymc[$mc->delivery_type][$mc->merchant_name][$mc->orderyear][$mc->orderweek][$mc->orderdate] = $mc->count;
             }
+
+            $effdates[$mc->orderyear][$mc->orderweek][] = $mc->orderdate;
         }
 
+        $effdates2 = array();
 
+        foreach ($effdates as $yr => $wk) {
+            ksort($wk);
+            foreach ($wk as $k => $v) {
+                $dts = array_unique($v);
+                $effdates2[$yr][$k][] = array_shift($dts);
+                $effdates2[$yr][$k][] = array_pop($dts);
+
+            }
+        }
+
+        print_r($effdates2);
 
         print_r($bymc);
 
@@ -126,29 +140,7 @@ class DeliveryreportController extends AdminController {
         $wpd = array();
 
         foreach($actualresult as $dc){
-            $bydc[$dc->device_name][$dc->buyerdeliverycity][$dc->buyerdeliveryzone][] = $dc;
 
-            if( is_null($dc->actual_weight) || $dc->actual_weight == ''){
-
-                $actual_weight =  Prefs::getWeightNominal($dc->weight,$dc->application_id);
-
-            }else{
-                $actual_weight = $dc->actual_weight;
-            }
-
-            //print $dc->weight."\r\n";
-            //print $dc->application_id."\r\n";
-            //print $actual_weight."\r\n";
-
-            if(isset($tpd[$dc->device_name])){
-                $tpd[$dc->device_name] += 1;
-                $bpd[$dc->device_name] += $dc->box_count;
-                $wpd[$dc->device_name] += $actual_weight;
-            }else{
-                $tpd[$dc->device_name] = 1;
-                $bpd[$dc->device_name] = $dc->box_count;
-                $wpd[$dc->device_name] = $actual_weight;
-            }
         }
 
         $dtotal = array();
@@ -157,68 +149,84 @@ class DeliveryreportController extends AdminController {
 
         $wtotal = array();
 
-        foreach($tpd as $dk=>$dv){
-            $dtotal[] = $dv;
-        }
-
-        foreach($bpd as $dk=>$dv){
-            $btotal[] = $dv;
-        }
-
-        foreach($wpd as $dk=>$dv){
-            $wtotal[] = $dv;
-        }
-
-        if(count($dtotal) > 0){
-            $dmax = max($dtotal);
-        }else{
-            $dmax = 1;
-        }
-
-        if(count($btotal) > 0){
-            $bmax = max($btotal);
-        }else{
-            $bmax = 1;
-        }
-
-        if(count($wtotal) > 0){
-            $wmax = max($wtotal);
-        }else{
-            $wmax = 1;
-        }
-
         $headvar1 = array(
-            array('value'=>'No.','attr'=>''),
-            array('value'=>'Device','attr'=>''),
-            array('value'=>'Total per Device','attr'=>''),
-            array('value'=>'Jumlah Box','attr'=>''),
-            array('value'=>'Berat','attr'=>''),
-            array('value'=>'Kota','attr'=>''),
-            array('value'=>'Kecamatan','attr'=>''),
-            array('value'=>'Total','attr'=>'')
+            array('value'=>'No.','attr'=>'rowspan="4"'),
+            array('value'=>'Merchant','attr'=>'rowspan="4"'),
+            array('value'=>'Total','attr'=>'rowspan="4"')
         );
 
-        $headvar2 = array(
-            array('value'=>'','attr'=>''),
-            array('value'=>'','attr'=>''),
-            array('value'=>'','attr'=>''),
-            array('value'=>'','attr'=>''),
-            array('value'=>'','attr'=>''),
-            array('value'=>'','attr'=>''),
-            array('value'=>'','attr'=>''),
-            array('value'=>'','attr'=>'')
-        );
+        $headvar2 = array();
+        $headvar3 = array();
+        $headvar4 = array();
 
-        foreach(array_keys($bymc) as $mctitle){
-            $headvar1[] = array('value'=>$mctitle,'attr'=>'colspan="3" class="vtext" style="min-height:100px;"');
-            $headvar2[] = array('value'=>'COD','attr'=>'');
-            $headvar2[] = array('value'=>'DO','attr'=>'');
-            $headvar2[] = array('value'=>'P','attr'=>'');
+        foreach ($effdates2 as $y => $w) {
+            $headvar2[] = array('value'=>$y,'attr'=>'colspan="'.count($w).'"');
+            foreach ($w as $wk => $v) {
+                $headvar3[] = array('value'=>$wk,'attr'=>'');
+                $headvar4[] = array('value'=>$v[0].' - '.$v[1],'attr'=>'');
+            }
+        }
+
+        foreach ($bymc as $t => $m) {
+            /*
+            $pre = array();
+
+            $pre = array(
+                array('value'=>strtoupper($t),'attr'=>'colspan="2"'),
+                array('value'=>'','attr'=>'')
+            );
+
+            $blanks = array();
+
+            foreach($effweeks as $wk){
+                $blanks[] = array('value'=>'','attr'=>'');
+            }
+
+
+            $tabdata[] = array_merge($pre, $blanks);
+
+            $seq = 1;
+
+            foreach ($m as $mn => $dt) {
+
+                $drow = array();
+
+                $tpm = 0;
+
+                foreach ($years as $y) {
+
+                }
+
+                foreach($effweeks as $wk){
+
+                    foreach( $dt as $md){
+                        if(isset($md[$wk])){
+                            $drow[] = array('value'=>$md[$wk],'attr'=>'');
+                            $tpm += $md[$wk];
+                        }else{
+                            $drow[] = array('value'=>0,'attr'=>'');
+                        }
+                    }
+                }
+
+                $pre = array(
+                    array('value'=>$seq,'attr'=>''),
+                    array('value'=>$mn,'attr'=>''),
+                    array('value'=>$tpm,'attr'=>'')
+                );
+
+                 $tabdata[] = array_merge($pre, $drow);
+
+                $seq++;
+            }
+            */
         }
 
         $thead = array();
         $thead[] = $headvar1;
         $thead[] = $headvar2;
+        $thead[] = $headvar3;
+        $thead[] = $headvar4;
 
 
 
