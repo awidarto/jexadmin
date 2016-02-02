@@ -914,7 +914,7 @@ class SyncapiController extends \Controller {
 
                     if($olog->pickupStatus == \Config::get('jayon.trans_status_pickup')){
                         $changes = true;
-                    }else{
+                    }else if($olog->pickupStatus == \Config::get('jayon.trans_status_no_pickup')){
                         if(trim($olog->deliveryNote) != ''){
                             $changes = true;
                         }
