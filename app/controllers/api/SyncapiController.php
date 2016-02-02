@@ -904,22 +904,19 @@ class SyncapiController extends \Controller {
                         $pickuptime = $olog->pickuptime;
                     }
 
+                    $shipment->pickup_dev_id = $user->identifier;
+
                     //order currently already pick up
                     if($shipment->pickup_status == \Config::get('jayon.trans_status_pickup')){
 
                         if($olog->pickupStatus == \Config::get('jayon.trans_status_pickup')){
 
-                            $shipment->pickup_status = $olog->pickupStatus;
-
                             if(trim($olog->deliveryNote) != ''){
                                 $shipment->delivery_note = trim($olog->deliveryNote);
                             }
+                            $shipment->pickup_status = $olog->pickupStatus;
+                            $shipment->pickuptime = $pickuptime;
 
-                            //if($shipment->pickuptime == '' || $shipment->pickuptime == '0000-00-00 00:00:00' ){
-                                $shipment->pickuptime = $pickuptime;
-                            //}
-
-                            $shipment->pickup_dev_id = $user->identifier;
 
                             $changes = true;
 
@@ -929,14 +926,11 @@ class SyncapiController extends \Controller {
                             if(trim($olog->deliveryNote) != ''){
                                 //OK , allow status change
 
+                                if( trim($olog->deliveryNote) != '' ){
+                                    $shipment->delivery_note = trim($olog->deliveryNote);
+                                }
                                 $shipment->pickup_status = $olog->pickupStatus;
-                                $shipment->delivery_note = trim($olog->deliveryNote);
-
-                                //if($shipment->pickuptime == '' || $shipment->pickuptime == '0000-00-00 00:00:00' ){
-                                    $shipment->pickuptime = $pickuptime;
-                                //}
-
-                                $shipment->pickup_dev_id = $user->identifier;
+                                $shipment->pickuptime = $pickuptime;
 
                                 $changes = true;
 
@@ -946,16 +940,11 @@ class SyncapiController extends \Controller {
                     }else{
 
                        if($olog->pickupStatus == \Config::get('jayon.trans_status_pickup')){
-
                             if( trim($olog->deliveryNote) != '' ){
                                 $shipment->delivery_note = trim($olog->deliveryNote);
                             }
-
-                            if($shipment->pickuptime == '' || $shipment->pickuptime == '0000-00-00 00:00:00' ){
-                                $shipment->pickuptime = $pickuptime;
-                            }
-
-                            $shipment->pickup_dev_id = $user->identifier;
+                            $shipment->pickup_status = $olog->pickupStatus;
+                            $shipment->pickuptime = $pickuptime;
 
                             $changes = true;
 
@@ -965,7 +954,7 @@ class SyncapiController extends \Controller {
 
                     }
 
-                    if($changes){
+                    if($changes == true){
                         $shipment->save();
                     }
 
