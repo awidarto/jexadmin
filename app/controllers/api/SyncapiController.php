@@ -908,6 +908,10 @@ class SyncapiController extends \Controller {
                     $shipment->pickup_status = $olog->pickupStatus;
                     $shipment->pickuptime = $pickuptime;
 
+                    if(trim($olog->deliveryNote) != ''){
+                        $shipment->delivery_note = trim($olog->deliveryNote);
+                    }
+
                     if($olog->pickupStatus == \Config::get('jayon.trans_status_pickup')){
                         $changes = true;
                     }else{
