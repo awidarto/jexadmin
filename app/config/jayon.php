@@ -101,6 +101,7 @@ $config['trans_status_admin_dispatched'] = 'dispatched';
 
 $config['trans_status_tobepickup'] = 'akan diambil';
 $config['trans_status_pickup'] = 'sudah diambil';
+$config['trans_status_no_pickup'] = 'tidak diambil';
 $config['trans_status_pickup_canceled'] = 'canceled';
 
 $config['trans_status_atmerchant'] = 'belum di gudang';
