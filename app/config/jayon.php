@@ -166,6 +166,7 @@ $config['delivery_status'] = array(
 $config['pickup_status'] = array(
     $config['trans_status_tobepickup'] => 'Belum Diambil',
     $config['trans_status_pickup'] => 'Sudah Diambil',
+    $config['trans_status_no_pickup'] => 'Tidak Diambil',
     $config['trans_status_pickup_canceled'] => 'Batal',
 );
 

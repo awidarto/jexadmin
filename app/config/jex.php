@@ -4,6 +4,24 @@ return array(
         'tracker_app'=>'com.kickstartlab.android.jexdelivery',
         'hub_app'=>'com.kickstartlab.android.jexwarehouse',
         'pickup_app'=>'com.kickstartlab.android.jexpickup',
+
+        'filter_time_base'=>array(
+            'delivery_order_active.created'=>'Created Date',
+            'assignment_date'=>'Assignment Date',
+            'pickuptime'=>'Pickup Date',
+            'deliverytime'=>'Delivery Time'),
+
+        'pending_count_choice'=>array(
+                ''=>'All',
+                '0'=>'0',
+                '1'=>'1',
+                '2'=>'2',
+                '3'=>'3',
+                '4'=>'>3'
+            ),
+
+        'data_tool_default_status'=>array('delivered'),
+
         'buckets'=>array(
                 'incoming'=>'Incoming',
                 'dispatcher'=>'Dispatcher',

@@ -1,6 +1,6 @@
 <?php
 
-class DeliverytimeController extends AdminController {
+class DatatoolController extends AdminController {
 
     public function __construct()
     {
@@ -14,7 +14,7 @@ class DeliverytimeController extends AdminController {
 
         $this->model = new Shipment();
         //$this->model = DB::collection('documents');
-        $this->title = 'Delivery Time';
+        $this->title = 'Data Tool';
 
     }
 
@@ -22,7 +22,7 @@ class DeliverytimeController extends AdminController {
     {
         set_time_limit(0);
 
-        $this->title = 'Delivery Time';
+        $this->title = 'Data Tool';
 
         $this->place_action = 'none';
 
@@ -34,7 +34,7 @@ class DeliverytimeController extends AdminController {
 
         Breadcrumbs::addCrumb('Manifest',URL::to( strtolower($this->controller_name) ));
 
-        $this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','deliverytime')->render();
+        $this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','datatool')->render();
 
 
         $db = Config::get('lundin.main_db');
@@ -61,8 +61,13 @@ class DeliverytimeController extends AdminController {
         $merchant = isset($in['merchant'])?$in['merchant']:'';
         $logistic = isset($in['logistic'])?$in['logistic']:'';
 
+        $pendingcount = isset($in['pending-count'])?$in['pending-count']:'';
+
+        $timebase = isset($in['time-base'])?$in['time-base']:'delivery_order_active.created';
+
         $status = isset($in['status'])?$in['status']:'';
         $courierstatus = isset($in['courier-status'])?$in['courier-status']:'';
+        $pickupstatus = isset($in['pickup-status'])?$in['pickup-status']:'';
 
         if($period_to == '' || is_null($period_to) ){
             $period_to = date('Y-m-d',time());
@@ -88,7 +93,7 @@ class DeliverytimeController extends AdminController {
             ->leftJoin('applications as a',Config::get('jayon.assigned_delivery_table').'.application_id','=','a.id')
             ->leftJoin('devices as d',Config::get('jayon.assigned_delivery_table').'.device_id','=','d.id')
             ->leftJoin('couriers as c',Config::get('jayon.assigned_delivery_table').'.courier_id','=','c.id');
-
+        /*
         $model = $model
             ->where(function($q){
                 $q->where('status',Config::get('jayon.trans_status_mobile_delivered'))
@@ -98,11 +103,37 @@ class DeliverytimeController extends AdminController {
                     ->orWhere('status',Config::get('jayon.trans_status_mobile_return'));
 
             });
+        */
+
+        if($pendingcount == '' || is_null($pendingcount) ){
+
+        }else{
+            if($pendingcount == 4){
+                $model = $model->where('pending_count','>' ,$pendingcount);
+            }else{
+                $model = $model->where('pending_count','=',$pendingcount);
+            }
+        }
 
         if($status == '' || is_null($status) ){
-            $status = Config::get('jayon.devmanifest_default_status');
+            //$status = Config::get('jex.data_tool_default_status');
         }else{
             $status = explode(',', $status);
+            $model = $model->whereIn('status', $status);
+        }
+
+        if($courierstatus == '' || is_null($courierstatus) ){
+
+        }else{
+            $courierstatus = explode(',', $courierstatus);
+            $model = $model->whereIn('courier_status', $courierstatus);
+        }
+
+        if($pickupstatus == '' || is_null($pickupstatus) ){
+
+        }else{
+            $pickupstatus = explode(',', $pickupstatus);
+            $model = $model->whereIn('pickup_status', $pickupstatus);
         }
 
         /*
@@ -117,11 +148,6 @@ class DeliverytimeController extends AdminController {
         }
 
 
-        if($courierstatus == '' || is_null($courierstatus) ){
-            $courierstatus = Config::get('jayon.devmanifest_default_courier_status');
-        }else{
-            $courierstatus = explode(',', $courierstatus);
-        }
 
         if(empty($courierstatus)){
             $excrstatus = Config::get('jayon.devmanifest_default_excl_courier_status');
@@ -143,8 +169,8 @@ class DeliverytimeController extends AdminController {
             $datefrom = date( 'Y-m-d 00:00:00', strtotime($period_from) );
             $dateto = date( 'Y-m-d 23:59:59', strtotime($period_to) );
 
-            $model = $model->where(function($q) use($datefrom,$dateto){
-                $q->whereBetween('ordertime',array($datefrom,$dateto));
+            $model = $model->where(function($q) use($datefrom,$dateto, $timebase){
+                $q->whereBetween($timebase,array($datefrom,$dateto));
             });
 
         }
@@ -173,7 +199,7 @@ class DeliverytimeController extends AdminController {
             $model = $model->where('logistic','=', $logistic);
         }
 
-        $actualresult = $model->get();
+        $actualresult = $model->orderBy($timebase, 'desc')->get();
 
         $tattrs = array('width'=>'100%','class'=>'table table-bordered table-striped');
 
@@ -472,6 +498,8 @@ class DeliverytimeController extends AdminController {
 
             $seq++;
         }
+
+        $valid_pickups = ($valid_pickups > 0)?$valid_pickups:1;
 
             $avgdata = array(
                     array('value'=>'Rata-rata<br />( dlm satuan hari )','attr'=>'colspan="7"'),

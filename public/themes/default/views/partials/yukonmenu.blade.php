@@ -66,6 +66,7 @@
                             <li class="{{ sa('deliverytime') }}" ><a href="{{ URL::to('deliverytime') }}"> Delivery Time</a></li>
                             <li class="{{ sa('deliverybydate') }}" ><a href="{{ URL::to('deliverybydate') }}"> Delivery By Date</a></li>
                             <li class="{{ sa('deliveryreport') }}" ><a href="{{ URL::to('deliveryreport') }}"> Delivery Report</a></li>
+                            <li class="{{ sa('datatool') }}" ><a href="{{ URL::to('datatool') }}"> Data Tool</a></li>
                           </ul>
                         </li>
                         <li class="first_level {{ hsa( array('docs') ) }} ">

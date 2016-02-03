@@ -78,6 +78,7 @@ Route::controller('devmanifest', 'DevmanifestController');
 Route::controller('deliverytime', 'DeliverytimeController');
 Route::controller('deliverybydate', 'DeliverybydateController');
 Route::controller('deliveryreport', 'DeliveryreportController');
+Route::controller('datatool', 'DatatoolController');
 
 
 Route::controller('orderlog', 'OrderlogController');

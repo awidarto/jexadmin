@@ -1495,6 +1495,24 @@ class AjaxController extends BaseController {
         return Response::json( $result );
     }
 
+    public function getPickupstatus()
+    {
+
+        $q = Input::get('term');
+
+        $status = Config::get('jayon.pickup_status');
+
+        $result = array();
+
+        foreach($status as $k=>$v) {
+            if(preg_match('/'.$q.'/i', $v)) {
+                $result[] = array('id'=>$k,'value'=>$k,'label'=>$v);
+            }
+        }
+
+        return Response::json( $result );
+    }
+
     public function getDistrict()
     {
         $q = Input::get('term');

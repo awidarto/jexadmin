@@ -347,6 +347,26 @@
            'placeholderColor' : '#666666'
         });
 
+        $('.tag_pickup_status').tagsInput({
+            'autocomplete_url': base + 'ajax/pickupstatus',
+           'height':'100px',
+           'width':'100%',
+           'interactive':true,
+           'onChange' : function(c){
+
+                },
+           'onAddTag' : function(t){
+                    console.log(t);
+                },
+           'onRemoveTag' : function(t){
+                    console.log(t);
+                },
+           'defaultText':'add status',
+           'removeWithBackspace' : true,
+           'minChars' : 0,
+           'maxChars' : 0, //if not provided there is no limit,
+           'placeholderColor' : '#666666'
+        });
 
 		$('.auto_user').autocomplete({
 			source: base + 'ajax/email',

@@ -127,9 +127,9 @@ class DeliveryreportController extends AdminController {
             }
         }
 
-        print_r($effdates2);
+        //print_r($effdates2);
 
-        print_r($bymc);
+        //print_r($bymc);
 
         $bydc = array();
 
@@ -139,9 +139,6 @@ class DeliveryreportController extends AdminController {
 
         $wpd = array();
 
-        foreach($actualresult as $dc){
-
-        }
 
         $dtotal = array();
 
@@ -159,68 +156,88 @@ class DeliveryreportController extends AdminController {
         $headvar3 = array();
         $headvar4 = array();
 
+        $weekspan = 0;
+
         foreach ($effdates2 as $y => $w) {
+
             $headvar2[] = array('value'=>$y,'attr'=>'colspan="'.count($w).'"');
             foreach ($w as $wk => $v) {
                 $headvar3[] = array('value'=>$wk,'attr'=>'');
                 $headvar4[] = array('value'=>$v[0].' - '.$v[1],'attr'=>'');
+
+                $weekspan++;
             }
         }
 
+        //print $weekspan;
+
+        $tabdata = array();
+
+        $weekspan++;
+
         foreach ($bymc as $t => $m) {
-            /*
-            $pre = array();
 
-            $pre = array(
-                array('value'=>strtoupper($t),'attr'=>'colspan="2"'),
-                array('value'=>'','attr'=>'')
-            );
+            //$weekspan += 1;
 
-            $blanks = array();
-
-            foreach($effweeks as $wk){
-                $blanks[] = array('value'=>'','attr'=>'');
+            $head = array();
+            $head[] = array('value'=>'','attr'=>'');
+            $head[] = array('value'=>strtoupper($t),'attr'=>'');
+            for($i = 0; $i < $weekspan;$i++){
+                $head[] = array('value'=>'','attr'=>'');
             }
 
-
-            $tabdata[] = array_merge($pre, $blanks);
+            $tabdata[] = $head;
 
             $seq = 1;
 
-            foreach ($m as $mn => $dt) {
+            foreach ($m as $mc=> $yr) {
 
-                $drow = array();
+                $row = array();
 
-                $tpm = 0;
+                $row[] = array('value'=>$seq,'attr'=>'');
+                $row[] = array('value'=>$mc,'attr'=>'');
 
-                foreach ($years as $y) {
+                $valrows = array();
+                $totalrows = 0;
 
-                }
+                foreach ($effdates2 as $yr=>$w) {
 
-                foreach($effweeks as $wk){
+                    foreach ($w as $wk=>$dt) {
 
-                    foreach( $dt as $md){
-                        if(isset($md[$wk])){
-                            $drow[] = array('value'=>$md[$wk],'attr'=>'');
-                            $tpm += $md[$wk];
+                        $val = 0;
+
+
+                        if(isset($bymc[$t][$mc][$yr][$wk])){
+                            //print_r($bymc[$t][$mc][$yr][$wk]);
+                            $vr = $bymc[$t][$mc][$yr][$wk];
+                            foreach ($vr as $k => $v) {
+                                $val += $v;
+                            }
                         }else{
-                            $drow[] = array('value'=>0,'attr'=>'');
+                            $val = 0;
                         }
+
+                        $valrows[] = array('value'=>$val,'attr'=>'');
+                        $totalrows += $val;
+
                     }
+
                 }
 
-                $pre = array(
-                    array('value'=>$seq,'attr'=>''),
-                    array('value'=>$mn,'attr'=>''),
-                    array('value'=>$tpm,'attr'=>'')
-                );
+                $row[] = array('value'=>$totalrows,'attr'=>'');
 
-                 $tabdata[] = array_merge($pre, $drow);
+                $mrow = array_merge($row, $valrows);
+
+                $tabdata[] = $mrow;
 
                 $seq++;
             }
-            */
+
         }
+
+        print_r($tabdata);
+
+        //die();
 
         $thead = array();
         $thead[] = $headvar1;
@@ -242,39 +259,9 @@ class DeliveryreportController extends AdminController {
 
         $courier_name = '';
 
-        $order2assigndays = 0;
-        $assign2deliverydays = 0;
-        $order2deliverydays = 0;
-
         $csv_data = array();
 
         $dids = array();
-
-        foreach($actualresult as $ar){
-            $dids[] = $ar->delivery_id;
-        }
-
-        /*
-        $details = Deliverylog::whereIn('delivery_id',$dids)
-
-                        ->where(function($q){
-                            $q->where('status',Config::get('jayon.trans_status_mobile_delivered'))
-                                ->orWhere('status',Config::get('jayon.trans_status_admin_courierassigned'))
-                                ->orWhere('status',Config::get('jayon.trans_status_new'))
-                                ->orWhere('status',Config::get('jayon.trans_status_rescheduled'))
-                                ->orWhere('status',Config::get('jayon.trans_status_mobile_return'));
-                        })
-
-                        ->orderBy('timestamp','desc')
-                        ->get()->toArray();
-
-        $dlist = array();
-        foreach ($details as $dt) {
-            $dlist[$dt['delivery_id']][] = $dt;
-        }
-        */
-        //print_r($dlist);
-        $tabdata = array();
 
         $cntcod = 0;
         $cntccod = 0;
@@ -302,126 +289,6 @@ class DeliveryreportController extends AdminController {
         $mname = '';
         $cd = '';
 
-        foreach($bydc as $d=>$c){
-            foreach($c as $ct=>$zn){
-                foreach($zn as $z=>$o){
-
-                    if($d == $cd){
-                        $currddev = '';
-                        $currdtotal = '';
-                        $box_count = '';
-                        $weight_sum = '';
-                    }else{
-                        $currddev = $d;
-                        $currdtotal = $tpd[$d];
-                        $box_count = $bpd[$d];
-                        $weight_sum = $wpd[$d];
-                    }
-
-                    $tbox += $box_count;
-
-                    $tweight += $weight_sum;
-
-
-                    $cd = $d;
-
-                    $row = array(
-                            array('value'=>$seq,'attr'=>''),
-                            array('value'=>$currddev,'attr'=>''),
-                        );
-
-
-                    $maxattr = ($dmax == $currdtotal)?'style="background-color:red;"':'';
-                    $row[] = array('value'=>$currdtotal,'attr'=>$maxattr);
-
-
-                    $maxattr = ($bmax == $box_count)?'style="background-color:red;"':'';
-                    $row[] = array('value'=>$box_count,'attr'=>$maxattr);
-
-                    $maxattr = ($wmax == $weight_sum)?'style="background-color:red;"':'';
-                    $row[] = array('value'=>$weight_sum,'attr'=>$maxattr);
-
-
-                    $row[] = array('value'=>$ct,'attr'=>'');
-                    $row[] = array('value'=>$z,'attr'=>'');
-                    $row[] = array('value'=>count($o),'attr'=>'');
-
-                    if(isset($bydc[$d][$ct][$z])){
-                        $mv = $bydc[$d][$ct][$z];
-
-                        foreach($bymc as $mcx=>$mcv){
-
-
-                            $cod = 0;
-                            $do = 0;
-                            $p = 0;
-                            foreach($mv as $mo){
-
-                                //print $mo->merchant_name.' '.$mcx."/r/n";
-
-                                if($mo->merchant_name == $mcx){
-                                    if($mo->delivery_type == 'COD' || $mo->delivery_type == 'CCOD' ){
-                                        $cod++;
-                                    }
-                                    if($mo->delivery_type == 'Delivery Only' || $mo->delivery_type == 'DO' ){
-                                        $do++;
-                                    }
-                                    if($mo->status == 'pending'){
-                                        $p++;
-                                    }
-                                }
-
-                            }
-                            $row[] = array('value'=>$cod,'attr'=>'');
-                            $row[] = array('value'=>$do,'attr'=>'');
-                            $row[] = array('value'=>$p,'attr'=>'');
-                        }
-
-                    }
-
-                    $tabdata[] = $row;
-
-                    $seq++;
-
-                }
-
-            }
-
-        }
-
-        $totalrow = array(
-                array('value'=>'','attr'=>''),
-                array('value'=>'','attr'=>''),
-                array('value'=>'','attr'=>''),
-                array('value'=>$tbox,'attr'=>''),
-                array('value'=>$tweight,'attr'=>''),
-                array('value'=>'','attr'=>'')
-            );
-
-        $coloffset = 6;
-        $colc = 0;
-        foreach($tabdata as $td){
-            //print_r($td);
-
-            for($ci = 0; $ci < (count($td) - $coloffset);$ci++){
-                if(isset($totalrow[$coloffset + $ci])){
-                    $totalrow[$coloffset + $ci] += $td[$coloffset + $ci]['value'];
-                }else{
-                    $totalrow[$coloffset + $ci] = $td[$coloffset + $ci]['value'];
-                }
-            }
-        }
-
-        array_unshift($tabdata,$totalrow);
-
-            $avgdata = array(
-                    array('value'=>'Rata-rata<br />( dlm satuan hari )','attr'=>'colspan="6"'),
-                    array('value'=>number_format($assign2deliverydays / $seq, 2, ',','.' ),'attr'=>'style="font-size:18px;font-weight:bold;"'),
-                    array('value'=>'','attr'=>'colspan="7"'),
-                );
-
-            //array_unshift($tabdata, $avgdata);
-            //array_push($tabdata, $avgdata);
 
         $mtable = new HtmlTable($tabdata,$tattrs,$thead);
 
@@ -435,7 +302,7 @@ class DeliveryreportController extends AdminController {
                 'do'=>$cntdo,
                 'ps'=>$cntps,
                 'return'=>$cntreturn,
-                'avg'=>number_format($assign2deliverydays / $seq, 2, ',','.' )
+                'avg'=>0
         );
 
         if($this->print == true || $this->pdf == true){
