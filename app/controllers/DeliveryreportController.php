@@ -235,7 +235,7 @@ class DeliveryreportController extends AdminController {
 
         }
 
-        print_r($tabdata);
+        //print_r($tabdata);
 
         //die();
 

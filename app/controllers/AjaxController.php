@@ -1470,7 +1470,7 @@ class AjaxController extends BaseController {
 
         foreach($status as $k=>$v) {
             if(preg_match('/'.$q.'/i', $v)) {
-                $result[] = array('id'=>$k,'value'=>$k,'label'=>$v);
+                $result[] = array('id'=>$k,'value'=>$k,'label'=>$k);
             }
         }
 
@@ -1488,7 +1488,7 @@ class AjaxController extends BaseController {
 
         foreach($status as $k=>$v) {
             if(preg_match('/'.$q.'/i', $v)) {
-                $result[] = array('id'=>$k,'value'=>$k,'label'=>$v);
+                $result[] = array('id'=>$k,'value'=>$k,'label'=>$k);
             }
         }
 
@@ -1506,7 +1506,7 @@ class AjaxController extends BaseController {
 
         foreach($status as $k=>$v) {
             if(preg_match('/'.$q.'/i', $v)) {
-                $result[] = array('id'=>$k,'value'=>$k,'label'=>$v);
+                $result[] = array('id'=>$k,'value'=>$k,'label'=>$k);
             }
         }
 
