@@ -152,6 +152,7 @@ $config['delivery_status'] = array(
     $config['trans_status_rescheduled'] => 'Jadwal Ulang',
     $config['trans_status_inprogress'] => 'Dalam Proses Pengiriman',
 
+    $config['trans_status_mobile_pending'] => 'Pending',
     $config['trans_status_mobile_delivered'] => 'Delivered',
     $config['trans_status_mobile_revoked'] => 'Retur',
     $config['trans_status_mobile_departure'] => 'Berangkat',
