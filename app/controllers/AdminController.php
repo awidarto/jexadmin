@@ -3548,6 +3548,8 @@ class AdminController extends Controller {
 
         $sdata = $this->export_output_fields;
 
+        $view = View::make('print.xls')->with('tables',$sdata['tables'])->render();
+
         $path = Excel::create( $fname, function($excel) use ($sdata){
                 $excel->sheet('sheet1', function($sheet) use ($sdata){
                     //$sheet->fromArray($sdata);
@@ -3558,7 +3560,6 @@ class AdminController extends Controller {
                     //->with($sdata);
             })->store('xls',public_path().'/storage/dled',true);
 
-        $view = View::make('print.xls')->with('tables',$sdata['tables'])->render();
 
         file_put_contents(public_path().'/storage/dled/'.$fname.'.html', $view);
         //print_r($path);

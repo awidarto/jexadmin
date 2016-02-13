@@ -473,6 +473,8 @@ class DeliverytimeController extends AdminController {
             $seq++;
         }
 
+            $valid_pickups = ($valid_pickups > 0)?$valid_pickups:1;
+
             $avgdata = array(
                     array('value'=>'Rata-rata<br />( dlm satuan hari )','attr'=>'colspan="7"'),
                     array('value'=>number_format($pickup2deliverydays / $valid_pickups, 2, ',','.' ),'attr'=>'style="font-size:18px;font-weight:bold;"'),

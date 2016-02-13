@@ -147,24 +147,48 @@ class DeliveryreportController extends AdminController {
         $wtotal = array();
 
         $headvar1 = array(
-            array('value'=>'No.','attr'=>'rowspan="4"'),
-            array('value'=>'Merchant','attr'=>'rowspan="4"'),
-            array('value'=>'Total','attr'=>'rowspan="4"')
+            array('value'=>'','attr'=>''),
+            array('value'=>'','attr'=>''),
+            array('value'=>'','attr'=>'')
         );
 
-        $headvar2 = array();
-        $headvar3 = array();
-        $headvar4 = array();
+        $headvar2 = array(
+            array('value'=>'','attr'=>''),
+            array('value'=>'','attr'=>''),
+            array('value'=>'','attr'=>'')
+
+            );
+        $headvar3 = array(
+            array('value'=>'','attr'=>''),
+            array('value'=>'','attr'=>''),
+            array('value'=>'','attr'=>'')
+
+            );
+        $headvar4 = array(
+            array('value'=>'No.','attr'=>''),
+            array('value'=>'Merchant','attr'=>''),
+            array('value'=>'Total','attr'=>'')
+
+            );
 
         $weekspan = 0;
 
         foreach ($effdates2 as $y => $w) {
 
-            $headvar2[] = array('value'=>$y,'attr'=>'colspan="'.count($w).'"');
+            $cy = '';
             foreach ($w as $wk => $v) {
+                $headvar1[] = array('value'=>'','attr'=>'');
+
+                if($cy != $y){
+                    $headvar2[] = array('value'=>$y,'attr'=>'');
+                }else{
+                    $headvar2[] = array('value'=>'','attr'=>'');
+                }
+
                 $headvar3[] = array('value'=>$wk,'attr'=>'');
                 $headvar4[] = array('value'=>$v[0].' - '.$v[1],'attr'=>'');
 
+                $cy = $y;
                 $weekspan++;
             }
         }
@@ -175,20 +199,19 @@ class DeliveryreportController extends AdminController {
 
         $weekspan++;
 
+        $tarr = array();
+        $tharr = array();
+        $thval = array();
+
         foreach ($bymc as $t => $m) {
 
             //$weekspan += 1;
 
-            $head = array();
-            $head[] = array('value'=>'','attr'=>'');
-            $head[] = array('value'=>strtoupper($t),'attr'=>'');
-            for($i = 0; $i < $weekspan;$i++){
-                $head[] = array('value'=>'','attr'=>'');
-            }
-
-            $tabdata[] = $head;
+            //$tabdata[] = $head;
 
             $seq = 1;
+
+            $totaltype = 0;
 
             foreach ($m as $mc=> $yr) {
 
@@ -220,7 +243,10 @@ class DeliveryreportController extends AdminController {
                         $valrows[] = array('value'=>$val,'attr'=>'');
                         $totalrows += $val;
 
+
                     }
+
+                    $totaltype += $totalrows;
 
                 }
 
@@ -228,19 +254,57 @@ class DeliveryreportController extends AdminController {
 
                 $mrow = array_merge($row, $valrows);
 
-                $tabdata[] = $mrow;
+                $tarr[$t][] = $mrow;
 
                 $seq++;
+
+            }
+
+            // subhead
+            $head = array();
+
+            $head[] = array('value'=>'','attr'=>'');
+            $head[] = array('value'=>strtoupper($t),'attr'=>'style="text-align:right;"');
+
+            $head[] = array('value'=>$totaltype,'attr'=>'');
+
+            for($i = 1; $i < $weekspan;$i++){
+                $head[] = array('value'=>'','attr'=>'');
+            }
+            $tharr[$t] = $head;
+
+            $thval[$t] = $totaltype;
+
+
+        }
+
+        $totalorder = 0;
+
+        foreach ($tharr as $t=>$v) {
+
+            $tabdata[] = $tharr[$t];
+            $totalorder += $thval[$t];
+            foreach($tarr[$t] as $tv){
+                $tabdata[] = $tv;
             }
 
         }
 
-        //print_r($tabdata);
+        $sumup[] = array('value'=>'','attr'=>'');
+        $sumup[] = array('value'=>'<b>TOTAL</b>','attr'=>'style="text-align:right;"');
+
+        $sumup[] = array('value'=>$totalorder,'attr'=>'style="text-align:right;"');
+
+        for($i = 1; $i < $weekspan;$i++){
+            $sumup[] = array('value'=>'','attr'=>'');
+        }
+
+        $tabdata[] = $sumup;
 
         //die();
 
         $thead = array();
-        $thead[] = $headvar1;
+        //$thead[] = $headvar1;
         $thead[] = $headvar2;
         $thead[] = $headvar3;
         $thead[] = $headvar4;
@@ -770,26 +834,26 @@ class DeliveryreportController extends AdminController {
 
     public function postDlxl()
     {
+        set_time_limit(0);
 
-        $this->heads = null;
+        $this->report_filter_input = Input::all();
 
-        $this->fields = array(
-            array('PERIOD',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('TRANS_DATETIME',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('TREFERENCE',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('ACCNT_CODE',array('kind'=>'text', 'callback'=>'accDesc' ,'query'=>'like','pos'=>'both','show'=>true)),
-            array('DESCRIPTN',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('TREFERENCE',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('CONV_CODE',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('AMOUNT',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('AMOUNT',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('DESCRIPTN',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
-        );
+        //print_r($this->report_filter_input);
 
-        $this->def_order_dir = 'DESC';
-        $this->def_order_by = 'TRANS_DATETIME';
+        $this->print = true;
 
-        return parent::postDlxl();
+        $table = $this->getIndex();
+
+        //print_r($table);
+
+        //$view = View::make('print.xls')->with('tables',$table['tables'])->render();
+
+        //print $view;
+
+        $this->export_output_fields = $table;
+
+        return parent::postTabletoxls();
+
     }
 
     public function getImport(){

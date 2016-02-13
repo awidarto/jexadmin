@@ -301,7 +301,10 @@ class ParsedeviceController extends AdminController {
 
         $query = ParseInstallation::query();
         //$query = new ParseInstallationQuery();
+        $query->limit(500);
         $results = $query->find('*');
+
+        //print count($results);
 
         $count = 0;
 
