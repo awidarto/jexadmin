@@ -160,6 +160,8 @@ class ParsedeviceController extends AdminController {
 
         $this->product_info_url = strtolower($this->controller_name).'/info';
 
+        $this->def_order_by = 'createdAt';
+        $this->def_order_dir = 'desc';
 
         /*
         $categoryFilter = Input::get('categoryFilter');
