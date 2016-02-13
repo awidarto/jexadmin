@@ -8,6 +8,7 @@ use Parse\ParsePush;
 class ParsedeviceController extends AdminController {
 
     public $heads = array(
+        array('Created',array('search'=>true,'sort'=>true, 'daterange'=>true)),
         array('JEX Device Identifier',array('search'=>true,'sort'=>true)),
         array('App Identifier',array('search'=>true,'sort'=>true)),
         array('App Name',array('search'=>true,'sort'=>true)),
@@ -16,10 +17,11 @@ class ParsedeviceController extends AdminController {
         array('Device Type',array('search'=>true,'sort'=>true)),
         array('Installation Id',array('search'=>true,'sort'=>true)),
         array('Parse Version',array('search'=>true,'sort'=>true)),
-        array('Time Zone',array('search'=>true,'sort'=>true)),
+        array('Time Zone',array('search'=>true,'sort'=>true))
     );
 
     public $fields = array(
+        array('createdAt',array('kind'=>'datetimerange','query'=>'like','pos'=>'both','show'=>true)),
         array('JEXDeviceId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
         array('appIdentifier',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
         array('appName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
