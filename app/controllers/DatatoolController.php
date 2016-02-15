@@ -61,6 +61,9 @@ class DatatoolController extends AdminController {
         $merchant = isset($in['merchant'])?$in['merchant']:'';
         $logistic = isset($in['logistic'])?$in['logistic']:'';
 
+        $city = isset($in['city'])?$in['city']:'';
+        $zone = isset($in['zone'])?$in['zone']:'';
+
         $pendingcount = isset($in['pending-count'])?$in['pending-count']:'';
 
         $timebase = isset($in['time-base'])?$in['time-base']:'delivery_order_active.created';
@@ -88,7 +91,7 @@ class DatatoolController extends AdminController {
 
         $model = $this->model;
 
-        $model = $model->select('assignment_date','ordertime','pickuptime','deliverytime','delivery_note','pending_count','recipient_name','delivery_id',$mtab.'.merchant_id as merchant_id','cod_bearer','delivery_bearer','buyer_name','buyerdeliveryzone','c.fullname as courier_name', $mtab.'.phone', $mtab.'.mobile1',$mtab.'.mobile2','merchant_trans_id','fulfillment_code','m.merchantname as merchant_name','m.fullname as fullname','a.application_name as app_name','a.domain as domain ','delivery_type','shipping_address','status','pickup_status','warehouse_status','cod_cost','delivery_cost','total_price','total_tax','total_discount')
+        $model = $model->select('assignment_date','ordertime','pickuptime','deliverytime','delivery_note','pending_count','recipient_name','delivery_id',$mtab.'.merchant_id as merchant_id','cod_bearer','delivery_bearer','buyer_name','buyerdeliveryzone','buyerdeliverycity','c.fullname as courier_name', $mtab.'.phone', $mtab.'.mobile1',$mtab.'.mobile2','merchant_trans_id','fulfillment_code','m.merchantname as merchant_name','m.fullname as fullname','a.application_name as app_name','a.domain as domain ','delivery_type','shipping_address','status','pickup_status','warehouse_status','cod_cost','delivery_cost','total_price','total_tax','total_discount')
             ->leftJoin('members as m',Config::get('jayon.incoming_delivery_table').'.merchant_id','=','m.id')
             ->leftJoin('applications as a',Config::get('jayon.assigned_delivery_table').'.application_id','=','a.id')
             ->leftJoin('devices as d',Config::get('jayon.assigned_delivery_table').'.device_id','=','d.id')
@@ -199,6 +202,19 @@ class DatatoolController extends AdminController {
             $model = $model->where('logistic','=', $logistic);
         }
 
+        if($city == '' || is_null($city) ){
+
+        }else{
+            $model = $model->where('buyerdeliverycity','like', '%'.$city.'%');
+        }
+
+        if($zone == '' || is_null($zone) ){
+
+        }else{
+            $model = $model->where('buyerdeliveryzone','like', '%'.$zone.'%');
+        }
+
+
         $actualresult = $model->orderBy($timebase, 'desc')->get();
 
         $tattrs = array('width'=>'100%','class'=>'table table-bordered table-striped');
@@ -220,6 +236,8 @@ class DatatoolController extends AdminController {
                 array('value'=>'Pending','attr'=>''),
                 array('value'=>'Catatan','attr'=>''),
                 array('value'=>'ALAMAT','attr'=>''),
+                array('value'=>'Kecamatan','attr'=>''),
+                array('value'=>'Kota','attr'=>''),
                 array('value'=>'Delivery ID','attr'=>''),
                 array('value'=>'No Kode Penjualan Toko','attr'=>''),
                 array('value'=>'Fulfillment ID','attr'=>'')
@@ -491,6 +509,8 @@ class DatatoolController extends AdminController {
                     array('value'=>$r->pending_count,'attr'=>''),
                     array('value'=>$notes,'attr'=>''),
                     array('value'=>$r->recipient_name.' | '.str_replace(array(",",'"',"\n","\r"), '', $r->shipping_address ).' '.$this->split_phone($r->phone).' '.$this->split_phone($r->mobile1).' '.$this->split_phone($r->mobile2),'attr'=>''),
+                    array('value'=>$r->buyerdeliveryzone,'attr'=>''),
+                    array('value'=>$r->buyerdeliverycity,'attr'=>''),
                     array('value'=>$r->delivery_id,'attr'=>''),
                     array('value'=>$this->hide_trx($r->merchant_trans_id),'attr'=>''),
                     array('value'=>$r->fulfillment_code,'attr'=>'')
@@ -505,7 +525,7 @@ class DatatoolController extends AdminController {
                     array('value'=>'Rata-rata<br />( dlm satuan hari )','attr'=>'colspan="7"'),
                     array('value'=>number_format($pickup2deliverydays / $valid_pickups, 2, ',','.' ),'attr'=>'style="font-size:18px;font-weight:bold;"'),
                     array('value'=>number_format($assign2deliverydays / $seq, 2, ',','.' ),'attr'=>'style="font-size:18px;font-weight:bold;"'),
-                    array('value'=>'','attr'=>'colspan="9"'),
+                    array('value'=>'','attr'=>'colspan="11"'),
                 );
 
             array_unshift($tabdata, $avgdata);
@@ -533,54 +553,6 @@ class DatatoolController extends AdminController {
         }
 
 
-    }
-
-    public function postIndex()
-    {
-
-        $this->fields = array(
-            array('PERIOD',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('TRANS_DATETIME',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('VCHR_NUM',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('ACCNT_CODE',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('j10_acnt.DESCR',array('kind'=>'text', 'alias'=>'ACC_DESCR' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-            array('TREFERENCE',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('CONV_CODE',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('OTHER_AMT',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('BASE_RATE',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('AMOUNT',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('DESCRIPTN',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
-        );
-
-        /*
-        $categoryFilter = $in['categoryFilter');
-        if($categoryFilter != ''){
-            $this->additional_query = array('shopcategoryLink'=>$categoryFilter, 'group_id'=>4);
-        }
-        */
-
-        $db = Config::get('lundin.main_db');
-
-        $company = Input::get('acc-company');
-
-        $company = strtolower($company);
-
-        if(Schema::hasTable( $db.'.'.$company.'_a_salfldg' )){
-            $company = Config::get('lundin.default_company');
-        }
-
-        $company = strtolower($company);
-
-        $this->def_order_by = 'TRANS_DATETIME';
-        $this->def_order_dir = 'DESC';
-        $this->place_action = 'none';
-        $this->show_select = false;
-
-        $this->sql_key = 'TRANS_DATETIME';
-        $this->sql_table_name = $company.'_a_salfldg';
-        $this->sql_connection = 'mysql2';
-
-        return parent::SQLtableResponder();
     }
 
     public function getStatic()

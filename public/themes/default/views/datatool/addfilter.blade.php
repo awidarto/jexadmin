@@ -41,6 +41,11 @@
                     ->class('form-control input-sm p-datepicker')
                     ->id('date-from');
             }}
+            {{ Former::text('zone','Zone')
+                    ->value(Input::get('zone',''))
+                    ->class('form-control input-sm')
+                    ->id('zone');
+                }}
         </div>
         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
             {{ Former::text('date-to', 'To Date')
@@ -48,6 +53,11 @@
                     ->class('form-control input-sm p-datepicker')
                     ->id('date-to');
             }}
+            {{ Former::text('city','City')
+                    ->value(Input::get('city',''))
+                    ->class('form-control input-sm')
+                    ->id('city');
+                }}
         </div>
         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
             {{ Former::text('manifest-date', 'Publish Date')
@@ -56,7 +66,6 @@
                     ->id('manifest-date');
             }}
             {{ Form::submit('Generate',array('class'=>'btn btn-sm btn-primary'))}}
-            <br />
             <a class="btn btn-sm" href="{{ URL::to($submit_url) }}">Reset</a>
             {{--
                 Former::text('date-to', 'To')

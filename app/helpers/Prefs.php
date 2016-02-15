@@ -249,6 +249,8 @@ class Prefs {
         return $d;
     }
 
+
+    //old school function
     public static function random_string($type, $length)
     {
 
