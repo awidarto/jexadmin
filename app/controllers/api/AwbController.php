@@ -929,6 +929,8 @@ class AwbController extends \BaseController {
                 $order['height'] = $in->height;
                 $order['length'] = $in->length;
                 $order['weight'] = (isset($in->weight))?$in->weight:0;
+                $order['actual_weight'] = (isset($in->actual_weight))?$in->actual_weight:0;
+
 
                 $order['delivery_cost'] = $order['weight'];
 
