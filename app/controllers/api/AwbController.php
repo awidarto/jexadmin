@@ -393,7 +393,7 @@ class AwbController extends \BaseController {
                 $order['delivery_bearer'] = 'merchant';
                 $order['cod_bearer'] = 'merchant';
 
-                $order['actual_weight'] = $json['w_v'];
+                $order['actual_weight'] = strval($json['w_v']);
 
                 $weight = $json['w_v'];
                 $delivery_type = trim($json['delivery_type']);
