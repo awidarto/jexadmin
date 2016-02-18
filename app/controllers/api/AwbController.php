@@ -420,6 +420,11 @@ class AwbController extends \BaseController {
                 $order['merchant_trans_id'] = $json['no_sales_order'];
                 $order['fulfillment_code'] = $json['consignee_olshop_orderid'];
 
+                $inlog = $json;
+                $inlog['ts'] = new MongoDate();
+                $inlog['merchant_api_id'] = $merchant_id;
+
+                \Orderapilog::insert($inlog);
 
                 $check = \Shipment::where('merchant_trans_id','=',$json['no_sales_order'])
                                     ->where('fulfillment_code','=',$json['consignee_olshop_orderid'])
