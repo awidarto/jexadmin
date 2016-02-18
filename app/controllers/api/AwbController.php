@@ -422,6 +422,7 @@ class AwbController extends \BaseController {
 
                 $inlog = $json;
                 $inlog['ts'] = new \MongoDate();
+                unset($inlog['_id']);
                 $inlog['merchant_api_id'] = $merchant_id;
 
                 \Orderapilog::insert($inlog);
