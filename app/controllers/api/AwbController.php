@@ -736,6 +736,13 @@ class AwbController extends \BaseController {
         try{
             $json = $json->all();
 
+            $res = array();
+
+            foreach($json as $j){
+                $ord = \Shipment::where('delivery_id','=',$j['awb'])->first();
+                $ord->actual_weight = $j['w_v'];
+            }
+
             return \Response::json($json);
 
         }catch(Exception $e){
