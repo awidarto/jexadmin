@@ -728,6 +728,25 @@ class AwbController extends \BaseController {
         //
     }
 
+
+    public function postWv()
+    {
+        $json = \Input::json();
+
+        try{
+            $json = $json->all();
+
+            return \Response::json($json);
+
+        }catch(Exception $e){
+            //print $e->getMessage();
+            return \Response::json(array('err'=>'json error'));
+
+        }
+
+
+    }
+
     public function underscoreToCamelCase( $string, $first_char_caps = false)
     {
 

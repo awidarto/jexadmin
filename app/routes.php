@@ -144,6 +144,7 @@ Route::group(array('prefix' => 'api/v1/service'), function (){
     Route::resource('awb', 'Api\AwbController');
     Route::resource('confirm', 'Api\ConfirmController');
     Route::resource('status', 'Api\StatusController');
+    Route::post('wv', 'Api\AwbController@postWv');
 });
 
 Route::get('btest',function(){
