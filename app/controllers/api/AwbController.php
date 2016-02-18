@@ -740,10 +740,21 @@ class AwbController extends \BaseController {
 
             foreach($json as $j){
                 $ord = \Shipment::where('delivery_id','=',$j['awb'])->first();
-                $ord->actual_weight = $j['w_v'];
+                if($ord){
+                    if($ord->actual_weight == '' || is_null($ord->actual_weight)){
+                        $ord->actual_weight = $j['w_v'];
+                        $ord->save();
+
+                        $res[] = array('awb'=>$j['awb'],'status'=>'updated');
+                    }else{
+                        $res[] = array('awb'=>$j['awb'],'status'=>'not updated');
+                    }
+                }else{
+                    $res[] = array('awb'=>$j['awb'],'status'=>'not found');
+                }
             }
 
-            return \Response::json($json);
+            return \Response::json($res);
 
         }catch(Exception $e){
             //print $e->getMessage();
