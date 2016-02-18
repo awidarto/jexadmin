@@ -743,7 +743,7 @@ class AwbController extends \BaseController {
                 if($ord){
                     if($ord->actual_weight == '' || is_null($ord->actual_weight)){
                         $ord->actual_weight = $j['w_v'];
-                        //$ord->save();
+                        $ord->save();
 
                         $res[] = array('awb'=>$j['awb'],'status'=>'updated');
                     }else{
