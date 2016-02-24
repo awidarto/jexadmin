@@ -448,7 +448,7 @@ class DatatoolController extends AdminController {
 
             //print_r($details);
 
-
+            /*
             $notes = '';
             foreach($details as $d )
             {
@@ -471,6 +471,7 @@ class DatatoolController extends AdminController {
                 }
 
             }
+            */
             /*
             if($gt == 0 ){
                 if($total > 0 && $payable)
