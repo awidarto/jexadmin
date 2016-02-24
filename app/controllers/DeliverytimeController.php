@@ -255,7 +255,9 @@ class DeliverytimeController extends AdminController {
             $dlist[$dt['delivery_id']][] = $dt;
         }
 
-        $denotes = Deliverynote::whereIn('deliveryId',$dids)->get()->toArray();
+        $denotes = Deliverynote::whereIn('deliveryId',$dids)
+                    ->orderBy('mtimestamp','desc')
+                    ->get()->toArray();
 
         foreach ($denotes as $dt) {
             $dlist[$dt['deliveryId']][] = $dt;
