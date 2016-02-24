@@ -277,7 +277,7 @@ class DatatoolController extends AdminController {
         }
 
         $details = Deliverylog::whereIn('delivery_id',$dids)
-
+                        /*
                         ->where(function($q){
                             $q->where('status',Config::get('jayon.trans_status_mobile_delivered'))
                                 ->orWhere('status',Config::get('jayon.trans_status_admin_courierassigned'))
@@ -285,7 +285,12 @@ class DatatoolController extends AdminController {
                                 ->orWhere('status',Config::get('jayon.trans_status_rescheduled'))
                                 ->orWhere('status',Config::get('jayon.trans_status_mobile_return'));
                         })
+                        */
 
+                        ->where(function($q){
+                            $q->where('notes','!=','')
+                                ->orWhere('req_note','!=','');
+                        })
                         ->orderBy('timestamp','desc')
                         ->get()->toArray();
 
@@ -294,7 +299,13 @@ class DatatoolController extends AdminController {
             $dlist[$dt['delivery_id']][] = $dt;
         }
 
-        //print_r($dlist);
+        $denotes = Deliverynote::whereIn('deliveryId',$dids)->get()->toArray();
+
+        foreach ($denotes as $dt) {
+            $dlist[$dt['deliveryId']][] = $dt;
+        }
+
+
         $tabdata = array();
 
         $cntcod = 0;
@@ -339,24 +350,41 @@ class DatatoolController extends AdminController {
             foreach($details as $d )
             {
                 $n = '';
-                if($d['api_event'] == 'admin_change_status'){
-                    $n = $d['req_note'];
-                }else{
-                    if($d['notes'] != ''){
-                        $n = $d['notes'];
+
+                if(isset($d['api_event'])){
+                    if($d['api_event'] == 'admin_change_status'){
+                        $n = $d['req_note'];
+                    }else{
+                        if($d['notes'] != ''){
+                            $n = $d['notes'];
+                        }
                     }
-                }
-                if($n != '' && $d['status'] != 'syncnote'){
-                    $notes .= $d['timestamp'].'<br />';
-                    $notes .= '<b>'.$d['status'].'</b><br />';
-                    $notes .= $n.'<br /><br />';
+                    if($n != '' && $d['status'] != 'syncnote'){
+                        $notes .= $d['timestamp'].'<br />';
+                        $notes .= '<b>'.$d['status'].'</b><br />';
+                        $notes .= $n.'<br /><br />';
+                    }
+
+                    if($d['status'] == Config::get('jayon.trans_status_admin_courierassigned')){
+                        if($event_seq > 0){
+                            $first_assignment = $d;
+                        }
+                    }
+
+                }else{
+
+                    if($d['note'] != ''){
+                        $n = $d['note'];
+                    }
+
+                    if($n != ''){
+                        $notes .= $d['datetimestamp'].'<br />';
+                        $notes .= '<b>'.$d['status'].'</b><br />';
+                        $notes .= $n.'<br /><br />';
+                    }
+
                 }
 
-                if($d['status'] == Config::get('jayon.trans_status_admin_courierassigned')){
-                    if($event_seq > 0){
-                        $first_assignment = $d;
-                    }
-                }
 
                 $event_seq++;
             }
@@ -425,15 +453,19 @@ class DatatoolController extends AdminController {
             foreach($details as $d )
             {
                 $n = '';
+                $admin = true;
                 if($d['api_event'] == 'admin_change_status'){
                     $n = $d['req_note'];
                 }else{
                     if($d['notes'] != ''){
                         $n = $d['notes'];
                     }
+                    $admin = false;
                 }
-                if($n != ''){
-                    $notes .= $d['timestamp'].'<br />';
+
+                $isadmin = ($admin)?' [admin]':'';
+                if($n != '' && $d['status'] != 'syncnote'){
+                    $notes .= $d['timestamp'].$isadmin.'<br />';
                     $notes .= '<b>'.$d['status'].'</b><br />';
                     $notes .= $n.'<br />';
                 }
