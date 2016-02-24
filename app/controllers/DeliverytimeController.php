@@ -48,7 +48,7 @@ class DeliverytimeController extends AdminController {
 
         //$company = $in['acc-company'];
 
-//device=&courier=&logistic=&date-from=2015-10-24
+        //device=&courier=&logistic=&date-from=2015-10-24
 
         //print_r($in);
 
@@ -233,13 +233,18 @@ class DeliverytimeController extends AdminController {
         }
 
         $details = Deliverylog::whereIn('delivery_id',$dids)
-
+                        /*
                         ->where(function($q){
                             $q->where('status',Config::get('jayon.trans_status_mobile_delivered'))
                                 ->orWhere('status',Config::get('jayon.trans_status_admin_courierassigned'))
                                 ->orWhere('status',Config::get('jayon.trans_status_new'))
                                 ->orWhere('status',Config::get('jayon.trans_status_rescheduled'))
                                 ->orWhere('status',Config::get('jayon.trans_status_mobile_return'));
+                        })
+                        */
+                        ->where(function($q){
+                            $q->where('notes','!=','')
+                                ->orWhere('req_note','!=','');
                         })
 
                         ->orderBy('timestamp','desc')
