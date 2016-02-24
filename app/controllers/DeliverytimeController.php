@@ -250,6 +250,12 @@ class DeliverytimeController extends AdminController {
             $dlist[$dt['delivery_id']][] = $dt;
         }
 
+        $denotes = Deliverynote::whereIn('deliveryId',$dids)->get()->toArray();
+
+        foreach ($denotes as $dt) {
+            $dlist[$dt['deliveryId']][] = $dt;
+        }
+
         //print_r($dlist);
         $tabdata = array();
 
@@ -295,23 +301,38 @@ class DeliverytimeController extends AdminController {
             foreach($details as $d )
             {
                 $n = '';
-                if($d['api_event'] == 'admin_change_status'){
-                    $n = $d['req_note'];
-                }else{
-                    if($d['notes'] != ''){
-                        $n = $d['notes'];
+                if(isset($d['api_event'])){
+                    if($d['api_event'] == 'admin_change_status'){
+                        $n = $d['req_note'];
+                    }else{
+                        if($d['notes'] != ''){
+                            $n = $d['notes'];
+                        }
                     }
-                }
-                if($n != '' && $d['status'] != 'syncnote'){
-                    $notes .= $d['timestamp'].'<br />';
-                    $notes .= '<b>'.$d['status'].'</b><br />';
-                    $notes .= $n.'<br /><br />';
-                }
+                    if($n != '' && $d['status'] != 'syncnote'){
+                        $notes .= $d['timestamp'].'<br />';
+                        $notes .= '<b>'.$d['status'].'</b><br />';
+                        $notes .= $n.'<br /><br />';
+                    }
 
-                if($d['status'] == Config::get('jayon.trans_status_admin_courierassigned')){
-                    if($event_seq > 0){
-                        $first_assignment = $d;
+                    if($d['status'] == Config::get('jayon.trans_status_admin_courierassigned')){
+                        if($event_seq > 0){
+                            $first_assignment = $d;
+                        }
                     }
+
+                }else{
+
+                    if($d['note'] != ''){
+                        $n = $d['note'];
+                    }
+
+                    if($n != ''){
+                        $notes .= $d['datetimestamp'].'<br />';
+                        $notes .= '<b>'.$d['status'].'</b><br />';
+                        $notes .= $n.'<br /><br />';
+                    }
+
                 }
 
                 $event_seq++;
@@ -377,6 +398,7 @@ class DeliverytimeController extends AdminController {
             //print_r($details);
 
 
+            /*
             $notes = '';
             foreach($details as $d )
             {
@@ -395,6 +417,7 @@ class DeliverytimeController extends AdminController {
                 }
 
             }
+            */
             /*
             if($gt == 0 ){
                 if($total > 0 && $payable)
