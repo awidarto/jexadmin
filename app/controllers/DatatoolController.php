@@ -122,7 +122,9 @@ class DatatoolController extends AdminController {
             //$status = Config::get('jex.data_tool_default_status');
         }else{
             $status = explode(',', $status);
-            $model = $model->whereIn('status', $status);
+            $model = $model->where(function($qs) use($status){
+               $qs->whereIn('status', $status);
+            });
         }
 
         if($courierstatus == '' || is_null($courierstatus) ){
