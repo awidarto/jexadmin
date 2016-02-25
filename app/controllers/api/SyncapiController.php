@@ -473,7 +473,7 @@ class SyncapiController extends \Controller {
                             $shipment->courier_status = $olog->courierStatus;
 
                             if($olog->status == 'pending'){
-                                $shipment->pending_count = $shipment->pending_count + 1;
+                                //$shipment->pending_count = $shipment->pending_count + 1;
                             }elseif($olog->status == 'delivered'){
                                 if($olog->deliverytime == '' || $olog->deliverytime == '0000-00-00 00:00:00'){
                                     $shipment->deliverytime = date('Y-m-d H:i:s',time());
@@ -1129,7 +1129,7 @@ class SyncapiController extends \Controller {
 
                         if($olog->status == 'pending'){
                             if($shipment->delivery_note != $olog->deliveryNote){
-                                $shipment->pending_count = $shipment->pending_count + 1;
+                                //$shipment->pending_count = $shipment->pending_count + 1;
                             }
                         }
 
@@ -1337,6 +1337,17 @@ class SyncapiController extends \Controller {
                     \Deliverynote::insert($j);
                     $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'] );
                 }
+
+                $pending = \Deliverynote::where('deliveryId','=',$j['deliveryId'])
+                                ->where('status','=','pending')
+                                ->count();
+
+                if($pending > 0){
+                    $ord = \Shipment::where('delivery_id','=',$j['deliveryId'])->first();
+                    $ord->pending_count = $pending;
+                    $ord->save();
+                }
+
             }
         }
 
