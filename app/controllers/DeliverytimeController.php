@@ -61,7 +61,7 @@ class DeliverytimeController extends AdminController {
         $merchant = isset($in['merchant'])?$in['merchant']:'';
         $logistic = isset($in['logistic'])?$in['logistic']:'';
 
-        $status = isset($in['status'])?$in['status']:'';
+        $status = isset($in['status'])?$in['status']:'delivered';
         $courierstatus = isset($in['courier-status'])?$in['courier-status']:'';
 
         if($period_to == '' || is_null($period_to) ){
