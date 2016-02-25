@@ -413,7 +413,7 @@ class DatatoolController extends AdminController {
 
             $order2delivery = $ordertime->diff($deliverytime);
 
-            if(is_null($deliverytime) || $deliverytime == ''){
+            if(is_null($r->deliverytime) || $r->deliverytime == '' || $r->deliverytime == '0000-00-00 00:00:00'){
                 $assign2delivery->d = 0;
                 $order2delivery->d = 0;
                 $pickup2delivery->d = 0;
@@ -434,7 +434,7 @@ class DatatoolController extends AdminController {
                 $pickup2delivery->d = 0;
                 $pickup2deliverydays += (int)$pickup2delivery->d;
             }else{
-                $valid_pickups++;
+                //$valid_pickups++;
                 $pickup2deliverydays += (int)$pickup2delivery->d;
                 $valid_pickups++;
             }

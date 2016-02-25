@@ -273,7 +273,6 @@ class DeliverytimeController extends AdminController {
         $return = 0;
 
         $valid_pickups = 0;
-        $valid_delivery = 0;
 
         foreach ($actualresult as $r) {
 
@@ -366,23 +365,27 @@ class DeliverytimeController extends AdminController {
 
             $order2delivery = $ordertime->diff($deliverytime);
 
-            if(is_null($r->deliverytime) || $r->deliverytime == '' || $r->deliverytime == '0000-00-00 00:00:00'){
+            if(is_null($deliverytime) || $deliverytime == ''){
                 $assign2delivery->d = 0;
                 $order2delivery->d = 0;
-                $pickup2delivery->d = 0;
                 $order2assigndays += (int)$order2assign->d ;
             }else{
                 $order2assigndays += (int)$order2assign->d ;
                 $assign2deliverydays += (int)$assign2delivery->d ;
                 $order2deliverydays += (int)$order2delivery->d;
-                $valid_delivery++;
             }
 
             if(is_null($pickuptime) || $pickuptime == '' || $r->pickuptime == '' || $r->pickuptime == '0000-00-00 00:00:00' ){
+                //$r->pickuptime = $assignment_date->add(new DateInterval('P1D'))->format('Y-m-d');
+
+                //$pickuptime = new DateTime($r->pickuptime);
+
+                //$pickup2delivery = $pickuptime->diff($deliverytime);
+
                 $pickup2delivery->d = 0;
                 $pickup2deliverydays += (int)$pickup2delivery->d;
             }else{
-                //$valid_pickups++;
+                $valid_pickups++;
                 $pickup2deliverydays += (int)$pickup2delivery->d;
                 $valid_pickups++;
             }
