@@ -365,7 +365,7 @@ class DeliverytimeController extends AdminController {
 
             $order2delivery = $ordertime->diff($deliverytime);
 
-            if(is_null($deliverytime) || $deliverytime == ''){
+            if(is_null($r->deliverytime) || $r->deliverytime == '' || $r->deliverytime == '0000-00-00 00:00:00'){
                 $assign2delivery->d = 0;
                 $order2delivery->d = 0;
                 $pickup2delivery->d = 0;
