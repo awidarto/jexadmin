@@ -416,6 +416,7 @@ class DatatoolController extends AdminController {
             if(is_null($deliverytime) || $deliverytime == ''){
                 $assign2delivery->d = 0;
                 $order2delivery->d = 0;
+                $pickup2delivery->d = 0;
                 $order2assigndays += (int)$order2assign->d ;
             }else{
                 $order2assigndays += (int)$order2assign->d ;
