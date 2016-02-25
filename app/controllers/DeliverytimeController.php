@@ -273,6 +273,7 @@ class DeliverytimeController extends AdminController {
         $return = 0;
 
         $valid_pickups = 0;
+        $valid_delivery = 0;
 
         foreach ($actualresult as $r) {
 
@@ -374,6 +375,7 @@ class DeliverytimeController extends AdminController {
                 $order2assigndays += (int)$order2assign->d ;
                 $assign2deliverydays += (int)$assign2delivery->d ;
                 $order2deliverydays += (int)$order2delivery->d;
+                $valid_delivery++;
             }
 
             if(is_null($pickuptime) || $pickuptime == '' || $r->pickuptime == '' || $r->pickuptime == '0000-00-00 00:00:00' ){
@@ -503,7 +505,7 @@ class DeliverytimeController extends AdminController {
             $avgdata = array(
                     array('value'=>'Rata-rata<br />( dlm satuan hari )','attr'=>'colspan="7"'),
                     array('value'=>number_format($pickup2deliverydays / $valid_pickups, 2, ',','.' ),'attr'=>'style="font-size:18px;font-weight:bold;"'),
-                    array('value'=>number_format($assign2deliverydays / $seq, 2, ',','.' ),'attr'=>'style="font-size:18px;font-weight:bold;"'),
+                    array('value'=>number_format($assign2deliverydays / $valid_delivery, 2, ',','.' ),'attr'=>'style="font-size:18px;font-weight:bold;"'),
                     array('value'=>'','attr'=>'colspan="9"'),
                 );
 
