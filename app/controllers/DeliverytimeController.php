@@ -61,7 +61,7 @@ class DeliverytimeController extends AdminController {
         $merchant = isset($in['merchant'])?$in['merchant']:'';
         $logistic = isset($in['logistic'])?$in['logistic']:'';
 
-        $status = isset($in['status'])?$in['status']:'delivered';
+        $status = isset($in['status'])?$in['status']:'';
         $courierstatus = isset($in['courier-status'])?$in['courier-status']:'';
 
         if($period_to == '' || is_null($period_to) ){
@@ -341,11 +341,6 @@ class DeliverytimeController extends AdminController {
                         $notes .= $n.'<br /><br />';
                     }
 
-                    if($d['status'] == Config::get('jayon.trans_status_admin_courierassigned')){
-                        if($event_seq > 0){
-                            $first_assignment = $d;
-                        }
-                    }
                 }
 
                 $event_seq++;
@@ -353,11 +348,7 @@ class DeliverytimeController extends AdminController {
 
 
             if($first_assignment){
-                if(isset($first_assignment['timestamp'])){
-                    $assignment_date = new DateTime($first_assignment['timestamp']);
-                }else{
-                    $assignment_date = new DateTime($first_assignment['datetimestamp']);
-                }
+                $assignment_date = new DateTime($first_assignment['timestamp']);
                 $assignment_date->add(new DateInterval('P1D'));
             }else{
                 $assignment_date = new DateTime($r->assignment_date);
@@ -514,7 +505,7 @@ class DeliverytimeController extends AdminController {
             $avgdata = array(
                     array('value'=>'Rata-rata<br />( dlm satuan hari )','attr'=>'colspan="7"'),
                     array('value'=>number_format($pickup2deliverydays / $valid_pickups, 2, ',','.' ),'attr'=>'style="font-size:18px;font-weight:bold;"'),
-                    array('value'=>number_format($assign2deliverydays / $valid_delivery, 2, ',','.' ),'attr'=>'style="font-size:18px;font-weight:bold;"'),
+                    array('value'=>number_format($assign2deliverydays / $seq, 2, ',','.' ),'attr'=>'style="font-size:18px;font-weight:bold;"'),
                     array('value'=>'','attr'=>'colspan="9"'),
                 );
 
