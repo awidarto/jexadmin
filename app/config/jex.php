@@ -9,7 +9,7 @@ return array(
             'delivery_order_active.created'=>'Created Date',
             'assignment_date'=>'Assignment Date',
             'pickuptime'=>'Pickup Date',
-            'deliverytime'=>'Delivery Time'),
+            'deliverytime'=>'Delivered Time'),
 
         'pending_count_choice'=>array(
                 ''=>'All',
