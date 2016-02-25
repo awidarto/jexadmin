@@ -341,6 +341,11 @@ class DeliverytimeController extends AdminController {
                         $notes .= $n.'<br /><br />';
                     }
 
+                    if($d['status'] == Config::get('jayon.trans_status_admin_courierassigned')){
+                        if($event_seq > 0){
+                            $first_assignment = $d;
+                        }
+                    }
                 }
 
                 $event_seq++;
@@ -348,7 +353,11 @@ class DeliverytimeController extends AdminController {
 
 
             if($first_assignment){
-                $assignment_date = new DateTime($first_assignment['timestamp']);
+                if(isset($first_assignment['timestamp'])){
+                    $assignment_date = new DateTime($first_assignment['timestamp']);
+                }else{
+                    $assignment_date = new DateTime($first_assignment['datetimestamp']);
+                }
                 $assignment_date->add(new DateInterval('P1D'));
             }else{
                 $assignment_date = new DateTime($r->assignment_date);
