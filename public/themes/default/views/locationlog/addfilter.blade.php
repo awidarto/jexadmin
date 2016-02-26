@@ -29,7 +29,7 @@
             {{ Former::select('line_weight')->options(range(12,18))->id('lineWeight') }}
         </td>
         <td>
-            {{ Former::select('stepping', 'Interval ( minutes )')->options(range(5,10))->id('stepping') }}
+            {{ Former::select('stepping', 'Interval ( minutes )')->options(range(5,30))->id('stepping') }}
         </td>
         <td>
             <input type="checkbox" id="showLocUpdate"> Show Location Update
@@ -66,7 +66,7 @@
 
         var map = L.map('lmap').setView([-6.17742,106.828308], 12);
 
-        var lineWeight = 12;
+        var lineWeight = 18;
 
         /*
         var googleLayer = new L.Google('ROADMAP');
