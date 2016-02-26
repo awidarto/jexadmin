@@ -29,6 +29,9 @@
             {{ Former::select('line_weight')->options(range(12,18))->id('lineWeight') }}
         </td>
         <td>
+            {{ Former::select('stepping', 'Interval ( minutes )')->options(range(5,10))->id('stepping') }}
+        </td>
+        <td>
             <input type="checkbox" id="showLocUpdate"> Show Location Update
         </td>
         <td>
@@ -36,7 +39,7 @@
         </td>
     </tr>
     <tr>
-        <td colspan="5" style="min-width:1000px;width:100%;">
+        <td colspan="6" style="min-width:1000px;width:100%;">
             <div id="refreshingMap" style="display:none;">Refreshing map points...</div>
             <div id="lmap" style="width:90%;height:800px;">
 

@@ -52,10 +52,14 @@ class AjaxController extends BaseController {
         $courier = Input::get('courier');
         $status = Input::get('status');
 
+        $stepping = Input::get('stepping');
+
         $device_name = ($device_name == '')?'all':$device_name;
         $timestamp = ($timestamp == '')? date('Y-m-d',time()) :$timestamp;
         $courier = ($courier == '')?'all':$courier;
         $status = ($status == '')?'all':$status;
+
+        $stepping = ($stepping == '')?10:$stepping;
 
         $statuses = Config::get('jex.mapdefstatus');
 
@@ -139,7 +143,7 @@ class AjaxController extends BaseController {
 
                         $span = intval($next['timestamp']) - intval($curr['timestamp']);
 
-                        if( $span >= (10*60) || in_array($next['status'], $statuses) ){
+                        if( $span >= ($stepping * 60) || in_array($next['status'], $statuses) ){
                             $curr = $next;
                             $locv[] = (object) $curr;
                         }
