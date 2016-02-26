@@ -166,7 +166,11 @@ class AjaxController extends BaseController {
 
                 }
 
+                print_r(array_keys($locv));
+
                 krsort($locv);
+
+                print_r(array_keys($locv));
                 //print count($locv)."||\r\n";
 
                 foreach($locv as $t=>$l){
