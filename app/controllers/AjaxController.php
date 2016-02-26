@@ -136,7 +136,7 @@ class AjaxController extends BaseController {
                     $next = array_shift($locarr);
 
                     if(!is_null($next)){
-                        if( strtotime($next['datetimestamp']) - strtotime($curr['datetimestamp']) >= (10*60) ){
+                        if( intval($next['timestamp']) - intval($curr['timestamp']) >= (10*60) ){
                             $curr = $next;
                             $locv[] = (object) $curr;
                         }
@@ -144,7 +144,7 @@ class AjaxController extends BaseController {
 
                 }
 
-                print_r($locv);
+                //print_r($locv);
 
                 foreach($locv as $l){
                     $lat = doubleval($l->latitude);
@@ -168,7 +168,7 @@ class AjaxController extends BaseController {
                                 $lng
                             );
                         $pathdummy[] = array(
-                                $l->identifier,
+                                $l->deviceId,
                                 $l->timestamp,
                                 $lat,
                                 $lng
