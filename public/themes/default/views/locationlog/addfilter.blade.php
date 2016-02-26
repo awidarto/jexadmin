@@ -142,7 +142,8 @@
                     'device_identifier':$('#search_device').val(),
                     'timestamp':$('#search_deliverytime').val(),
                     'courier':$('#search_courier').val(),
-                    'status':$('#search_status').val()
+                    'status':$('#search_status').val(),
+                    'stepping':$('#stepping').val()
                 },
 
                 function(data) {
