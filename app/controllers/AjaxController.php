@@ -131,6 +131,8 @@ class AjaxController extends BaseController {
 
                 $locarr = $locs->toArray();
 
+                print count($locarr)."|\r\n";
+
                 //for($i = 0; $i < count($locs->toArray());$i++){
 
                 while(!is_null($next)){
@@ -155,7 +157,6 @@ class AjaxController extends BaseController {
                 }
 
 
-                print count($locarr)."|\r\n";
                 print count($locv)."||\r\n";
 
                 foreach($locv as $l){
