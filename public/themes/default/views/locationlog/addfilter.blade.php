@@ -29,7 +29,7 @@
             {{ Former::select('line_weight')->options(range(12,18))->id('lineWeight') }}
         </td>
         <td>
-            <input type="checkbox" checked="true" id="showLocUpdate"> Show Location Update
+            <input type="checkbox" checked="false" id="showLocUpdate"> Show Location Update
         </td>
         <td>
             {{ Former::button('Refresh')->id('refreshMap')}}

@@ -125,21 +125,17 @@ class AjaxController extends BaseController {
 
                     $status = ($l->status == '')?'report':$l->status;
                     if($lat != 0 && $lng != 0){
-
-                        if(in_array($l->status, $statuses ) ){
-                            $locations[] = array(
-                                'data'=>array(
-                                        'id'=>$l->_id,
-                                        'lat'=>$lat,
-                                        'lng'=>$lng,
-                                        'timestamp'=>$l->datetimestamp,
-                                        'identifier'=>$l->deviceId,
-                                        'delivery_id'=>$l->deliveryId,
-                                        'status'=>$status
-                                    )
-                                );
-
-                        }
+                        $locations[] = array(
+                            'data'=>array(
+                                    'id'=>$l->_id,
+                                    'lat'=>$lat,
+                                    'lng'=>$lng,
+                                    'timestamp'=>$l->datetimestamp,
+                                    'identifier'=>$l->deviceId,
+                                    'delivery_id'=>$l->deliveryId,
+                                    'status'=>$status
+                                )
+                            );
                         $path[] = array(
                                 $lat,
                                 $lng
