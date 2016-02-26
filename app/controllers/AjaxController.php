@@ -146,11 +146,21 @@ class AjaxController extends BaseController {
 
                     if(!is_null($next)){
 
-                        $span = doubleval($next['timestamp']) - doubleval($curr['timestamp']);
+                        $st = true;
 
-                        if( abs($span) >= ( doubleval($stepping) * 60) || in_array($next['status'], $statuses) ){
+                        if(in_array($next['status'], $statuses)){
                             $curr = $next;
                             $locv[] = (object) $next;
+                            $st = false;
+                        }
+
+                        if($st){
+                            $span = doubleval($next['timestamp']) - doubleval($curr['timestamp']);
+
+                            if( abs($span) >= ( doubleval($stepping) * 60)){
+                                $curr = $next;
+                                $locv[] = (object) $next;
+                            }
                         }
                     }
 
