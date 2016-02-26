@@ -117,9 +117,33 @@ class AjaxController extends BaseController {
             //print_r($locs);
 
             if( count( $locs->toArray() ) > 0){
+
                 $path = array();
 
-                foreach($locs as $l){
+                $locv = array();
+
+                $curr = false;
+                $next = false;
+
+                for($i = 0; $i < count($locs->toArray());$i++){
+                    if($curr == false){
+                        $curr = array_shift($locs);
+                        $locv[] = $curr;
+                    }
+
+                    $next = array_shift($locs);
+
+                    if(!is_null($next)){
+                        if( strtotime($next->datetimestamp) - strtotime($curr->datetimestamp) >= (10*60) ){
+                            $curr = $next;
+                            $locv[] = $curr;
+                        }
+                    }
+
+                }
+
+
+                foreach($locv as $l){
                     $lat = doubleval($l->latitude);
                     $lng = doubleval($l->longitude);
 
