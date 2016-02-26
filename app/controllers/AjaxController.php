@@ -102,9 +102,11 @@ class AjaxController extends BaseController {
 
             if($status != 'all'){
                 $model = $model->where('status','regexp','/'.$status.'/i');
-            }else{
-                $model = $model->whereIn('status',$statuses);
             }
+            /*
+            else{
+                $model = $model->whereIn('status',$statuses);
+            }*/
 
             $model = $model->where('appname','=', Config::get('jex.tracker_app'));
 
@@ -123,17 +125,21 @@ class AjaxController extends BaseController {
 
                     $status = ($l->status == '')?'report':$l->status;
                     if($lat != 0 && $lng != 0){
-                        $locations[] = array(
-                            'data'=>array(
-                                    'id'=>$l->_id,
-                                    'lat'=>$lat,
-                                    'lng'=>$lng,
-                                    'timestamp'=>$l->datetimestamp,
-                                    'identifier'=>$l->deviceId,
-                                    'delivery_id'=>$l->deliveryId,
-                                    'status'=>$status
-                                )
-                            );
+
+                        if(in_array($l->status, $statuses ) ){
+                            $locations[] = array(
+                                'data'=>array(
+                                        'id'=>$l->_id,
+                                        'lat'=>$lat,
+                                        'lng'=>$lng,
+                                        'timestamp'=>$l->datetimestamp,
+                                        'identifier'=>$l->deviceId,
+                                        'delivery_id'=>$l->deliveryId,
+                                        'status'=>$status
+                                    )
+                                );
+
+                        }
                         $path[] = array(
                                 $lat,
                                 $lng

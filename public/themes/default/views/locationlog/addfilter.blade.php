@@ -26,7 +26,7 @@
             {{ Former::text('search_status')->id('search_status') }}
         </td>
         <td>
-            {{ Former::select('line_weight')->options(range(8,12))->id('lineWeight') }}
+            {{ Former::select('line_weight')->options(range(12,18))->id('lineWeight') }}
         </td>
         <td>
             <input type="checkbox" checked="true" id="showLocUpdate"> Show Location Update
@@ -63,7 +63,7 @@
 
         var map = L.map('lmap').setView([-6.17742,106.828308], 12);
 
-        var lineWeight = 4;
+        var lineWeight = $('#lineWeight').val();
 
         /*
         var googleLayer = new L.Google('ROADMAP');
