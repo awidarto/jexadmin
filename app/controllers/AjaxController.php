@@ -165,8 +165,8 @@ class AjaxController extends BaseController {
 
                     print_r($l);
 
-                    $lat = doubleval($l->latitude);
-                    $lng = doubleval($l->longitude);
+                    $lat = (isset($l->latitude))?doubleval($l->latitude):0;
+                    $lng = (isset($l->longitude))?doubleval($l->longitude):0;
 
                     $status = ($l->status == '')?'report':$l->status;
                     if($lat != 0 && $lng != 0){
