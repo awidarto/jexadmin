@@ -148,9 +148,11 @@ class AjaxController extends BaseController {
 
                         $st = true;
 
+                        $key = strtotime($next['datetimestamp']);
+
                         if(in_array($next['status'], $statuses)){
                             $curr = $next;
-                            $locv[doubleval($next['timestamp'])] = (object) $next;
+                            $locv[$key] = (object) $next;
                             $st = false;
                         }
 
@@ -159,18 +161,16 @@ class AjaxController extends BaseController {
 
                             if( abs($span) >= ( doubleval($stepping) * 60)){
                                 $curr = $next;
-                                $locv[doubleval($next['timestamp'])] = (object) $next;
+                                $locv[$key] = (object) $next;
                             }
                         }
                     }
 
                 }
 
-                print_r(array_keys($locv));
 
                 krsort($locv);
 
-                print_r(array_keys($locv));
                 //print count($locv)."||\r\n";
 
                 foreach($locv as $t=>$l){
