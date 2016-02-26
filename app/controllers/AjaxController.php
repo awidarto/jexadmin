@@ -126,28 +126,32 @@ class AjaxController extends BaseController {
 
                 $locv = array();
 
-                $curr = false;
-                $next = false;
+                $curr = null;
+                $next = 1;
 
                 $locarr = $locs->toArray();
 
-                for($i = 0; $i < count($locs->toArray());$i++){
-                    if($curr == false){
+                //for($i = 0; $i < count($locs->toArray());$i++){
+
+                while(!is_null($next)){
+
+                    if(is_null($curr)){
                         $curr = array_shift($locarr);
                         $locv[] = (object) $curr;
                     }
 
-                    $next = array_shift($locarr);
 
-                    if(!is_null($next)){
+                    //if(!is_null($next)){
 
-                        $span = intval($next['timestamp']) - intval($curr['timestamp']);
+                    $span = intval($next['timestamp']) - intval($curr['timestamp']);
 
-                        if( $span >= ($stepping * 60) || in_array($next['status'], $statuses) ){
-                            $curr = $next;
-                            $locv[] = (object) $curr;
-                        }
+                    if( $span >= ($stepping * 60) || in_array($next['status'], $statuses) ){
+                        $curr = $next;
+                        $locv[] = (object) $curr;
                     }
+                    //}
+
+                    $next = array_shift($locarr);
 
                 }
 
