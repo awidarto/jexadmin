@@ -63,7 +63,7 @@
 
         var map = L.map('lmap').setView([-6.17742,106.828308], 12);
 
-        var lineWeight = $('#lineWeight').val();
+        var lineWeight = 12;
 
         /*
         var googleLayer = new L.Google('ROADMAP');
