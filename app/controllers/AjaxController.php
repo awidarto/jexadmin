@@ -57,6 +57,8 @@ class AjaxController extends BaseController {
         $courier = ($courier == '')?'all':$courier;
         $status = ($status == '')?'all':$status;
 
+        $statuses = Config::get('jex.mapdefstatus');
+
         $model = new Geolog();
 
         if($device_name == 'all'){
@@ -100,6 +102,8 @@ class AjaxController extends BaseController {
 
             if($status != 'all'){
                 $model = $model->where('status','regexp','/'.$status.'/i');
+            }else{
+                $model = $model->whereIn('status',$statuses);
             }
 
             $model = $model->where('appname','=', Config::get('jex.tracker_app'));

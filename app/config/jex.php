@@ -5,6 +5,13 @@ return array(
         'hub_app'=>'com.kickstartlab.android.jexwarehouse',
         'pickup_app'=>'com.kickstartlab.android.jexpickup',
 
+        'mapdefstatus'=>array(
+                'cr_assigned',
+                'delivered',
+                'pending',
+                'returned'
+            ),
+
         'filter_time_base'=>array(
             'delivery_order_active.created'=>'Created Date',
             'assignment_date'=>'Assignment Date',

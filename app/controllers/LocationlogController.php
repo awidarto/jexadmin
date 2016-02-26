@@ -17,14 +17,6 @@ class LocationlogController extends AdminController {
 
     }
 
-    public function getTest()
-    {
-        $raw = $this->model->where('docFormat','like','picture')->get();
-
-        print $raw->toJSON();
-    }
-
-
     public function getIndex()
     {
         $this->heads = array(

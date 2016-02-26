@@ -5,7 +5,7 @@
 
 {{ HTML::style('css/leaflet.awesome-markers.css') }}
 
-<script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 
 {{ HTML::script('js/leaflet-google.js') }}
 {{ HTML::script('js/leaflet.awesome-markers.min.js') }}
@@ -26,7 +26,7 @@
             {{ Former::text('search_status')->id('search_status') }}
         </td>
         <td>
-            {{ Former::select('line_weight')->options(range(4,8))->id('lineWeight') }}
+            {{ Former::select('line_weight')->options(range(8,12))->id('lineWeight') }}
         </td>
         <td>
             <input type="checkbox" checked="true" id="showLocUpdate"> Show Location Update
