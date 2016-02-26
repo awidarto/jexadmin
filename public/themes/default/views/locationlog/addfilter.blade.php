@@ -26,10 +26,12 @@
             {{ Former::text('search_status')->id('search_status') }}
         </td>
         <td>
-            {{ Former::select('line_weight')->options(range(12,18))->id('lineWeight') }}
+            {{ Former::select('line_weight')->options(range(15,20))->value(18)->id('lineWeight') }}
         </td>
         <td>
-            {{ Former::select('stepping', 'Interval ( minutes )')->options(range(5,30))->id('stepping') }}
+            {{ Former::select('stepping', 'Interval ( minutes )')->options(range(10,30))
+                        ->value(20)
+                        ->id('stepping') }}
         </td>
         <td>
             <input type="checkbox" id="showLocUpdate"> Show Location Update
@@ -83,6 +85,10 @@
         });
 
         $('#lineWeight').on('change',function(){
+            refreshMap();
+        });
+
+        $('#stepping').on('change',function(){
             refreshMap();
         });
 
