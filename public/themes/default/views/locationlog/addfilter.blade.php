@@ -26,7 +26,7 @@
             {{ Former::text('search_status')->id('search_status') }}
         </td>
         <td>
-            {{ Former::select('line_weight')->options( array_combine(range(15,24), range(15,24)) )->value(18)->id('lineWeight') }}
+            {{ Former::select('line_weight')->options( array_combine(range(12,24), range(12,24)) )->value(15)->id('lineWeight') }}
         </td>
         <td>
             {{ Former::select('stepping', 'Interval ( minutes )')->options(array_combine(range(5,30), range(5,30)))
