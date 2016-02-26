@@ -144,6 +144,7 @@ class AjaxController extends BaseController {
 
                 }
 
+                print_r($locv);
 
                 foreach($locv as $l){
                     $lat = doubleval($l->latitude);
