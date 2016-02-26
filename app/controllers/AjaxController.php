@@ -130,15 +130,15 @@ class AjaxController extends BaseController {
                 for($i = 0; $i < count($locs->toArray());$i++){
                     if($curr == false){
                         $curr = array_shift($locarr);
-                        $locv[] = $curr;
+                        $locv[] = (object) $curr;
                     }
 
                     $next = array_shift($locarr);
 
                     if(!is_null($next)){
-                        if( strtotime($next->datetimestamp) - strtotime($curr->datetimestamp) >= (10*60) ){
+                        if( strtotime($next['datetimestamp']) - strtotime($curr['datetimestamp']) >= (10*60) ){
                             $curr = $next;
-                            $locv[] = $curr;
+                            $locv[] = (object) $curr;
                         }
                     }
 
