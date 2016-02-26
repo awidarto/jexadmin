@@ -70,7 +70,7 @@ class AjaxController extends BaseController {
         }else{
             $devices = Geolog::distinct('deviceId')
                 ->where('deviceId','regexp','/'.$device_name.'/i')
-                ->get();
+                ->get('deviceId');
         }
 
         $locations = array();
@@ -79,7 +79,7 @@ class AjaxController extends BaseController {
 
         $pathdummy = array();
 
-        foreach($devices as $d){
+        foreach($devices->toArray() as $d){
 
             $deviceId = $d[0];
 
