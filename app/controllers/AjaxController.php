@@ -136,7 +136,10 @@ class AjaxController extends BaseController {
                     $next = array_shift($locarr);
 
                     if(!is_null($next)){
-                        if( intval($next['timestamp']) - intval($curr['timestamp']) >= (10*60) ){
+
+                        $span = intval($next['timestamp']) - intval($curr['timestamp']);
+
+                        if( $span >= (10*60) || in_array($curr['status'], $statuses) ){
                             $curr = $next;
                             $locv[] = (object) $curr;
                         }
