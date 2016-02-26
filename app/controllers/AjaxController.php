@@ -155,8 +155,8 @@ class AjaxController extends BaseController {
                 }
 
 
-                print count($locarr);
-                print count($locv);
+                print count($locarr)."|\r\n";
+                print count($locv)."||\r\n";
 
                 foreach($locv as $l){
                     $lat = doubleval($l->latitude);
