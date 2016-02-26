@@ -125,13 +125,15 @@ class AjaxController extends BaseController {
                 $curr = false;
                 $next = false;
 
+                $locarr = $locs->toArray();
+
                 for($i = 0; $i < count($locs->toArray());$i++){
                     if($curr == false){
-                        $curr = array_shift($locs);
+                        $curr = array_shift($locarr);
                         $locv[] = $curr;
                     }
 
-                    $next = array_shift($locs);
+                    $next = array_shift($locarr);
 
                     if(!is_null($next)){
                         if( strtotime($next->datetimestamp) - strtotime($curr->datetimestamp) >= (10*60) ){
