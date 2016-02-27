@@ -4,14 +4,14 @@
  <![endif]-->
 
 {{ HTML::style('css/leaflet.awesome-markers.css') }}
-{{ HTML::style('leaflet-routing/leaflet-routing-machine.css') }}
+{{-- HTML::style('leaflet-routing/leaflet-routing-machine.css') --}}
 
 <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 
 {{ HTML::script('js/leaflet-google.js') }}
 {{ HTML::script('js/leaflet.awesome-markers.min.js') }}
 {{ HTML::script('js/leaflet.polylineDecorator.min.js') }}
-{{ HTML::script('leaflet-routing/leaflet-routing-machine.min.js') }}
+{{-- HTML::script('leaflet-routing/leaflet-routing-machine.min.js') --}}
 
 
 
@@ -161,7 +161,7 @@
 
                     if(data.result == 'ok'){
 
-                        /*
+
                         if(paths.length > 0){
 
                             for(m = 0; m < paths.length; m++){
@@ -170,7 +170,7 @@
 
                             paths = [];
 
-                        }*/
+                        }
 
                         if(markers.length > 0){
 
@@ -182,7 +182,7 @@
 
                         }
 
-
+                        /*
                         $.each(data.paths, function(){
 
                             var wp = [];
@@ -196,7 +196,7 @@
                             }).addTo(map);
 
                         });
-
+                        */
 
                         $.each(data.paths, function(){
                             var polyline = L.polyline( this.poly,
