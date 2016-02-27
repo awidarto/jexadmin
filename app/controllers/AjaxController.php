@@ -181,8 +181,13 @@ class AjaxController extends BaseController {
 
                 }
 
-                $locv = array_merge($locstat, $locv);
+                $locr = array_merge($locstat, $locv);
 
+                $locv = array();
+
+                foreach ($locr as $lv) {
+                    $locv[ intval($lv->timestamp)  ] = $lv;
+                }
 
 
                 krsort($locv);
