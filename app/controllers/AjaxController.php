@@ -126,6 +126,15 @@ class AjaxController extends BaseController {
 
                 $locv = array();
 
+                foreach($locs->toArray() as $next){
+
+                    if(isset($next['status']) && in_array($next['status'], $statuses)){
+                        $key = strtotime($next['datetimestamp']);
+                        $locv[$key] = (object) $next;
+                    }
+
+                }
+
                 $curr = null;
                 $next = 1;
 
@@ -160,17 +169,6 @@ class AjaxController extends BaseController {
 
                 }
 
-                foreach($locs->toArray() as $next){
-
-                    if(isset($next['status']) && in_array($next['status'], $statuses)){
-
-                        $key = strtotime($next['datetimestamp']);
-
-                        $locv[$key] = (object) $next;
-                        $st = false;
-                    }
-
-                }
 
 
                 krsort($locv);
