@@ -213,33 +213,34 @@
 
                             for( var i = 0; i < this.length; i++){
                                 console.log(this[i].data);
-                            }
+                                var d = this[i].data;
 
-                            /*
-                            if(this.data.status == 'report'){
-                                icon = icon_yellow;
-                            }else if(this.data.status == 'delivered'){
-                                icon = icon_green;
-                            }else{
-                                icon =  icon_red;
-                            }
-
-                            var content = '<div style="background-color:white;padding:3px;width:150px;">' +
-                                '<div class="bg"></div>' +
-                                '<div class="text">' + this.data.identifier + '<br />' + this.data.timestamp + '<br />' + this.data.delivery_id + '<br />' + this.data.status +  '</div>' +
-                            '</div>';
-
-                            if($('#showLocUpdate').is(':checked')){
-                                var m = L.marker(new L.LatLng( this.data.lat, this.data.lng ), { icon: icon }).addTo(map).bindPopup(content);
-                                markers.push(m);
-
-                            }else{
-                                if(this.data.status != 'report' && this.data.status != ''){
-                                    var m = L.marker(new L.LatLng( this.data.lat, this.data.lng ), { icon: icon }).addTo(map).bindPopup(content);
-                                    markers.push(m);
+                                if(d.status == 'report'){
+                                    icon = icon_yellow;
+                                }else if(d.status == 'delivered'){
+                                    icon = icon_green;
+                                }else{
+                                    icon =  icon_red;
                                 }
+
+                                var content = '<div style="background-color:white;padding:3px;width:150px;">' +
+                                    '<div class="bg"></div>' +
+                                    '<div class="text">' + d.identifier + '<br />' + d.timestamp + '<br />' + d.delivery_id + '<br />' + d.status +  '</div>' +
+                                '</div>';
+
+                                if($('#showLocUpdate').is(':checked')){
+                                    var m = L.marker(new L.LatLng( d.lat, d.lng ), { icon: icon }).addTo(map).bindPopup(content);
+                                    markers.push(m);
+
+                                }else{
+                                    if(d.status != 'report' && d.status != ''){
+                                        var m = L.marker(new L.LatLng( d.lat, d.lng ), { icon: icon }).addTo(map).bindPopup(content);
+                                        markers.push(m);
+                                    }
+                                }
+
                             }
-                            */
+
 
                         });
 
