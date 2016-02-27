@@ -130,7 +130,7 @@ class AjaxController extends BaseController {
 
                     if(isset($n['status']) && in_array($n['status'], $statuses)){
                         //$key = strtotime($n['datetimestamp']);
-                        $key = $next['timestamp'];
+                        $key = doubleval($n['timestamp']);
 
                         $locv[$key] = (object) $n;
                     }
@@ -162,7 +162,7 @@ class AjaxController extends BaseController {
 
                         //$key = strtotime($next['datetimestamp']);
 
-                        $key = $next['timestamp'];
+                        $key = doubleval($next['timestamp']);
 
                         $span = doubleval($next['timestamp']) - doubleval($curr['timestamp']);
 
