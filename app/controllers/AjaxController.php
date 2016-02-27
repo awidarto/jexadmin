@@ -126,11 +126,13 @@ class AjaxController extends BaseController {
 
                 $locv = array();
 
-                foreach($locs->toArray() as $next){
+                foreach($locs->toArray() as $n){
 
-                    if(isset($next['status']) && in_array($next['status'], $statuses)){
-                        $key = strtotime($next['datetimestamp']);
-                        $locv[$key] = (object) $next;
+                    if(isset($n['status']) && in_array($n['status'], $statuses)){
+                        //$key = strtotime($n['datetimestamp']);
+                        $key = $next['timestamp'];
+
+                        $locv[$key] = (object) $n;
                     }
 
                 }
@@ -158,7 +160,9 @@ class AjaxController extends BaseController {
 
                         $st = true;
 
-                        $key = strtotime($next['datetimestamp']);
+                        //$key = strtotime($next['datetimestamp']);
+
+                        $key = $next['timestamp'];
 
                         $span = doubleval($next['timestamp']) - doubleval($curr['timestamp']);
 
