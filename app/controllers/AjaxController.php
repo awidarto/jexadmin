@@ -135,6 +135,8 @@ class AjaxController extends BaseController {
 
                 }
 
+                print_r($locv);
+
                 $curr = null;
                 $next = 1;
 
