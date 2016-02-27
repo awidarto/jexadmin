@@ -165,7 +165,11 @@ class AjaxController extends BaseController {
 
                         if( abs($span) >= ( doubleval($stepping) * 60)){
                             $curr = $next;
-                            $locv[$key] = (object) $next;
+                            if(isset($locv[$key])){
+
+                            }else{
+                                $locv[$key] = (object) $next;
+                            }
                         }
                     }
 
