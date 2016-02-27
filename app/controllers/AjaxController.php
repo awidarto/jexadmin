@@ -150,7 +150,7 @@ class AjaxController extends BaseController {
 
                         $key = strtotime($next['datetimestamp']);
 
-                        if(in_array($next['status'], $statuses)){
+                        if(isset($next['status']) && in_array($next['status'], $statuses)){
                             $curr = $next;
                             $locv[$key] = (object) $next;
                             $st = false;
@@ -179,7 +179,7 @@ class AjaxController extends BaseController {
 
                     $lat = (isset($l->latitude))?doubleval($l->latitude):0;
                     $lng = (isset($l->longitude))?doubleval($l->longitude):0;
-                    $status = (isset($l->status) && $l->status == '')?'report':$l->status;
+                    $status = (isset($l->status) && $l->status == '')?$l->status:'report';
 
                     if($lat != 0 && $lng != 0){
                         $locations[] = array(
