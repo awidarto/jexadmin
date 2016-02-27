@@ -150,20 +150,24 @@ class AjaxController extends BaseController {
 
                         $key = strtotime($next['datetimestamp']);
 
-                        if(isset($next['status']) && in_array($next['status'], $statuses)){
+                        $span = doubleval($next['timestamp']) - doubleval($curr['timestamp']);
+
+                        if( abs($span) >= ( doubleval($stepping) * 60)){
                             $curr = $next;
                             $locv[$key] = (object) $next;
-                            $st = false;
                         }
+                    }
 
-                        if($st){
-                            $span = doubleval($next['timestamp']) - doubleval($curr['timestamp']);
+                }
 
-                            if( abs($span) >= ( doubleval($stepping) * 60)){
-                                $curr = $next;
-                                $locv[$key] = (object) $next;
-                            }
-                        }
+                foreach($locs->toArray() as $next){
+
+                    if(isset($next['status']) && in_array($next['status'], $statuses)){
+
+                        $key = strtotime($next['datetimestamp']);
+
+                        $locv[$key] = (object) $next;
+                        $st = false;
                     }
 
                 }
