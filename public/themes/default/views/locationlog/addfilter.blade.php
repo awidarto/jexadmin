@@ -213,6 +213,7 @@
 
                             console.log(this.data);
 
+                            /*
                             if(this.data.status == 'report'){
                                 icon = icon_yellow;
                             }else if(this.data.status == 'delivered'){
@@ -236,6 +237,7 @@
                                     markers.push(m);
                                 }
                             }
+                            */
 
                         });
 
