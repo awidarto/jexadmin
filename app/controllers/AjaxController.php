@@ -183,9 +183,11 @@ class AjaxController extends BaseController {
 
                 $locv = array_merge($locstat, $locv);
 
+
+
                 krsort($locv);
 
-                print_r($locv);
+                //print_r($locv);
 
                 //print count($locv)."||\r\n";
 
