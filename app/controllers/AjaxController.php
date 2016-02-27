@@ -125,69 +125,81 @@ class AjaxController extends BaseController {
 
                 $path = array();
 
-                $locv = array();
+                if($stepping > 0){
 
-                $locstat = array();
+                    $locv = array();
 
-                foreach($locs->toArray() as $n){
+                    $locstat = array();
 
-                    if(isset($n['status']) && in_array($n['status'], $statuses)){
-                        //$key = strtotime($n['datetimestamp']);
-                        $key = doubleval($n['timestamp']);
+                    foreach($locs->toArray() as $n){
 
-                        $locstat[$key] = (object) $n;
+                        if(isset($n['status']) && in_array($n['status'], $statuses)){
+                            //$key = strtotime($n['datetimestamp']);
+                            $key = doubleval($n['timestamp']);
+
+                            $locstat[$key] = (object) $n;
+                        }
+
                     }
 
-                }
 
+                    $curr = null;
+                    $next = 1;
 
-                $curr = null;
-                $next = 1;
+                    $locarr = $locs->toArray();
 
-                $locarr = $locs->toArray();
+                    while(!is_null($next)){
 
-                //print count($locarr)."|\r\n";
+                        if(is_null($curr)){
+                            $curr = array_shift($locarr);
+                            $locv[] = (object) $curr;
+                        }
 
-                //for($i = 0; $i < count($locs->toArray());$i++){
+                        $next = array_shift($locarr);
 
-                while(!is_null($next)){
+                        if(!is_null($next)){
 
-                    if(is_null($curr)){
-                        $curr = array_shift($locarr);
-                        $locv[] = (object) $curr;
-                    }
+                            $st = true;
 
-                    $next = array_shift($locarr);
+                            //$key = strtotime($next['datetimestamp']);
 
-                    if(!is_null($next)){
+                            $key = doubleval($next['timestamp']);
 
-                        $st = true;
+                            $span = doubleval($next['timestamp']) - doubleval($curr['timestamp']);
 
-                        //$key = strtotime($next['datetimestamp']);
+                            if( abs($span) >= ( doubleval($stepping) * 60)){
+                                $curr = $next;
+                                if(isset($locv[$key])){
 
-                        $key = doubleval($next['timestamp']);
-
-                        $span = doubleval($next['timestamp']) - doubleval($curr['timestamp']);
-
-                        if( abs($span) >= ( doubleval($stepping) * 60)){
-                            $curr = $next;
-                            if(isset($locv[$key])){
-
-                            }else{
-                                $locv[$key] = (object) $next;
+                                }else{
+                                    $locv[$key] = (object) $next;
+                                }
                             }
                         }
+
                     }
 
+                    $locr = array_merge($locstat, $locv);
+
+                    $locv = array();
+
+                    foreach ($locr as $lv) {
+                        $locv[ intval($lv->timestamp)  ] = $lv;
+                    }
+
+                }else{
+
+                    $locv = $locs->toArray();
+
+                    $locr = array();
+
+                    foreach ($locv as $lv) {
+                        $locr[ intval($lv['timestamp'])  ] = (object)$lv;
+                    }
+
+                    $locv = $locr;
                 }
 
-                $locr = array_merge($locstat, $locv);
-
-                $locv = array();
-
-                foreach ($locr as $lv) {
-                    $locv[ intval($lv->timestamp)  ] = $lv;
-                }
 
 
                 krsort($locv);

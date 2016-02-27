@@ -33,7 +33,7 @@
             {{ Former::select('line_weight')->options( array_combine(range(6,24), range(6,24)) )->value(15)->id('lineWeight') }}
         </td>
         <td>
-            {{ Former::select('stepping', 'Interval ( minutes )')->options(array_combine(range(5,30), range(5,30)))
+            {{ Former::select('stepping', 'Interval ( minutes )')->options(array_combine(range(0,30), range(0,30)))
                         ->value(20)
                         ->id('stepping') }}
         </td>
