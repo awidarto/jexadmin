@@ -105,7 +105,8 @@ class AjaxController extends BaseController {
                         ->whereBetween('mtimestamp',array($daystart,$dayend));
 
             if($status != 'all'){
-                $model = $model->where('status','regexp','/'.$status.'/i');
+                //$model = $model->where('status','regexp','/'.$status.'/i');
+                $model = $model->where('status','=',$status);
             }
             /*
             else{
