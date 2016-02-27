@@ -211,7 +211,9 @@
 
                         $.each(data.locations,function(){
 
-                            console.log(this);
+                            for( var i = 0; i < this.length; i++){
+                                console.log(this[i].data);
+                            }
 
                             /*
                             if(this.data.status == 'report'){
