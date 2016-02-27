@@ -105,8 +105,8 @@ class AjaxController extends BaseController {
                         ->whereBetween('mtimestamp',array($daystart,$dayend));
 
             if($status != 'all'){
-                //$model = $model->where('status','regexp','/'.$status.'/i');
-                $model = $model->where('status','=',$status);
+                $model = $model->where('status','regexp','/'.$status.'/i');
+                //$model = $model->where('status','=',$status);
             }
             /*
             else{
@@ -127,13 +127,15 @@ class AjaxController extends BaseController {
 
                 $locv = array();
 
+                $locstat = array();
+
                 foreach($locs->toArray() as $n){
 
                     if(isset($n['status']) && in_array($n['status'], $statuses)){
                         //$key = strtotime($n['datetimestamp']);
                         $key = doubleval($n['timestamp']);
 
-                        $locv[$key] = (object) $n;
+                        $locstat[$key] = (object) $n;
                     }
 
                 }
@@ -179,7 +181,7 @@ class AjaxController extends BaseController {
 
                 }
 
-
+                $locv = array_merge($locstat, $locv);
 
                 krsort($locv);
 
