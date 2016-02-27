@@ -185,7 +185,7 @@ class AjaxController extends BaseController {
 
                 krsort($locv);
 
-                //print_r($locv);
+                print_r($locv);
 
                 //print count($locv)."||\r\n";
 
