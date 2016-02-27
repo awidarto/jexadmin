@@ -124,6 +124,7 @@ class AjaxController extends BaseController {
             if( count( $locs->toArray() ) > 0){
 
                 $path = array();
+                $devlocations = array();
 
                 if($stepping > 0){
 
@@ -217,7 +218,7 @@ class AjaxController extends BaseController {
                     $status = (isset($l->status))?$l->status:'report';
 
                     if($lat != 0 && $lng != 0){
-                        $locations[] = array(
+                        $devlocations[] = array(
                             'data'=>array(
                                     'id'=>$l->_id,
                                     'lat'=>$lat,
@@ -240,6 +241,7 @@ class AjaxController extends BaseController {
                             );
                     }
                 }
+                $locations[] = $devlocations;
                 $paths[]=array('color'=>$mapcolor,'poly'=>$path);
             }
         }
