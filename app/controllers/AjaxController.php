@@ -93,11 +93,12 @@ class AjaxController extends BaseController {
         $daystart = new MongoDate( strtotime($daystart) );
         $dayend = new MongoDate( strtotime($dayend) );
 
-        print_r($devices);
 
         foreach($devices->toArray() as $d){
 
             $deviceId = $d[0];
+
+            print $deviceId."\r\n";
 
             $mapcolor = Prefs::get_device_color($deviceId);
 
