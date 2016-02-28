@@ -229,7 +229,10 @@
                                     content += '<br />sign : ' + d.pod.sign +
                                     '<br />photo : ' + d.pod.photo;
                                     if(d.pod.total > 0){
-                                        content += '<br /><img src="' + d.pod.images[0] + '" alt="pod" style="width:75px;height:auto;" />';
+                                        content += '<br />';
+                                        for(var i = 0; i < d.pod.images.length; i++){
+                                            content += '<img src="' + d.pod.images[i] + '" alt="pod" style="width:75px;height:auto;" />';
+                                        }
                                     }
                                 }
                                     content += '</div>' +
