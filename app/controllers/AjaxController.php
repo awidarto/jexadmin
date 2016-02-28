@@ -59,8 +59,6 @@ class AjaxController extends BaseController {
         $courier = ($courier == '')?'all':$courier;
         $status = ($status == '')?'all':$status;
 
-        //$stepping = ($stepping == '')?10:$stepping;
-
         $statuses = Config::get('jex.mapdefstatus');
 
 
@@ -95,8 +93,6 @@ class AjaxController extends BaseController {
                 ->get('deviceId');
         }
 
-        //print_r($devices->toArray());
-
         $daystart = new MongoDate( strtotime($daystart) );
         $dayend = new MongoDate( strtotime($dayend) );
 
@@ -113,16 +109,10 @@ class AjaxController extends BaseController {
 
             if( count( $locv ) > 0){
 
-                $path = array();
+                $devpath = array();
                 $devlocations = array();
 
-                //print 'dev : '.$deviceId."\r\n";
-
                 foreach($locv as $t=>$l){
-
-                    //print 'st : '.$l->dstatus."\r\n";
-
-                    //print_r($l);
 
                     $lat = (isset($l->latitude))?doubleval($l->latitude):0;
                     $lng = (isset($l->longitude))?doubleval($l->longitude):0;
@@ -140,7 +130,7 @@ class AjaxController extends BaseController {
                                     'status'=>$dstatus
                                 )
                             );
-                        $path[] = array(
+                        $devpath[] = array(
                                 $lat,
                                 $lng
                             );
@@ -153,7 +143,7 @@ class AjaxController extends BaseController {
                     }
                 }
                 $locations[] = $devlocations;
-                $paths[]=array('color'=>$mapcolor,'poly'=>$path);
+                $paths[]=array('color'=>$mapcolor,'poly'=>$devpath);
             }
         }
 
