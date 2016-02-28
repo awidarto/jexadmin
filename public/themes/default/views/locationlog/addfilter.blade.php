@@ -220,7 +220,7 @@
                                     icon =  icon_red;
                                 }
 
-                                var content = '<div style="background-color:white;padding:3px;width:150px;">' +
+                                var content = '<div style="background-color:white;padding:3px;width:200px;">' +
                                     '<div class="bg"></div>' +
                                     '<div class="text">' + d.identifier + '<br />' + d.timestamp + '<br />' + d.delivery_id +
                                     '<br />' + d.status;
