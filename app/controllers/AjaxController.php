@@ -266,6 +266,8 @@ class AjaxController extends BaseController {
 
                 $locv = array();
 
+                print "===========================\r\n";
+
                 foreach ($locarr as $lv) {
                     print 'st no step : '.$n['status']."\r\n";
                     $locv[ intval($lv['timestamp'])  ] = (object)$lv;
