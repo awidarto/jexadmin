@@ -95,7 +95,7 @@ class AjaxController extends BaseController {
                 ->get('deviceId');
         }
 
-        print_r($devices->toArray());
+        //print_r($devices->toArray());
 
         $daystart = new MongoDate( strtotime($daystart) );
         $dayend = new MongoDate( strtotime($dayend) );
@@ -109,7 +109,7 @@ class AjaxController extends BaseController {
 
             $locv = array();
 
-            $locv = $this->devLocation($deviceId,$daystart,$dayend,$status,$stepping);
+            $locv = $this->devLocation($deviceId,$daystart,$dayend,$dstatus,$stepping);
 
             if( count( $locv ) > 0){
 
@@ -120,13 +120,13 @@ class AjaxController extends BaseController {
 
                 foreach($locv as $t=>$l){
 
-                    //print 'st : '.$l->status."\r\n";
+                    //print 'st : '.$l->dstatus."\r\n";
 
                     //print_r($l);
 
                     $lat = (isset($l->latitude))?doubleval($l->latitude):0;
                     $lng = (isset($l->longitude))?doubleval($l->longitude):0;
-                    $status = (isset($l->status))?$l->status:'report';
+                    $dstatus = (isset($l->status))?$l->status:'report';
 
                     if($lat != 0 && $lng != 0){
                         $devlocations[] = array(
@@ -137,7 +137,7 @@ class AjaxController extends BaseController {
                                     'timestamp'=>$l->datetimestamp,
                                     'identifier'=>$l->deviceId,
                                     'delivery_id'=>$l->deliveryId,
-                                    'status'=>$status
+                                    'status'=>$dstatus
                                 )
                             );
                         $path[] = array(
@@ -189,7 +189,7 @@ class AjaxController extends BaseController {
 
             $locstat = array();
 
-            print 'device id : '.$deviceId."\r\n";
+            //print 'device id : '.$deviceId."\r\n";
 
             // collect all non report points
             foreach($locarr as $n){
@@ -266,12 +266,9 @@ class AjaxController extends BaseController {
 
                 $locv = array();
 
-                print "===========================\r\n";
-
                 $locarr = $locs->toArray();
 
                 foreach ($locarr as $lv) {
-                    print 'st no step : '.$n['status']."\r\n";
                     $locv[ intval($lv['timestamp'])  ] = (object)$lv;
                 }
 
