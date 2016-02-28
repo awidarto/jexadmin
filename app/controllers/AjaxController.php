@@ -173,14 +173,17 @@ class AjaxController extends BaseController {
         $sign = 0;
         $photo = 0;
         $total = 0;
-        foreach ($images as $img) {
-            $imagelist[] = $image->thumbnail_url;
-            if($image->is_signature == '1'){
-                $sign++;
-            }else{
-                $photo++;
+
+        if($images){
+            foreach ($images as $image) {
+                $imagelist[] = $image->thumbnail_url;
+                if($image->is_signature == '1'){
+                    $sign++;
+                }else{
+                    $photo++;
+                }
+                $total++;
             }
-            $total++;
         }
 
         return array('images'=>$imagelist, 'sign'=>$sign, 'photo'=>$photo, 'total'=>$total);
