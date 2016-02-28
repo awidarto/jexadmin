@@ -89,14 +89,13 @@ class AjaxController extends BaseController {
             $dayend = $timestamp.' 23:59:59';
         }
 
+        print_r($devices->toArray());
 
         $daystart = new MongoDate( strtotime($daystart) );
         $dayend = new MongoDate( strtotime($dayend) );
 
 
         foreach($devices->toArray() as $d){
-
-            print_r($d);
 
             $deviceId = $d[0];
 
