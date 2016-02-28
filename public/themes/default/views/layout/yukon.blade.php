@@ -26,6 +26,8 @@
 
         {{ HTML::style('css/typography.css')}}
 
+        {{ HTML::style('css/spectrum.css')}}
+
         <!-- google webfonts -->
         {{--
         <link href='http://fonts.googleapis.com/css?family=Open+Sans&amp;subset=latin,latin-ext' rel='stylesheet' type='text/css'>
@@ -273,6 +275,8 @@
             <script src="{{ URL::to('yukon')}}/assets/lib/DataTables/media/js/jquery.dataTables.min.js"></script>
             <script src="{{ URL::to('yukon')}}/assets/lib/DataTables/extensions/FixedHeader/js/dataTables.fixedHeader.min.js"></script>
             <script src="{{ URL::to('yukon')}}/assets/lib/DataTables/media/js/dataTables.bootstrap.js"></script>
+
+            {{ HTML::script('js/spectrum.js')}}
 
             <script>
                 $(function() {
