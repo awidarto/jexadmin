@@ -63,18 +63,6 @@ class AjaxController extends BaseController {
 
         $statuses = Config::get('jex.mapdefstatus');
 
-        $model = new Geolog();
-
-        if($device_name == 'all'){
-            $devices = Geolog::distinct('deviceId')
-                        ->where('appname','=', Config::get('jex.tracker_app'))
-                        ->get('deviceId');
-        }else{
-            $devices = Geolog::distinct('deviceId')
-                ->where('appname','=', Config::get('jex.tracker_app'))
-                ->where('deviceId','regexp','/'.$device_name.'/i')
-                ->get('deviceId');
-        }
 
         $locations = array();
 
@@ -90,6 +78,21 @@ class AjaxController extends BaseController {
         }else{
             $daystart = $timestamp.' 00:00:00';
             $dayend = $timestamp.' 23:59:59';
+        }
+
+        $model = new Geolog();
+
+        if($device_name == 'all'){
+            $devices = Geolog::distinct('deviceId')
+                        ->where('appname','=', Config::get('jex.tracker_app'))
+                        ->whereBetween('mtimestamp',array($daystart,$dayend))
+                        ->get('deviceId');
+        }else{
+            $devices = Geolog::distinct('deviceId')
+                ->where('appname','=', Config::get('jex.tracker_app'))
+                ->whereBetween('mtimestamp',array($daystart,$dayend))
+                ->where('deviceId','regexp','/'.$device_name.'/i')
+                ->get('deviceId');
         }
 
         print_r($devices->toArray());
@@ -113,11 +116,11 @@ class AjaxController extends BaseController {
                 $path = array();
                 $devlocations = array();
 
-                print 'dev : '.$deviceId."\r\n";
+                //print 'dev : '.$deviceId."\r\n";
 
                 foreach($locv as $t=>$l){
 
-                    print 'st : '.$l->status."\r\n";
+                    //print 'st : '.$l->status."\r\n";
 
                     //print_r($l);
 
@@ -186,13 +189,22 @@ class AjaxController extends BaseController {
 
             $locstat = array();
 
+            print 'device id : '.$deviceId."\r\n";
+
             // collect all non report points
             foreach($locarr as $n){
 
-                if(isset($n['status']) && in_array($n['status'], $statuses)){
-                    //$key = strtotime($n['datetimestamp']);
-                    $key = doubleval($n['timestamp']);
-                    $locstat[$key] = (object) $n;
+                if(isset($n['status'])){
+                    print 'st : '.$n['status']."\r\n";
+
+                    if(in_array($n['status'], $statuses)){
+                        print 'st nr : '.$n['status']."\r\n";
+                        //$key = strtotime($n['datetimestamp']);
+                        $key = doubleval($n['timestamp']);
+                        $locstat[$key] = (object) $n;
+
+                    }
+
                 }
 
             }
