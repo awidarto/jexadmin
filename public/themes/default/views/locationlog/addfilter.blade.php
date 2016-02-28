@@ -230,9 +230,9 @@
                                     '<br />photo : ' + d.pod.photo;
                                     if(d.pod.total > 0){
                                         content += '<br />';
-                                        for(var i = 0; i < d.pod.total; i++){
-                                            content += '<img src="' + d.pod.images[i] + '" alt="pod" style="width:75px;height:auto;" />';
-                                        }
+                                        //for(var i = 0; i < d.pod.total; i++){
+                                            content += '<img src="' + d.pod.images[0] + '" alt="pod" style="width:75px;height:auto;" />';
+                                        //}
                                     }
                                 }
                                     content += '</div>' +
