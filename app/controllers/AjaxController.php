@@ -79,27 +79,27 @@ class AjaxController extends BaseController {
 
         $pathdummy = array();
 
+        $timestamps = explode(' - ',$timestamp);
+
+        if(count($timestamps) == 2){
+            $daystart = trim($timestamps[0]).' 00:00:00';
+            $dayend = trim($timestamps[1]).' 23:59:59';
+        }else{
+            $daystart = $timestamp.' 00:00:00';
+            $dayend = $timestamp.' 23:59:59';
+        }
+
+
+        $daystart = new MongoDate( strtotime($daystart) );
+        $dayend = new MongoDate( strtotime($dayend) );
+
         foreach($devices->toArray() as $d){
 
             $deviceId = $d[0];
 
             $mapcolor = Prefs::get_device_color($deviceId);
 
-            $timestamps = explode(' - ',$timestamp);
-
-            if(count($timestamps) == 2){
-                $daystart = trim($timestamps[0]).' 00:00:00';
-                $dayend = trim($timestamps[1]).' 23:59:59';
-            }else{
-                $daystart = $timestamp.' 00:00:00';
-                $dayend = $timestamp.' 23:59:59';
-            }
-
-
-            $daystart = new MongoDate( strtotime($daystart) );
-            $dayend = new MongoDate( strtotime($dayend) );
-
-            //print_r($locs);
+            $locv = array();
 
             $locv = $this->devLocation($deviceId,$daystart,$dayend,$status,$stepping);
 
@@ -165,12 +165,7 @@ class AjaxController extends BaseController {
 
         if($status != 'all'){
             $devmodel = $devmodel->where('status','regexp','/'.$status.'/i');
-            //$devmodel = $devmodel->where('status','=',$status);
         }
-        /*
-        else{
-            $devmodel = $devmodel->whereIn('status',$statuses);
-        }*/
 
         $devmodel = $devmodel->where('appname','=', Config::get('jex.tracker_app'));
 
@@ -179,7 +174,6 @@ class AjaxController extends BaseController {
                     ->get();
 
         $locv = array();
-
 
         if($locs && count($locs->toArray()) > 0){
 
