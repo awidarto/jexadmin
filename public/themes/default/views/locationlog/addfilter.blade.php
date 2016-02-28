@@ -224,7 +224,8 @@
 
                                 var content = '<div style="background-color:white;padding:3px;width:150px;">' +
                                     '<div class="bg"></div>' +
-                                    '<div class="text">' + d.identifier + '<br />' + d.timestamp + '<br />' + d.delivery_id + '<br />' + d.status
+                                    '<div class="text">' + d.identifier + '<br />' + d.timestamp + '<br />' + d.delivery_id +
+                                    '<br />' + d.status +
                                     '<br />sign : ' + d.pod.sign +
                                     '<br />photo : ' + d.pod.photo +
                                     '</div>' +
