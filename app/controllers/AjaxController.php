@@ -99,39 +99,15 @@ class AjaxController extends BaseController {
             $daystart = new MongoDate( strtotime($daystart) );
             $dayend = new MongoDate( strtotime($dayend) );
 
-
-            $model = new Geolog();
-            $model = $model->where('deviceId','=',$deviceId)
-                        ->whereBetween('mtimestamp',array($daystart,$dayend));
-
-            if($status != 'all'){
-                $model = $model->where('status','regexp','/'.$status.'/i');
-                //$model = $model->where('status','=',$status);
-            }
-            /*
-            else{
-                $model = $model->whereIn('status',$statuses);
-            }*/
-
-            $model = $model->where('appname','=', Config::get('jex.tracker_app'));
-
-            $locs = $model
-                        ->orderBy('mtimestamp','desc')
-                        ->get();
-
             //print_r($locs);
 
-            if( count( $locs->toArray() ) > 0){
+            $locv = $this->devLocation($deviceId,$daystart,$dayend,$status,$stepping);
+
+            if( count( $locv ) > 0){
 
                 $path = array();
                 $devlocations = array();
 
-
-                $locv = $this->devLocation($locs, $stepping);
-
-                //print_r($locv);
-
-                //print count($locv)."||\r\n";
                 print 'dev : '.$deviceId."\r\n";
 
                 foreach($locv as $t=>$l){
@@ -177,94 +153,122 @@ class AjaxController extends BaseController {
 
     }
 
-    public function devLocation($locs, $stepping = 0)
+    public function devLocation($deviceId,$daystart,$dayend,$status,$stepping = 0)
     {
 
         $statuses = Config::get('jex.mapdefstatus');
 
-        $locarr = $locs->toArray();
+        $devmodel = new Geolog();
+        $devmodel = $devmodel
+                    ->where('deviceId','=',$deviceId)
+                    ->whereBetween('mtimestamp',array($daystart,$dayend));
 
-        $locstat = array();
+        if($status != 'all'){
+            $devmodel = $devmodel->where('status','regexp','/'.$status.'/i');
+            //$devmodel = $devmodel->where('status','=',$status);
+        }
+        /*
+        else{
+            $devmodel = $devmodel->whereIn('status',$statuses);
+        }*/
+
+        $devmodel = $devmodel->where('appname','=', Config::get('jex.tracker_app'));
+
+        $locs = $devmodel
+                    ->orderBy('mtimestamp','desc')
+                    ->get();
 
         $locv = array();
 
-        // collect all non report points
-        foreach($locarr as $n){
 
-            if(isset($n['status']) && in_array($n['status'], $statuses)){
-                //$key = strtotime($n['datetimestamp']);
-                $key = doubleval($n['timestamp']);
-                $locstat[$key] = (object) $n;
-            }
+        if($locs && count($locs->toArray()) > 0){
 
-        }
+            $locarr = $locs->toArray();
 
-        if($stepping > 0){
+            $locstat = array();
 
-            $locstep = array();
+            // collect all non report points
+            foreach($locarr as $n){
 
-
-
-            $curr = null;
-            $next = 1;
-
-
-            while(!is_null($next)){
-
-                if(is_null($curr)){
-                    $curr = array_shift($locarr);
-                    $locstep[] = (object) $curr;
+                if(isset($n['status']) && in_array($n['status'], $statuses)){
+                    //$key = strtotime($n['datetimestamp']);
+                    $key = doubleval($n['timestamp']);
+                    $locstat[$key] = (object) $n;
                 }
 
-                $next = array_shift($locarr);
+            }
 
-                if(!is_null($next)){
+            if($stepping > 0){
 
-                    $st = true;
+                $locstep = array();
 
-                    //$key = strtotime($next['datetimestamp']);
 
-                    $key = doubleval($next['timestamp']);
 
-                    $span = doubleval($next['timestamp']) - doubleval($curr['timestamp']);
+                $curr = null;
+                $next = 1;
 
-                    if( abs($span) >= ( doubleval($stepping) * 60)){
-                        $curr = $next;
-                        if(isset($locstep[$key])){
 
-                        }else{
-                            $locstep[$key] = (object) $next;
+                while(!is_null($next)){
+
+                    if(is_null($curr)){
+                        $curr = array_shift($locarr);
+                        $locstep[] = (object) $curr;
+                    }
+
+                    $next = array_shift($locarr);
+
+                    if(!is_null($next)){
+
+                        $st = true;
+
+                        //$key = strtotime($next['datetimestamp']);
+
+                        $key = doubleval($next['timestamp']);
+
+                        $span = doubleval($next['timestamp']) - doubleval($curr['timestamp']);
+
+                        if( abs($span) >= ( doubleval($stepping) * 60)){
+                            $curr = $next;
+                            if(isset($locstep[$key])){
+
+                            }else{
+                                $locstep[$key] = (object) $next;
+                            }
                         }
                     }
+
                 }
 
+                $locr = array_merge($locstat, $locstep);
+
+                $locv = array();
+
+                foreach ($locr as $lv) {
+                    $locv[ intval($lv->timestamp)  ] = $lv;
+                }
+
+                krsort($locv);
+
+                return $locv;
+
+            }else{
+
+                $locv = array();
+
+                foreach ($locarr as $lv) {
+                    $locv[ intval($lv['timestamp'])  ] = (object)$lv;
+                }
+
+                krsort($locv);
+
+                return $locv;
+
             }
-
-            $locr = array_merge($locstat, $locstep);
-
-            $locv = array();
-
-            foreach ($locr as $lv) {
-                $locv[ intval($lv->timestamp)  ] = $lv;
-            }
-
-            krsort($locv);
-
-            return $locv;
 
         }else{
-
-            $locv = array();
-
-            foreach ($locarr as $lv) {
-                $locv[ intval($lv['timestamp'])  ] = (object)$lv;
-            }
-
-            krsort($locv);
-
             return $locv;
-
         }
+
 
     }
 
