@@ -24,9 +24,6 @@
             {{ Former::text('search_device')->id('search_device') }}
         </td>
         <td>
-            {{ Former::text('search_courier')->id('search_courier') }}
-        </td>
-        <td>
             {{ Former::text('search_status')->id('search_status') }}
         </td>
         <td>
@@ -45,7 +42,7 @@
         </td>
     </tr>
     <tr>
-        <td colspan="6" style="min-width:1000px;width:100%;">
+        <td colspan="5" style="min-width:1000px;width:100%;">
             <div id="refreshingMap" style="display:none;">Refreshing map points...</div>
             <div id="lmap" style="width:90%;height:800px;">
 
@@ -151,7 +148,7 @@
                 {
                     'device_identifier':$('#search_device').val(),
                     'timestamp':$('#search_deliverytime').val(),
-                    'courier':$('#search_courier').val(),
+                    //'courier':$('#search_courier').val(),
                     'status':$('#search_status').val(),
                     'stepping':$('#stepping').val()
                 },
