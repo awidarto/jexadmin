@@ -195,10 +195,10 @@ class AjaxController extends BaseController {
             foreach($locarr as $n){
 
                 if(isset($n['status'])){
-                    print 'st : '.$n['status']."\r\n";
+                    print 'st : '.$deviceId.' : '.$n['status']."\r\n";
 
                     if(in_array($n['status'], $statuses)){
-                        print 'st nr : '.$n['status']."\r\n";
+                        print 'st nr : '.$deviceId.' : '.$n['status']."\r\n";
                         //$key = strtotime($n['datetimestamp']);
                         $key = doubleval($n['timestamp']);
                         $locstat[$key] = (object) $n;
