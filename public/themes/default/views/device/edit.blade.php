@@ -12,7 +12,7 @@
 
         <div class="row">
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                {{ Former::text('color','Color')->class('form-control') }}
+                {{ Former::text('color','Color')->class('form-control colorpicker') }}
             </div>
             <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                 {{ Former::select('is_on','Active')->options(array('1'=>'Yes','0'=>'No'))->class('form-control input-sm') }}

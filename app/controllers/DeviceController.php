@@ -133,7 +133,7 @@ class DeviceController extends AdminController {
             array('mobile',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('district',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('city',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('color',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('color',array('kind'=>'text','callback'=>'showColor','query'=>'like','pos'=>'both','show'=>true)),
             array('is_on',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
         );
 
@@ -879,6 +879,11 @@ class DeviceController extends AdminController {
         }else{
             return $data['SKU'];
         }
+    }
+
+    public function showColor($data)
+    {
+        return '<div style="background-color:'.$data['color'].';line-height:1em;" >&nbsp;</div>';
     }
 
     public function dispBar($data)

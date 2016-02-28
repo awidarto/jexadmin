@@ -50,6 +50,11 @@
 
     $(document).ready(function(){
 
+        $('.colorpicker').spectrum({
+            preferredFormat: 'hex',
+            allowEmpty: true
+        });
+
         accounting.settings = {
             currency: {
                 symbol : 'IDR',   // default currency symbol is '$'

@@ -632,3 +632,7 @@ b.fa{
 ul#relatedList li{
     list-style-type: none;
 }
+
+.sp-replacer{
+    display:block !important;
+}

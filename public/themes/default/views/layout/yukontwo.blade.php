@@ -28,6 +28,8 @@
 
         {{ HTML::style('css/typography.css')}}
 
+        {{ HTML::style('css/spectrum.css')}}
+
         <!-- google webfonts -->
         {{--
         <link href='http://fonts.googleapis.com/css?family=Open+Sans&amp;subset=latin,latin-ext' rel='stylesheet' type='text/css'>
@@ -287,6 +289,8 @@
 
             <script src="{{ URL::to('yukon')}}/assets/lib/gridforms/gf-forms.min.js"></script>
 
+            {{ HTML::script('js/spectrum.js')}}
+
             <script>
                 $(function() {
                     // footable
@@ -296,6 +300,8 @@
 
         @include('layout.modaljs')
         @include('layout.js')
+
+
         {{--
         <!-- style switcher -->
         <div id="style_switcher">
