@@ -176,7 +176,7 @@ class AjaxController extends BaseController {
 
         if($images){
             foreach ($images as $image) {
-                $imagelist[] = $image->thumbnail_url;
+                $imagelist[] =  '<img src="'.$image->thumbnail_url.'" alt="pod" style="width:75px;height:auto;" />';
                 if($image->is_signature == '1'){
                     $sign++;
                 }else{
@@ -186,7 +186,7 @@ class AjaxController extends BaseController {
             }
         }
 
-        return array('images'=>$imagelist, 'sign'=>$sign, 'photo'=>$photo, 'total'=>$total);
+        return array('images'=>implode('',$imagelist), 'sign'=>$sign, 'photo'=>$photo, 'total'=>$total);
     }
 
     public function devLocation($deviceId,$daystart,$dayend,$status,$stepping = 0)

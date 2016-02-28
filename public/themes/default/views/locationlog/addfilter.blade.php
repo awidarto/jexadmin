@@ -229,9 +229,9 @@
                                     content += '<br />sign : ' + d.pod.sign +
                                     '<br />photo : ' + d.pod.photo;
                                     if(d.pod.total > 0){
-                                        content += '<br />';
+                                        content += '<br />' + d.pod.images;
                                         //for(var i = 0; i < d.pod.total; i++){
-                                            content += '<img src="' + d.pod.images[0] + '" alt="pod" style="width:75px;height:auto;" />';
+                                            //content += '<img src="' + d.pod.images[0] + '" alt="pod" style="width:75px;height:auto;" />';
                                         //}
                                     }
                                 }
