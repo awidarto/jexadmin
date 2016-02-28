@@ -179,7 +179,7 @@ class AjaxController extends BaseController {
 
         $locs = $devmodel
                     ->orderBy('mtimestamp','desc')
-                    ->get();
+                    ->get( array('deviceId','status') );
 
         $locv = array();
 
@@ -208,6 +208,8 @@ class AjaxController extends BaseController {
                 }
 
             }
+
+            return $locstat;
 
             if($stepping > 0){
 
