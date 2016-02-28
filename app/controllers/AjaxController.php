@@ -129,7 +129,7 @@ class AjaxController extends BaseController {
 
                 $locv = $this->devLocation($locs, $stepping);
 
-                print_r($locv);
+                //print_r($locv);
 
                 //print count($locv)."||\r\n";
 
