@@ -228,6 +228,9 @@
                                 if(d.pod != 0){
                                     content += '<br />sign : ' + d.pod.sign +
                                     '<br />photo : ' + d.pod.photo;
+                                    if(d.pod.total > 0){
+                                        content += '<br /><img src="' + d.pod.images[0] + '" alt="pod" style="width:75px;height:auto;" />';
+                                    }
                                 }
                                     content += '</div>' +
                                 '</div>';
