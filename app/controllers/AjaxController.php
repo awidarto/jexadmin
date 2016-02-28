@@ -96,9 +96,9 @@ class AjaxController extends BaseController {
 
         foreach($devices->toArray() as $d){
 
-            $deviceId = $d[0];
+            print_r($d);
 
-            print $deviceId."\r\n";
+            $deviceId = $d[0];
 
             $mapcolor = Prefs::get_device_color($deviceId);
 
