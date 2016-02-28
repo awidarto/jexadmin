@@ -225,7 +225,7 @@
                                     '<div class="text">' + d.identifier + '<br />' + d.timestamp + '<br />' + d.delivery_id +
                                     '<br />' + d.status;
 
-                                if(d.pod != 0){
+                                if(d.pod != 0 && (d.status == 'delivered' || d.status == 'pending' || d.status == 'returned') ){
                                     content += '<br />sign : ' + d.pod.sign +
                                     '<br />photo : ' + d.pod.photo;
                                     if(d.pod.total > 0){
