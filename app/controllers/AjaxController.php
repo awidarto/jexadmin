@@ -132,8 +132,11 @@ class AjaxController extends BaseController {
                 //print_r($locv);
 
                 //print count($locv)."||\r\n";
+                print 'dev : '.$deviceId."\r\n";
 
                 foreach($locv as $t=>$l){
+
+                    print 'st : '.$l->status."\r\n";
 
                     //print_r($l);
 
