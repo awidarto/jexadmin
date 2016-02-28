@@ -177,6 +177,8 @@ class AjaxController extends BaseController {
     public function devLocation($locs, $stepping = 0)
     {
 
+        $statuses = Config::get('jex.mapdefstatus');
+
         if($stepping > 0){
 
             $locv = array();
