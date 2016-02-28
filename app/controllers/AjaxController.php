@@ -195,7 +195,7 @@ class AjaxController extends BaseController {
             foreach($locarr as $n){
 
                 if(isset($n['status'])){
-                    //print 'st : '.$n['status']."\r\n";
+                    print 'st : '.$n['status']."\r\n";
 
                     if(in_array($n['status'], $statuses)){
                         print 'st nr : '.$n['status']."\r\n";
@@ -267,7 +267,7 @@ class AjaxController extends BaseController {
                 $locv = array();
 
                 foreach ($locarr as $lv) {
-                    print 'st : '.$n['status']."\r\n";
+                    print 'st no step : '.$n['status']."\r\n";
                     $locv[ intval($lv['timestamp'])  ] = (object)$lv;
                 }
 
