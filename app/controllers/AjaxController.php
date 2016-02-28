@@ -109,7 +109,7 @@ class AjaxController extends BaseController {
 
             $locv = array();
 
-            $locv = $this->devLocation($deviceId,$daystart,$dayend,$dstatus,$stepping);
+            $locv = $this->devLocation($deviceId,$daystart,$dayend,$status,$stepping);
 
             if( count( $locv ) > 0){
 
