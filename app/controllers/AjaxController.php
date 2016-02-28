@@ -85,12 +85,12 @@ class AjaxController extends BaseController {
         if($device_name == 'all'){
             $devices = Geolog::distinct('deviceId')
                         ->where('appname','=', Config::get('jex.tracker_app'))
-                        ->whereBetween('mtimestamp',array($daystart,$dayend))
+                        //->whereBetween('mtimestamp',array($daystart,$dayend))
                         ->get('deviceId');
         }else{
             $devices = Geolog::distinct('deviceId')
                 ->where('appname','=', Config::get('jex.tracker_app'))
-                ->whereBetween('mtimestamp',array($daystart,$dayend))
+                //->whereBetween('mtimestamp',array($daystart,$dayend))
                 ->where('deviceId','regexp','/'.$device_name.'/i')
                 ->get('deviceId');
         }
