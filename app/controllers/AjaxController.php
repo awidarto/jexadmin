@@ -126,6 +126,12 @@ class AjaxController extends BaseController {
                     $inside = $polyfence->pointInPolygon($point, $polygon);
 
                     if($lat != 0 && $lng != 0 && $inside){
+
+                        $pod = 0;
+                        if(in_array($dstatus,$statuses)){
+                            $pod = $this->getImages($l->deliveryId);
+                        }
+
                         $devlocations[] = array(
                             'data'=>array(
                                     'id'=>$l->_id,
@@ -134,7 +140,8 @@ class AjaxController extends BaseController {
                                     'timestamp'=>$l->datetimestamp,
                                     'identifier'=>$l->deviceId,
                                     'delivery_id'=>$l->deliveryId,
-                                    'status'=>$dstatus
+                                    'status'=>$dstatus,
+                                    'pod'=>$pod
                                 )
                             );
                         $devpath[] = array(
@@ -156,6 +163,27 @@ class AjaxController extends BaseController {
 
         print json_encode(array('result'=>'ok','locations'=>$locations,'paths'=>$paths, 'pathdummy'=>$pathdummy, 'q'=>'' ));
 
+    }
+
+    public function getImages($delivery_id)
+    {
+        $images = Uploaded::where('parent_id','=',$delivery_id)->get();
+
+        $imagelist = array();
+        $sign = 0;
+        $photo = 0;
+        $total = 0;
+        foreach ($images as $img) {
+            $imagelist[] = $image->thumbnail_url;
+            if($image->is_signature == '1'){
+                $sign++;
+            }else{
+                $photo++;
+            }
+            $total++;
+        }
+
+        return array('images'=>$imagelist, 'sign'=>$sign, 'photo'=>$photo, 'total'=>$total);
     }
 
     public function devLocation($deviceId,$daystart,$dayend,$status,$stepping = 0)
