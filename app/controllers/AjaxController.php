@@ -179,24 +179,27 @@ class AjaxController extends BaseController {
 
         $statuses = Config::get('jex.mapdefstatus');
 
+        $locarr = $locs->toArray();
+
+        $locstat = array();
+
+        $locv = array();
+
+        // collect all non report points
+        foreach($locarr as $n){
+
+            if(isset($n['status']) && in_array($n['status'], $statuses)){
+                //$key = strtotime($n['datetimestamp']);
+                $key = doubleval($n['timestamp']);
+                $locstat[$key] = (object) $n;
+            }
+
+        }
+
         if($stepping > 0){
 
-            $locv = array();
+            $locstep = array();
 
-            $locstat = array();
-
-            $locarr = $locs->toArray();
-
-            foreach($locarr as $n){
-
-                if(isset($n['status']) && in_array($n['status'], $statuses)){
-                    //$key = strtotime($n['datetimestamp']);
-                    $key = doubleval($n['timestamp']);
-
-                    $locstat[$key] = (object) $n;
-                }
-
-            }
 
 
             $curr = null;
@@ -207,7 +210,7 @@ class AjaxController extends BaseController {
 
                 if(is_null($curr)){
                     $curr = array_shift($locarr);
-                    $locv[] = (object) $curr;
+                    $locstep[] = (object) $curr;
                 }
 
                 $next = array_shift($locarr);
@@ -224,17 +227,17 @@ class AjaxController extends BaseController {
 
                     if( abs($span) >= ( doubleval($stepping) * 60)){
                         $curr = $next;
-                        if(isset($locv[$key])){
+                        if(isset($locstep[$key])){
 
                         }else{
-                            $locv[$key] = (object) $next;
+                            $locstep[$key] = (object) $next;
                         }
                     }
                 }
 
             }
 
-            $locr = array_merge($locstat, $locv);
+            $locr = array_merge($locstat, $locstep);
 
             $locv = array();
 
@@ -242,22 +245,23 @@ class AjaxController extends BaseController {
                 $locv[ intval($lv->timestamp)  ] = $lv;
             }
 
+            krsort($locv);
+
+            return $locv;
+
         }else{
 
-            $locv = $locs->toArray();
+            $locv = array();
 
-            $locr = array();
-
-            foreach ($locv as $lv) {
-                $locr[ intval($lv['timestamp'])  ] = (object)$lv;
+            foreach ($locarr as $lv) {
+                $locv[ intval($lv['timestamp'])  ] = (object)$lv;
             }
 
-            $locv = $locr;
+            krsort($locv);
+
+            return $locv;
+
         }
-
-        krsort($locv);
-
-        return $locv;
 
     }
 
