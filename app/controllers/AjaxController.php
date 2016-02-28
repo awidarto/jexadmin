@@ -67,8 +67,8 @@ class AjaxController extends BaseController {
 
         if($device_name == 'all'){
             $devices = Geolog::distinct('deviceId')
-                        ->where('appname','=', Config::get('jex.tracker_app'));
-                        ->get();
+                        ->where('appname','=', Config::get('jex.tracker_app'))
+                        ->get('deviceId');
         }else{
             $devices = Geolog::distinct('deviceId')
                 ->where('appname','=', Config::get('jex.tracker_app'))
