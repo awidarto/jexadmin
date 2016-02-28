@@ -12,6 +12,13 @@ return array(
                 'returned'
             ),
 
+        'jakartafence'=>array(
+            '-5.946085 106.571599',
+            '-5.944719 107.237645',
+            '-6.593128 107.082463',
+            '-6.456390 106.597563',
+            '-5.946085 106.571599'),
+
         'filter_time_base'=>array(
             'delivery_order_active.created'=>'Created Date',
             'assignment_date'=>'Assignment Date',

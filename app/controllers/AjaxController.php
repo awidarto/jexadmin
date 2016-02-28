@@ -96,6 +96,9 @@ class AjaxController extends BaseController {
         $daystart = new MongoDate( strtotime($daystart) );
         $dayend = new MongoDate( strtotime($dayend) );
 
+        $polyfence = new PointLocation();
+
+        $polygon = Config::get('jex.jakartafence');
 
         foreach($devices->toArray() as $d){
 
@@ -118,7 +121,11 @@ class AjaxController extends BaseController {
                     $lng = (isset($l->longitude))?doubleval($l->longitude):0;
                     $dstatus = (isset($l->status))?$l->status:'report';
 
-                    if($lat != 0 && $lng != 0){
+
+                    $point = $lat.' '.$lng;
+                    $inside = $polyfence->pointInPolygon($point, $polygon);
+
+                    if($lat != 0 && $lng != 0 && $inside){
                         $devlocations[] = array(
                             'data'=>array(
                                     'id'=>$l->_id,
