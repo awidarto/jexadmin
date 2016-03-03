@@ -256,7 +256,7 @@
                                 '</div>';
 
 
-                                var link ='<a href="#" class="use-loc" id="'+ d.delivery_id +'" data-lat="'+ d.lat +'" data-lon="'+ d.lon +'">use loc</a>';
+                                var link ='<a href="#" class="use-loc" id="'+ d.delivery_id +'" data-lat="'+ d.lat +'" data-lon="'+ d.lng +'">use loc</a>';
 
                                 mlink = $(link).on('click',function(e){
                                             console.log(this);
