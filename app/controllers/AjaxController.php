@@ -43,7 +43,7 @@ class AjaxController extends BaseController {
 
     }
 
-    public function postSetloc()
+    public function postSaveloc()
     {
         $delivery_id = Input::get('delivery_id');
         $lat = Input::get('lat');
