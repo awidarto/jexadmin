@@ -13,7 +13,11 @@
 {{ HTML::script('js/leaflet.polylineDecorator.min.js') }}
 {{-- HTML::script('leaflet-routing/leaflet-routing-machine.min.js') --}}
 
-
+<style type="text/css">
+    .use-loc{
+        cursor:pointer;
+    }
+</style>
 
 <table style="width:100%;">
     <tr>
