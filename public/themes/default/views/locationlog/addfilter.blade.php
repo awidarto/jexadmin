@@ -120,6 +120,17 @@
         var markers = [];
         var paths = [];
 
+        function setLoc(lat, lon){
+            $.post('{{ URL::to(/)}}/ajax/saveloc', {
+                lat:lat,
+                lon:lon
+            }, function(data) {
+                if(data.result == 'ok'){
+
+                }
+            },'json');
+        }
+
         function refreshMap(){
 
             $('#refreshingMap').show();
@@ -248,8 +259,10 @@
                                 var link ='<a href="#" class="use-loc" id="'+ d.delivery_id +'" data-lat="'+ d.lat +'" data-lon="'+ d.lon +'">use loc</a>';
 
                                 mlink = $(link).on('click',function(e){
-                                            console.log(e);
                                             console.log(this);
+                                            var lat = $(this).data('lat');
+                                            var lon = $(this).data('lon');
+                                            setLoc(lat, lon);
                                         });
 
                                 dlink = $('<div class="set-loc" />').append(mlink);
