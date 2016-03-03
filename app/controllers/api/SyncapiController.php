@@ -1279,6 +1279,12 @@ class SyncapiController extends \Controller {
 
                 $j['appname'] = $appname;
 
+                isset($shipments[ $j['deliveryId'] ]){
+                    $j['deliveryType'] = $shipments[ $j['deliveryId'] ]['delivery_type'];
+                    $j['merchantTransId'] = $shipments[ $j['deliveryId'] ]['merchant_trans_id'];
+                    $j['fulfillmentCode'] = $shipments[ $j['deliveryId'] ]['fulfillment_code'];
+                }
+
                 if(isset($j['datetimestamp'])){
                     $j['mtimestamp'] = new \MongoDate(strtotime($j['datetimestamp']));
                 }
