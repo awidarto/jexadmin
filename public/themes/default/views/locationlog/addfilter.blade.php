@@ -239,17 +239,26 @@
                                         //}
                                     }
                                 }
-                                    content +='<br /><span class="use-loc" id="'+ d.delivery_id +'" data-lat="'+ d.lat +'" data-lon="'+ d.lon +'">use loc</span>';
                                     content += '</div>' +
                                 '</div>';
 
+
+                                var link ='<a href="#" class="use-loc" id="'+ d.delivery_id +'" data-lat="'+ d.lat +'" data-lon="'+ d.lon +'">use loc</a>';
+
+                                mlink = $(link).on('click',function(e){
+                                            console.log(e);
+                                            console.log(this);
+                                        });
+
+                                var mcontent = $(content).append(mlink);
+
                                 if($('#showLocUpdate').is(':checked')){
-                                    var m = L.marker(new L.LatLng( d.lat, d.lng ), { icon: icon }).addTo(map).bindPopup(content);
+                                    var m = L.marker(new L.LatLng( d.lat, d.lng ), { icon: icon }).addTo(map).bindPopup(mcontent);
                                     markers.push(m);
 
                                 }else{
                                     if(d.status != 'report' && d.status != ''){
-                                        var m = L.marker(new L.LatLng( d.lat, d.lng ), { icon: icon }).addTo(map).bindPopup(content);
+                                        var m = L.marker(new L.LatLng( d.lat, d.lng ), { icon: icon }).addTo(map).bindPopup(mcontent);
                                         markers.push(m);
                                     }
                                 }
@@ -260,10 +269,6 @@
                         });
 
 
-                        $('.use-loc').on('click',function(e){
-                            console.log(e);
-                            console.log(this);
-                        })
                     }
 
                     $('#refreshingMap').hide();
