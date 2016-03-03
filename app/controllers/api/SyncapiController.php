@@ -1270,7 +1270,9 @@ class SyncapiController extends \Controller {
 
         $shipments = array();
         foreach($ships->toArray() as $sh){
-            $shipments[$sh['delivery_id']] = $sh;
+            if($sh['delivery_id'] != ''){
+                $shipments[$sh['delivery_id']] = $sh;
+            }
         }
 
         foreach( $json as $j){
