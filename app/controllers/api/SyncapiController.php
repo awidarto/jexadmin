@@ -1261,7 +1261,9 @@ class SyncapiController extends \Controller {
         $dids = array();
 
         foreach( $json as $j){
-            $dids[] = $j['deliveryId'];
+            if( isset($j['deliveryId']) && $j['deliveryId'] != ''){
+                $dids[] = $j['deliveryId'];
+            }
         }
 
         $dids = array_unique($dids);
@@ -1270,9 +1272,7 @@ class SyncapiController extends \Controller {
 
         $shipments = array();
         foreach($ships->toArray() as $sh){
-            if($sh['delivery_id'] != ''){
-                $shipments[$sh['delivery_id']] = $sh;
-            }
+            $shipments[$sh['delivery_id']] = $sh;
         }
 
         foreach( $json as $j){
