@@ -49,29 +49,35 @@ class AjaxController extends BaseController {
         $lat = Input::get('lat');
         $lon = Input::get('lon');
 
-        $shipment = Shipment::where('delivery_id','=',$delivery_id)->first();
+        if( $delivery_id != ''){
 
-        if($shipment){
+            $shipment = Shipment::where('delivery_id','=',$delivery_id)->first();
 
-            if($lat != ''){
-                $shipment->latitude = doubleval($lat);
-                $shipment->dir_lat = doubleval($lat);
+            if($shipment){
+
+                if($lat != ''){
+                    $shipment->latitude = doubleval($lat);
+                    $shipment->dir_lat = doubleval($lat);
+                }
+
+                if($lon != ''){
+                    $shipment->longitude = doubleval($lon);
+                    $shipment->dir_lon = doubleval($lon);
+                }
+
+                print json_encode(array('result'=>'ok'));
+
+            }else{
+
+                print json_encode(array('result'=>'nok','message'=>'order not found' ));
+
             }
-
-            if($lon != ''){
-                $shipment->longitude = doubleval($lon);
-                $shipment->dir_lon = doubleval($lon);
-            }
-
-            print json_encode(array('result'=>'ok'));
 
         }else{
 
             print json_encode(array('result'=>'nok','message'=>'order not found' ));
 
         }
-
-
 
     }
 
