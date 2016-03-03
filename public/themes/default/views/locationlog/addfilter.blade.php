@@ -121,7 +121,7 @@
         var paths = [];
 
         function setLoc(lat, lon){
-            $.post('{{ URL::to(/)}}/ajax/saveloc', {
+            $.post('{{ URL::to('/')}}/ajax/saveloc', {
                 lat:lat,
                 lon:lon
             }, function(data) {
