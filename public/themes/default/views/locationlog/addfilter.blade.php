@@ -269,9 +269,18 @@
                                             setLoc(delivery_id,lat, lon);
                                         });
 
-                                dlink = $('<div class="set-loc" />').append(mlink);
+                                if(d.pod != 0 && (d.status == 'delivered' || d.status == 'pending' || d.status == 'returned') ){
 
-                                var mcontent = $(content).append(dlink)[0];
+                                    dlink = $('<div class="set-loc" />').append(mlink);
+                                    var mcontent = $(content).append(dlink)[0];
+
+                                }else{
+
+                                    var mcontent = content;
+
+                                }
+
+
 
                                 if($('#showLocUpdate').is(':checked')){
                                     var m = L.marker(new L.LatLng( d.lat, d.lng ), { icon: icon }).addTo(map).bindPopup(mcontent);
