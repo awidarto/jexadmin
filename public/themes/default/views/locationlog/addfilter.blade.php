@@ -127,7 +127,9 @@
                 lon:lon
             }, function(data) {
                 if(data.result == 'ok'){
-
+                    alert('Location successfully set');
+                }else{
+                    alert('Failed to set location');
                 }
             },'json');
         }

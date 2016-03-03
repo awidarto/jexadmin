@@ -43,6 +43,39 @@ class AjaxController extends BaseController {
 
     }
 
+    public function postSetloc()
+    {
+        $delivery_id = Input::get('delivery_id');
+        $lat = Input::get('lat');
+        $lon = Input::get('lon');
+
+        $shipment = Shipment::where('delivery_id','=',$delivery_id)->first();
+
+        if($shipment){
+
+            if($lat != ''){
+                $shipment->latitude = doubleval($lat);
+                $shipment->dir_lat = doubleval($lat);
+            }
+
+            if($lon != ''){
+                $shipment->longitude = doubleval($lon);
+                $shipment->dir_lon = doubleval($lon);
+            }
+
+            print json_encode(array('result'=>'ok'));
+
+        }else{
+
+            print json_encode(array('result'=>'nok','message'=>'order not found' ));
+
+        }
+
+
+
+    }
+
+
     public function postLocationlog()
     {
 
