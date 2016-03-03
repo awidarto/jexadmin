@@ -15,7 +15,9 @@
 
 <style type="text/css">
     .use-loc{
+        display: block;
         cursor:pointer;
+        text-align: right;
     }
 </style>
 
@@ -250,7 +252,9 @@
                                             console.log(this);
                                         });
 
-                                var mcontent = $(content).append(mlink)[0];
+                                dlink = $('<div class="set-loc" />').append(mlink);
+
+                                var mcontent = $(content).append(dlink)[0];
 
                                 if($('#showLocUpdate').is(':checked')){
                                     var m = L.marker(new L.LatLng( d.lat, d.lng ), { icon: icon }).addTo(map).bindPopup(mcontent);
