@@ -2,7 +2,9 @@
 
 @section('content')
     {{ Former::open('login')->class('form-signin')->id('form-signin')->role('form') }}
-
+        @if(Session::has('loginError'))
+            <div class="error">{{ Session::get('loginError') }}</div>
+        @endif
         <h3><strong>Sign in</strong> to your account</h3>
         <div class="append-icon">
             <input type="text" name="email" id="name" class="form-control form-white username" placeholder="Username" required>

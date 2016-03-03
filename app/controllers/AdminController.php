@@ -760,9 +760,9 @@ class AdminController extends Controller {
         $this->aux_data = $this->SQL_before_paging($model);
 
         if($this->no_paging == true){
-            $results = $model->orderBy($sort_col, $sort_dir )->get();
+            $results = $model->orderBy($sort_col, $sort_dir )->timeout(-1)->get();
         }else{
-            $results = $model->skip( $pagestart )->take( $pagelength )->orderBy($sort_col, $sort_dir )->get();
+            $results = $model->skip( $pagestart )->take( $pagelength )->orderBy($sort_col, $sort_dir )->timeout(-1)->get();
         }
 
         //print_r($results->toArray());
