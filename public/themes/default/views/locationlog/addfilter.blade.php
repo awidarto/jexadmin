@@ -257,13 +257,13 @@
                                 '</div>';
 
 
-                                var link ='<a href="#" class="use-loc" id="'+ d.delivery_id +'" data-lat="'+ d.lat +'" data-lon="'+ d.lng +'">use loc</a>';
+                                var link ='<a href="#" class="use-loc" data-did="'+ d.delivery_id +'" data-lat="'+ d.lat +'" data-lon="'+ d.lng +'">use loc</a>';
 
                                 mlink = $(link).on('click',function(e){
                                             console.log( $(this) );
                                             var lat = $(this).data('lat');
                                             var lon = $(this).data('lon');
-                                            var delivery_id = $(this).id;
+                                            var delivery_id = $(this).data('did');
                                             setLoc(delivery_id,lat, lon);
                                         });
 
