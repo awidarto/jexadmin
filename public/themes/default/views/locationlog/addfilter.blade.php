@@ -250,7 +250,7 @@
                                             console.log(this);
                                         });
 
-                                var mcontent = $(content).append(mlink);
+                                var mcontent = $(content).append(mlink)[0];
 
                                 if($('#showLocUpdate').is(':checked')){
                                     var m = L.marker(new L.LatLng( d.lat, d.lng ), { icon: icon }).addTo(map).bindPopup(mcontent);
