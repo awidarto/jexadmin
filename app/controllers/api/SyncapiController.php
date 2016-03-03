@@ -1258,6 +1258,21 @@ class SyncapiController extends \Controller {
 
         $result = array();
 
+        $dids = array();
+
+        foreach( $json as $j){
+            $dids[] = $j['deliveryId'];
+        }
+
+        $dids = array_unique($dids);
+
+        $ships = \Shipment::whereIn('delivery_id', $dids)->get();
+
+        $shipments = array();
+        foreach($ships->toArray() as $sh){
+            $shipments[$sh['delivery_id']] = $sh;
+        }
+
         foreach( $json as $j){
 
             if(isset( $j['logId'] )){
