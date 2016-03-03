@@ -120,8 +120,9 @@
         var markers = [];
         var paths = [];
 
-        function setLoc(lat, lon){
+        function setLoc(delivery_id, lat, lon){
             $.post('{{ URL::to('/')}}/ajax/saveloc', {
+                delivery_id:delivery_id,
                 lat:lat,
                 lon:lon
             }, function(data) {
@@ -262,7 +263,8 @@
                                             console.log(this);
                                             var lat = $(this).data('lat');
                                             var lon = $(this).data('lon');
-                                            setLoc(lat, lon);
+                                            var delivery_id = $(this).id;
+                                            setLoc(delivery_id,lat, lon);
                                         });
 
                                 dlink = $('<div class="set-loc" />').append(mlink);
