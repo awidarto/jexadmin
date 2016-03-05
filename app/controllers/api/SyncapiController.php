@@ -466,7 +466,7 @@ class SyncapiController extends \Controller {
 
                     }elseif($appname == \Config::get('jex.tracker_app')){
 
-                        if($shipment->status == 'delivered'){
+                        if($shipment->status == 'delivered' || $shipment->status == 'returned'){
                             $changes = false;
                         }else{
                             $shipment->status = $olog->status;
@@ -490,7 +490,7 @@ class SyncapiController extends \Controller {
 
                     }
 
-                    if($changes){
+                    if($changes == true){
                         $shipment->save();
                     }
 

@@ -258,7 +258,7 @@
                                     content += '</div>' +
                                 '</div>';
 
-
+                                /* hide set loc button
                                 var link ='<a href="#" class="use-loc" data-did="'+ d.delivery_id +'" data-lat="'+ d.lat +'" data-lon="'+ d.lng +'">use loc</a>';
 
                                 mlink = $(link).on('click',function(e){
@@ -268,11 +268,15 @@
                                             var delivery_id = $(this).data('did');
                                             setLoc(delivery_id,lat, lon);
                                         });
+                                */
 
                                 if(d.pod != 0 && (d.status == 'delivered' || d.status == 'pending' || d.status == 'returned') ){
 
+                                    /* hide set loc button
                                     dlink = $('<div class="set-loc" />').append(mlink);
                                     var mcontent = $(content).append(dlink)[0];
+                                    */
+                                    var mcontent = content;
 
                                 }else{
 
