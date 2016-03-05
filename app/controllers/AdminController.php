@@ -671,7 +671,7 @@ class AdminController extends Controller {
 
 	public function tableResponder()
 	{
-
+        set_time_limit(0);
         date_default_timezone_set('Asia/Jakarta');
 
 		$fields = $this->fields;
