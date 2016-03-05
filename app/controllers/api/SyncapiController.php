@@ -1093,7 +1093,10 @@ class SyncapiController extends \Controller {
 
                 if($shipment){
 
-                    if($shipment->status == 'delivered' || $shipment->status == 'returned'){
+
+
+                    if(($shipment->status == 'delivered' || $shipment->status == 'returned')
+                        && $shipment->change_actor != 'APP' ){
                         $changes = false;
                     }else{
                         $changes = true;
@@ -1150,6 +1153,8 @@ class SyncapiController extends \Controller {
                                 $shipment->eventtime = $olog->deliverytime;
                             }
                         }
+
+                        $shipment->change_actor = 'APP';
 
                         $shipment->status = $olog->status;
 
