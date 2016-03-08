@@ -1095,7 +1095,9 @@ class SyncapiController extends \Controller {
 
 
                     //|| $shipment->change_actor != 'APP'
-                    if($shipment->status == 'delivered' || $shipment->status == 'returned'  ){
+                    if($shipment->status == 'delivered' || $shipment->status == 'returned'
+                            || ( $shipment->status != 'delivered' && $shipment->status != 'returned' && $shipment->change_actor != 'APP')
+                      ){
                         $changes = false;
                     }else{
                         $changes = true;
