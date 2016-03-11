@@ -44,7 +44,6 @@ class HubapiController extends \BaseController {
             'pickupPerson',
             'dirLat',
             'dirLon',
-            'status',
             'laststatus',
             'pendingCount',
             'changeActor',
