@@ -63,8 +63,6 @@ class SyncapiController extends \Controller {
             $existLog[] = $ex->logId;
         }
 
-
-
         foreach( $json as $j){
 
             if(isset( $j['logId'] )){
@@ -79,7 +77,7 @@ class SyncapiController extends \Controller {
                     $j['mtimestamp'] = new \MongoDate(strtotime($j['timestamp']));
                 }
 
-                $log = \Scanlog::where('logId', $j['logId'] )->first();
+                //$log = \Scanlog::where('logId', $j['logId'] )->first();
 
                 if( in_array($j['logId'], $existLog )){
                 //if($log){
