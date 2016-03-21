@@ -1283,6 +1283,26 @@ class SyncapiController extends \Controller {
             $shipments[$sh['delivery_id']] = $sh;
         }
 
+        $logIds = array();
+        foreach( $json as $j){
+            if(isset( $j['logId'] )){
+                $logIds[] = $j['logId'];
+            }
+        }
+
+        $logIds = array_unique($logIds);
+
+        $exLogId = \Geolog::whereIn('logId', $logIds )->get(array('logId'));
+
+        $existLog = array();
+        foreach ($exLogId as $ex ) {
+            $existLog[] = $ex->logId;
+        }
+
+        //print_r($existLog);
+        //die();
+
+
         foreach( $json as $j){
 
             if(isset( $j['logId'] )){
@@ -1300,13 +1320,13 @@ class SyncapiController extends \Controller {
                     $j['mtimestamp'] = new \MongoDate(strtotime($j['datetimestamp']));
                 }
 
-                $log = \Geolog::where('logId', $j['logId'] )->first();
+                //$log = \Geolog::where('logId', $j['logId'] )->first();
 
-                if($log){
-                    $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'] );
+                if( in_array($j['logId'], $existLog )){
+                    $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'], 'insert'=>'0' );
                 }else{
                     \Geolog::insert($j);
-                    $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'] );
+                    $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'], 'insert'=>'1' );
                 }
             }
         }
