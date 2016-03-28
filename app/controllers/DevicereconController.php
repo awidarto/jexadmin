@@ -90,7 +90,7 @@ class DevicereconController extends AdminController {
             ->leftJoin('couriers as c',Config::get('jayon.assigned_delivery_table').'.courier_id','=','c.id');
         */
 
-        $model = $model->select(Db::raw('date(ordertime) as ndate')
+        $model = $model->select(Db::raw('date(assignment_date) as ndate')
             //,Db::raw('sum(actual_weight) as w')
             //,Db::raw('count(*) as cnt')
             ,'d.identifier as device'
