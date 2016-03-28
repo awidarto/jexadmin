@@ -94,7 +94,7 @@ class DevicereconController extends AdminController {
             //,Db::raw('sum(actual_weight) as w')
             //,Db::raw('count(*) as cnt')
             ,'d.identifier as device'
-            ,'delivery_type','actual_weight'
+            ,'delivery_type','actual_weight','delivery_id'
             ,'status','pickup_status','warehouse_status','cod_cost','delivery_cost','total_price','total_tax','total_discount')
             ->leftJoin('members as m',Config::get('jayon.incoming_delivery_table').'.merchant_id','=','m.id')
             ->leftJoin('applications as a',Config::get('jayon.assigned_delivery_table').'.application_id','=','a.id')
@@ -229,6 +229,13 @@ class DevicereconController extends AdminController {
                 }
             }
 
+            if(isset($darr[$a['ndate']][$a['device']]['delivery_id'])){
+                $darr[$a['ndate']][$a['device']]['delivery_id'][] = $a['delivery_id'];
+            }else{
+                $darr[$a['ndate']][$a['device']]['delivery_id'] = array();
+                $darr[$a['ndate']][$a['device']]['delivery_id'][] = $a['delivery_id'];
+            }
+
             if(isset($darr[$a['ndate']][$a['device']]['actual_weight'])){
                 $darr[$a['ndate']][$a['device']]['actual_weight'] += $a['actual_weight'];
             }else{
@@ -327,6 +334,11 @@ Tanda Tangan
                 $itarray[] = array('value'=>(isset($v['pending']))?$v['pending']:0,'attr'=>'');
                 $itarray[] = array('value'=>(isset($v['returned']))?$v['returned']:0,'attr'=>'');
                 $itarray[] = array('value'=>(isset($v['actual_weight']))?$v['actual_weight']:0,'attr'=>'');
+
+                $aux = Prefs::getAuxData($v['delivery_id']);
+
+                $itarray[] = array('value'=>$aux['photo'],'attr'=>'');
+                $itarray[] = array('value'=>$aux['sign'],'attr'=>'');
 
                 $tabdata[] = array_merge($item, $itarray);
 

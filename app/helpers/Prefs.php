@@ -20,6 +20,17 @@ class Prefs {
 
     }
 
+    public static function getAuxData($dids)
+    {
+        $sign = Uploaded::whereIn('parent_id',$dids)->where('is_signature','=',1)->count();
+        $photos = Uploaded::whereIn('parent_id',$dids)->where('is_signature','=',0)->count();
+
+        return array(
+                'photo'=>$photos,
+                'sign'=>$sign
+            );
+    }
+
     public static function getNotes($delivery_id, $as_array = true)
     {
         $notes = Deliverynote::where('deliveryId','=',$delivery_id)
