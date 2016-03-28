@@ -72,7 +72,7 @@ class DevicereconController extends AdminController {
             $period_from = date('Y-m-d',time());
         }
 
-        $this->def_order_by = 'TRANS_DATETIME';
+        $this->def_order_by = 'ndate';
         $this->def_order_dir = 'DESC';
         $this->place_action = 'none';
         $this->show_select = false;
@@ -90,10 +90,11 @@ class DevicereconController extends AdminController {
             ->leftJoin('couriers as c',Config::get('jayon.assigned_delivery_table').'.courier_id','=','c.id');
         */
 
-        $model = $model->select(Db::raw('date(ordertime) as ndate'),Db::raw('sum(actual_weight) as w')
-            ,Db::raw('count(*) as cnt')
+        $model = $model->select(Db::raw('date(ordertime) as ndate')
+            //,Db::raw('sum(actual_weight) as w')
+            //,Db::raw('count(*) as cnt')
             ,'d.identifier as device'
-            ,'delivery_type'
+            ,'delivery_type','actual_weight'
             ,'status','pickup_status','warehouse_status','cod_cost','delivery_cost','total_price','total_tax','total_discount')
             ->leftJoin('members as m',Config::get('jayon.incoming_delivery_table').'.merchant_id','=','m.id')
             ->leftJoin('applications as a',Config::get('jayon.assigned_delivery_table').'.application_id','=','a.id')
@@ -109,11 +110,12 @@ class DevicereconController extends AdminController {
                     ->orWhere('status',Config::get('jayon.trans_status_mobile_return'));
 
             });
-
+        /*
         $model = $model
             ->groupBy('ndate')
             ->groupBy('device')
             ->groupBy('status');
+        */
 
         if($status == '' || is_null($status) ){
             $status = Config::get('jayon.devmanifest_default_status');
@@ -189,21 +191,60 @@ class DevicereconController extends AdminController {
             $model = $model->where('logistic','=', $logistic);
         }
 
+        $model = $model->orderBy('ndate','asc');
+
         $actualresult = $model->get();
 
         $tattrs = array('width'=>'100%','class'=>'table table-bordered table-striped');
 
         $thead = array();
 
-        print_r($actualresult->toArray());
+        //print_r($actualresult->toArray());
 
         $darr = array();
+
         foreach ($actualresult->toArray() as $a) {
 
-            $darr[$a['ndate']][$a['device']][] = $a;
+            if($a['status'] == 'delivered'){
+                if(isset($darr[$a['ndate']][$a['device']]['delivered'])){
+                    $darr[$a['ndate']][$a['device']]['delivered'] += 1;
+                }else{
+                    $darr[$a['ndate']][$a['device']]['delivered'] = 1;
+                }
+            }
+
+            if($a['status'] == 'pending'){
+                if(isset($darr[$a['ndate']][$a['device']]['pending'])){
+                    $darr[$a['ndate']][$a['device']]['pending'] += 1;
+                }else{
+                    $darr[$a['ndate']][$a['device']]['pending'] = 1;
+                }
+            }
+
+            if($a['status'] == 'returned'){
+                if(isset($darr[$a['ndate']][$a['device']]['returned'])){
+                    $darr[$a['ndate']][$a['device']]['returned'] += 1;
+                }else{
+                    $darr[$a['ndate']][$a['device']]['returned'] = 1;
+                }
+            }
+
+            if(isset($darr[$a['ndate']][$a['device']]['actual_weight'])){
+                $darr[$a['ndate']][$a['device']]['actual_weight'] += $a['actual_weight'];
+            }else{
+                $darr[$a['ndate']][$a['device']]['actual_weight'] = $a['actual_weight'];
+            }
+
+            if(isset($darr[$a['ndate']][$a['device']]['total_paket'])){
+                $darr[$a['ndate']][$a['device']]['total_paket'] += 1;
+            }else{
+                $darr[$a['ndate']][$a['device']]['total_paket'] = 1;
+            }
 
         }
 
+
+        //print_r($darr);
 /*
 Tanggal
 Incoming
@@ -243,355 +284,66 @@ Tanda Tangan
 
         $thead[] = array(
                 array('value'=>'No.','attr'=>''),
-                array('value'=>'TOKO ONLINE','attr'=>''),
-                array('value'=>'Type','attr'=>''),
-                array('value'=>'Tgl Upload','attr'=>''),
-                array('value'=>'Tgl Pick Up','attr'=>''),
-                array('value'=>'Tgl Penugasan Terakhir <br />( Last Assignment Date )','attr'=>''),
-                array('value'=>'Tgl Kirim','attr'=>''),
-                array('value'=>'Pick Up -> Diterima','attr'=>''),
-                array('value'=>'Kirim -> Diterima','attr'=>''),
-                array('value'=>'Tgl Diterima','attr'=>''),
-                array('value'=>'Status','attr'=>''),
+                array('value'=>'Tanggal','attr'=>''),
+                array('value'=>'Device','attr'=>''),
+                array('value'=>'Total','attr'=>''),
+                array('value'=>'Delivered','attr'=>''),
                 array('value'=>'Pending','attr'=>''),
-                array('value'=>'Catatan','attr'=>''),
-                array('value'=>'ALAMAT','attr'=>''),
-                array('value'=>'Delivery ID','attr'=>''),
-                array('value'=>'No Kode Penjualan Toko','attr'=>''),
-                array('value'=>'Fulfillment ID','attr'=>'')
+                array('value'=>'Returned','attr'=>''),
+                array('value'=>'Weight','attr'=>''),
+                array('value'=>'Photo','attr'=>''),
+                array('value'=>'Sign','attr'=>''),
+                array('value'=>'Location','attr'=>'')
             );
 
-        /*
-
-        $thead[] = array(
-                array('value'=>'Mohon tunjukkan kartu identitas untuk di foto sebagai bagian bukti penerimaan','attr'=>'style="text-align:center;" colspan="13"'),
-                array('value'=>'TANDA TANGAN','attr'=>''),
-                array('value'=>'NAMA','attr'=>'class="bold center" style="width:50px" '),
-            );
-        */
-        $seq = 1;
-        $total_billing = 0;
-        $total_delivery = 0;
-        $total_cod = 0;
-
-        $d = 0;
-        $gt = 0;
-
-        $lastdate = '';
-
-        $courier_name = '';
-
-        $order2assigndays = 0;
-        $assign2deliverydays = 0;
-        $order2deliverydays = 0;
-        $pickup2deliverydays = 0;
-
-        $csv_data = array();
-
-        $dids = array();
-
-        foreach($actualresult as $ar){
-            $dids[] = $ar->delivery_id;
-        }
-
-        $details = Deliverylog::whereIn('delivery_id',$dids)
-                        /*
-                        ->where(function($q){
-                            $q->where('status',Config::get('jayon.trans_status_mobile_delivered'))
-                                ->orWhere('status',Config::get('jayon.trans_status_admin_courierassigned'))
-                                ->orWhere('status',Config::get('jayon.trans_status_new'))
-                                ->orWhere('status',Config::get('jayon.trans_status_rescheduled'))
-                                ->orWhere('status',Config::get('jayon.trans_status_mobile_return'));
-                        })
-                        */
-                        ->where(function($q){
-                            $q->where('notes','!=','')
-                                ->orWhere('req_note','!=','');
-                        })
-
-                        ->orderBy('timestamp','desc')
-                        ->get()->toArray();
-
-        $dlist = array();
-        foreach ($details as $dt) {
-            $dlist[$dt['delivery_id']][] = $dt;
-        }
-
-        $denotes = Deliverynote::whereIn('deliveryId',$dids)
-                    ->orderBy('mtimestamp','desc')
-                    ->get()->toArray();
-
-        foreach ($denotes as $dt) {
-            $dlist[$dt['deliveryId']][] = $dt;
-        }
-
-        //print_r($dlist);
         $tabdata = array();
 
-        $cntcod = 0;
-        $cntccod = 0;
-        $cntdo = 0;
-        $cntps = 0;
-        $return = 0;
+        $seq = 1;
 
-        $valid_pickups = 0;
+        $xdate = '';
 
-        foreach ($actualresult as $r) {
+        foreach($darr as $dt=>$dev)
+        {
 
-            $details = (isset($dlist[$r->delivery_id]))?$dlist[$r->delivery_id]:array();
 
-            $courier_name = $r->courier_name;
-            $total = str_replace(array(',','.'), '', $r->total_price);
-            $dsc = str_replace(array(',','.'), '', $r->total_discount);
-            $tax = str_replace(array(',','.'), '',$r->total_tax);
-            $dc = str_replace(array(',','.'), '',$r->delivery_cost);
-            $cod = str_replace(array(',','.'), '',$r->cod_cost);
 
-            $total = (int)$total;
-            $dsc = (int)$dsc;
-            $tax = (int)$tax;
-            $dc = (int)$dc;
-            $cod = (int)$cod;
+            foreach($dev as $d=>$v){
 
-            $payable = 0;
-
-            $otime = date('Y-m-d',strtotime($r->ordertime));
-            $ptime = date('Y-m-d',strtotime($r->pickuptime));
-            $dtime = date('Y-m-d',strtotime($r->deliverytime));
-
-            $ordertime = new DateTime($otime);
-
-            //print_r($details);
-
-            $notes = '';
-            $event_seq = 0;
-            $first_assignment = false;
-
-            foreach($details as $d )
-            {
-                $n = '';
-                if(isset($d['api_event'])){
-                    if($d['api_event'] == 'admin_change_status'){
-                        $n = $d['req_note'];
-                    }else{
-                        if($d['notes'] != ''){
-                            $n = $d['notes'];
-                        }
-                    }
-                    if($n != '' && $d['status'] != 'syncnote'){
-                        $notes .= $d['timestamp'].'<br />';
-                        $notes .= '<b>'.$d['status'].'</b><br />';
-                        $notes .= $n.'<br /><br />';
-                    }
-
-                    if($d['status'] == Config::get('jayon.trans_status_admin_courierassigned')){
-                        if($event_seq > 0){
-                            $first_assignment = $d;
-                        }
-                    }
-
+                if($xdate == $dt){
+                    $ddate = '';
                 }else{
-
-                    if($d['note'] != ''){
-                        $n = $d['note'];
-                    }
-
-                    if($n != ''){
-                        $notes .= $d['datetimestamp'].'<br />';
-                        $notes .= '<b>'.$d['status'].'</b><br />';
-                        $notes .= $n.'<br /><br />';
-                    }
-
+                    $ddate = $dt;
                 }
 
-                $event_seq++;
-            }
+                $item = array(
+                        array('value'=>$seq,'attr'=>''),
+                        array('value'=>$ddate,'attr'=>'')
+                    );
 
+                $itarray = array();
+                $itarray[] = array('value'=>$d,'attr'=>'');
+                $itarray[] = array('value'=>(isset($v['total_paket']))?$v['total_paket']:0,'attr'=>'');
+                $itarray[] = array('value'=>(isset($v['delivered']))?$v['delivered']:0,'attr'=>'');
+                $itarray[] = array('value'=>(isset($v['pending']))?$v['pending']:0,'attr'=>'');
+                $itarray[] = array('value'=>(isset($v['returned']))?$v['returned']:0,'attr'=>'');
+                $itarray[] = array('value'=>(isset($v['actual_weight']))?$v['actual_weight']:0,'attr'=>'');
 
-            if($first_assignment){
-                $assignment_date = new DateTime($first_assignment['timestamp']);
-                $assignment_date->add(new DateInterval('P1D'));
-            }else{
-                $assignment_date = new DateTime($r->assignment_date);
-            }
+                $tabdata[] = array_merge($item, $itarray);
 
-            $deliverytime = new DateTime($dtime);
-
-            $pickuptime = new DateTime($ptime);
-
-            $order2assign = $ordertime->diff($assignment_date);
-
-            $assign2delivery = $assignment_date->diff($deliverytime);
-
-            $pickup2delivery = $pickuptime->diff($deliverytime);
-
-            $order2delivery = $ordertime->diff($deliverytime);
-
-            if(is_null($r->deliverytime) || $r->deliverytime == '' || $r->deliverytime == '0000-00-00 00:00:00'){
-                $assign2delivery->d = 0;
-                $order2delivery->d = 0;
-                $pickup2delivery->d = 0;
-                $order2assigndays += (int)$order2assign->d ;
-            }else{
-                $order2assigndays += (int)$order2assign->d ;
-                $assign2deliverydays += (int)$assign2delivery->d ;
-                $order2deliverydays += (int)$order2delivery->d;
-            }
-
-            if(is_null($pickuptime) || $pickuptime == '' || $r->pickuptime == '' || $r->pickuptime == '0000-00-00 00:00:00' ){
-                //$r->pickuptime = $assignment_date->add(new DateInterval('P1D'))->format('Y-m-d');
-
-                //$pickuptime = new DateTime($r->pickuptime);
-
-                //$pickup2delivery = $pickuptime->diff($deliverytime);
-
-                $pickup2delivery->d = 0;
-                $pickup2deliverydays += (int)$pickup2delivery->d;
-            }else{
-                //$valid_pickups++;
-                $pickup2deliverydays += (int)$pickup2delivery->d;
-                $valid_pickups++;
-            }
-
-
-            $d = 0;
-            $gt = 0;
-
-
-
-            $cntcod = ($r->delivery_type == 'COD')?($cntcod+1):$cntcod;
-            $cntccod = ($r->delivery_type == 'CCOD')?($cntccod+1):$cntccod;
-            $cntdo = ($r->delivery_type == 'Delivery Only')?($cntdo+1):$cntdo;
-            $cntps = ($r->delivery_type == 'PS')?($cntps+1):$cntps;
-            $cntreturn = ($r->status == 'returned')?($return+1):$return;
-
-            //print_r($details);
-
-
-            /*
-            $notes = '';
-            foreach($details as $d )
-            {
-                $n = '';
-                if($d['api_event'] == 'admin_change_status'){
-                    $n = $d['req_note'];
-                }else{
-                    if($d['notes'] != ''){
-                        $n = $d['notes'];
-                    }
-                }
-                if($n != ''){
-                    $notes .= $d['timestamp'].'<br />';
-                    $notes .= '<b>'.$d['status'].'</b><br />';
-                    $notes .= $n.'<br />';
-                }
+                $xdate = $dt;
+                $seq++;
 
             }
-            */
-            /*
-            if($gt == 0 ){
-                if($total > 0 && $payable)
-                $gt = $total;
-            }
 
-            $payable = $gt;
+            //print_r($itarray);
 
-            $total_delivery += (double)$dc;
-            $total_cod += (double)$cod;
-            $total_billing += (double)$payable;
-
-            $db = '';
-            if($r->delivery_bearer == 'merchant'){
-                $dc = 0;
-                $db = 'M';
-            }else{
-                $db = 'B';
-            }
-
-            //force all DO to zero
-
-            $cb = '';
-            if($r->cod_bearer == 'merchant'){
-                $cod = 0;
-                $cb = 'M';
-            }else{
-                $cb = 'B';
-            }
-
-            $codclass = '';
-
-            if($r->delivery_type == 'COD' || $r->delivery_type == 'CCOD'){
-                $chg = ($gt - $dsc) + $tax + $dc + $cod;
-
-                //$chg = $gt + $dc + $cod;
-
-                $codclass = 'cod';
-
-            }else{
-                $dc = 0;
-                $cod = 0;
-                $chg = $dc;
-            }
-
-
-            $fcode = ($r->fulfillment_code == '')?'':'<hr />'.$r->fulfillment_code;
-
-            $phone_dupe = ($r->same_phone == 1)?'class="dupe"':'';
-            $email_dupe = ($r->same_email == 1)?'class="dupe"':'';
-            */
-
-
-
-            $tabdata[] = array(
-
-                    array('value'=>$seq,'attr'=>''),
-                    array('value'=>$r->merchant_name,'attr'=>''),
-                    array('value'=>$r->delivery_type,'attr'=>''),
-                    array('value'=>$r->ordertime,'attr'=>''),
-                    array('value'=>$r->pickuptime,'attr'=>''),
-                    array('value'=>$r->assignment_date,'attr'=>''),
-                    array('value'=>$assignment_date->format('Y-m-d'),'attr'=>''),
-                    array('value'=>$pickup2delivery->d,'attr'=>''),
-                    array('value'=>$assign2delivery->d,'attr'=>''),
-                    array('value'=>$r->deliverytime,'attr'=>''),
-                    array('value'=>$r->status,'attr'=>''),
-                    array('value'=>$r->pending_count,'attr'=>''),
-                    array('value'=>$notes,'attr'=>''),
-                    array('value'=>$r->recipient_name.' | '.str_replace(array(",",'"',"\n","\r"), '', $r->shipping_address ).' '.$this->split_phone($r->phone).' '.$this->split_phone($r->mobile1).' '.$this->split_phone($r->mobile2),'attr'=>''),
-                    array('value'=>$r->delivery_id,'attr'=>''),
-                    array('value'=>$this->hide_trx($r->merchant_trans_id),'attr'=>''),
-                    array('value'=>$r->fulfillment_code,'attr'=>'')
-                );
-
-            $seq++;
         }
-
-            $valid_pickups = ($valid_pickups > 0)?$valid_pickups:1;
-
-            $avgdata = array(
-                    array('value'=>'Rata-rata<br />( dlm satuan hari )','attr'=>'colspan="7"'),
-                    array('value'=>number_format($pickup2deliverydays / $valid_pickups, 2, ',','.' ),'attr'=>'style="font-size:18px;font-weight:bold;"'),
-                    array('value'=>number_format($assign2deliverydays / $seq, 2, ',','.' ),'attr'=>'style="font-size:18px;font-weight:bold;"'),
-                    array('value'=>'','attr'=>'colspan="9"'),
-                );
-
-            array_unshift($tabdata, $avgdata);
-            array_push($tabdata, $avgdata);
 
         $mtable = new HtmlTable($tabdata,$tattrs,$thead);
 
         $tables[] = $mtable->build();
 
         $this->table_raw = $tables;
-
-        $report_header_data = array(
-                'cod'=>$cntcod,
-                'ccod'=>$cntccod,
-                'do'=>$cntdo,
-                'ps'=>$cntps,
-                'return'=>$return,
-                'avg'=>number_format($assign2deliverydays / $seq, 2, ',','.' )
-        );
 
         if($this->print == true || $this->pdf == true){
             return array('tables'=>$tables,'report_header_data'=>$report_header_data);

@@ -6,7 +6,7 @@
         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
             {{ Former::select('device','Device')
                     ->selected(Input::get('device'))
-                    ->options(Prefs::getDevice()->deviceToSelection('key','identifier'))
+                    ->options(Prefs::getDevice()->deviceToSelection('id','identifier'))
                 }}
         </div>
         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
