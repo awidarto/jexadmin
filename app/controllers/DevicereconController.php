@@ -339,6 +339,7 @@ Tanda Tangan
 
                 $itarray[] = array('value'=>$aux['photo'],'attr'=>'');
                 $itarray[] = array('value'=>$aux['sign'],'attr'=>'');
+                $itarray[] = array('value'=>$aux['loc'],'attr'=>'');
 
                 $tabdata[] = array_merge($item, $itarray);
 

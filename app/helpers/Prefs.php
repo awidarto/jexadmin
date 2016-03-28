@@ -33,9 +33,17 @@ class Prefs {
                             ->orWhere('is_signature','=',strval(0));
                     })->count();
 
+        $loc = Geolog::whereIn('deliveryId',$dids)
+                    ->where(function($ql){
+                        $ql->where('status','=','delivered')
+                            ->orWhere('status','=','returned')
+                            ->orWhere('status','=','pending');
+                    })->count();
+
         return array(
                 'photo'=>$photos,
-                'sign'=>$sign
+                'sign'=>$sign,
+                'loc'=>$loc
             );
     }
 
