@@ -203,6 +203,13 @@ class DevicereconController extends AdminController {
 
         $darr = array();
 
+
+        $cntcod = 0;
+        $cntccod = 0;
+        $cntdo = 0;
+        $cntps = 0;
+        $cntreturn = 0;
+
         foreach ($actualresult->toArray() as $a) {
 
             if($a['status'] == 'delivered'){
@@ -357,6 +364,15 @@ Tanda Tangan
         $tables[] = $mtable->build();
 
         $this->table_raw = $tables;
+
+        $report_header_data = array(
+                'cod'=>$cntcod,
+                'ccod'=>$cntccod,
+                'do'=>$cntdo,
+                'ps'=>$cntps,
+                'return'=>$cntreturn,
+                'avg'=>0
+        );
 
         if($this->print == true || $this->pdf == true){
             return array('tables'=>$tables,'report_header_data'=>$report_header_data);
