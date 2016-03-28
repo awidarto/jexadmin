@@ -162,7 +162,7 @@ class DevicereconController extends AdminController {
             $dateto = date( 'Y-m-d 23:59:59', strtotime($period_to) );
 
             $model = $model->where(function($q) use($datefrom,$dateto){
-                $q->whereBetween('ordertime',array($datefrom,$dateto));
+                $q->whereBetween('assignment_date',array($datefrom,$dateto));
             });
 
         }
