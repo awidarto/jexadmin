@@ -29,8 +29,8 @@ class Prefs {
                     })->count();
         $photos = Uploaded::whereIn('parent_id',$dids)
                     ->where(function($qp){
-                        $qp->where('is_signature','=',1)
-                            ->orWhere('is_signature','=',strval(1));
+                        $qp->where('is_signature','=',0)
+                            ->orWhere('is_signature','=',strval(0));
                     })->count();
 
         return array(
