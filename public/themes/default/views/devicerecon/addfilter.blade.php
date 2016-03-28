@@ -16,9 +16,9 @@
                 }}
         </div>
         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-            {{ Former::select('logistic','Logistic')
-                    ->selected(Input::get('logistic'))
-                    ->options(Prefs::getLogistic()->logisticToSelection('logistic_code','name'))
+            {{ Former::select('merchant','Toko Online')
+                    ->selected(Input::get('merchant'))
+                    ->options(Prefs::getMerchant()->merchantToSelection('id','merchantname'))
                 }}
         </div>
         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
@@ -27,6 +27,11 @@
                     ->class('form-control input-sm p-datepicker')
                     ->id('date-from');
             }}
+            {{ Former::text('date-to', 'To')
+                    ->value(Input::get('date-to',$dperiod))
+                    ->class('form-control input-sm p-datepicker')
+                    ->id('date-to');
+            }}
         </div>
         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
             {{ Former::text('manifest-date', 'Manifest Publish Date')
@@ -34,11 +39,6 @@
                     ->class('form-control input-sm p-datepicker')
                     ->id('manifest-date');
             }}
-            {{-- Former::text('date-to', 'To')
-                    ->value(Input::get('date-to',$dperiod))
-                    ->class('form-control input-sm p-datepicker')
-                    ->id('date-to');
-            --}}
         </div>
         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
             {{ Form::submit('Generate',array('class'=>'btn btn-sm btn-primary'))}}
