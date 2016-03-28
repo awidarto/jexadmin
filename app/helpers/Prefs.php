@@ -22,8 +22,16 @@ class Prefs {
 
     public static function getAuxData($dids)
     {
-        $sign = Uploaded::whereIn('parent_id',$dids)->where('is_signature','=',1)->count();
-        $photos = Uploaded::whereIn('parent_id',$dids)->where('is_signature','=',0)->count();
+        $sign = Uploaded::whereIn('parent_id',$dids)
+                    ->where(function($qs){
+                        $qs->where('is_signature','=',1)
+                            ->orWhere('is_signature','=',strval(1));
+                    })->count();
+        $photos = Uploaded::whereIn('parent_id',$dids)
+                    ->where(function($qp){
+                        $qp->where('is_signature','=',1)
+                            ->orWhere('is_signature','=',strval(1));
+                    })->count();
 
         return array(
                 'photo'=>$photos,
