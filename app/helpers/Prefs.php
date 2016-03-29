@@ -20,6 +20,20 @@ class Prefs {
 
     }
 
+    public static function getWeightNominalCache($app_id)
+    {
+            $tars = Deliveryfee::whereIn('app_id',$app_id)->get();
+
+            $tararray = array();
+
+            foreach($tars as $t){
+                $tararray[$t['app_id']][$t['total']] = $t['calculated_kg'];
+            }
+
+            return $tararray;
+
+    }
+
     public static function getAuxData($dids)
     {
         $sign = Uploaded::whereIn('parent_id',$dids)

@@ -94,7 +94,7 @@ class DevicereconController extends AdminController {
             //,Db::raw('sum(actual_weight) as w')
             //,Db::raw('count(*) as cnt')
             ,'d.identifier as device'
-            ,'delivery_type','actual_weight','delivery_id'
+            ,'delivery_type','actual_weight','delivery_id','weight','application_id'
             ,'status','pickup_status','warehouse_status','cod_cost','delivery_cost','total_price','total_tax','total_discount')
             ->leftJoin('members as m',Config::get('jayon.incoming_delivery_table').'.merchant_id','=','m.id')
             ->leftJoin('applications as a',Config::get('jayon.assigned_delivery_table').'.application_id','=','a.id')
@@ -210,7 +210,24 @@ class DevicereconController extends AdminController {
         $cntps = 0;
         $cntreturn = 0;
 
+        $app_ids = array();
+
         foreach ($actualresult->toArray() as $a) {
+            $app_ids[] = $a['application_id'];
+        }
+
+        $app_ids = array_unique($app_ids);
+
+        //print_r($app_ids);
+
+        $cwarray = Prefs::getWeightNominalCache($app_ids);
+
+        //print_r($cwarray);
+
+        foreach ($actualresult->toArray() as $a) {
+
+            //print $a['application_id']." ".$a['weight']."\r\n";
+            //$app_ids[] = $a['application_id'];
 
             if($a['status'] == 'delivered'){
                 if(isset($darr[$a['ndate']][$a['device']]['delivered'])){
@@ -249,16 +266,31 @@ class DevicereconController extends AdminController {
                 $darr[$a['ndate']][$a['device']]['actual_weight'] = $a['actual_weight'];
             }
 
+
+            if(isset($darr[$a['ndate']][$a['device']]['calculated_weight'])){
+                $cw = (isset($cwarray[$a['application_id']][$a['weight']]))?$cwarray[$a['application_id']][$a['weight']]:0;
+                $darr[$a['ndate']][$a['device']]['calculated_weight'] += $cw;
+            }else{
+                $cw = (isset($cwarray[$a['application_id']][$a['weight']]))?$cwarray[$a['application_id']][$a['weight']]:0;
+                $darr[$a['ndate']][$a['device']]['calculated_weight'] = $cw;
+            }
+
+
             if(isset($darr[$a['ndate']][$a['device']]['total_paket'])){
                 $darr[$a['ndate']][$a['device']]['total_paket'] += 1;
             }else{
                 $darr[$a['ndate']][$a['device']]['total_paket'] = 1;
             }
 
+
+
+
         }
 
 
+
         //print_r($darr);
+        //print_r($cwarray);
 /*
 Tanggal
 Incoming
@@ -304,7 +336,8 @@ Tanda Tangan
                 array('value'=>'Delivered','attr'=>''),
                 array('value'=>'Pending','attr'=>''),
                 array('value'=>'Returned','attr'=>''),
-                array('value'=>'Weight','attr'=>''),
+                array('value'=>'Actual Weight','attr'=>''),
+                array('value'=>'Calc. Weight','attr'=>''),
                 array('value'=>'Photo','attr'=>''),
                 array('value'=>'Sign','attr'=>''),
                 array('value'=>'Location','attr'=>'')
@@ -341,6 +374,7 @@ Tanda Tangan
                 $itarray[] = array('value'=>(isset($v['pending']))?$v['pending']:0,'attr'=>'');
                 $itarray[] = array('value'=>(isset($v['returned']))?$v['returned']:0,'attr'=>'');
                 $itarray[] = array('value'=>(isset($v['actual_weight']))?$v['actual_weight']:0,'attr'=>'');
+                $itarray[] = array('value'=>(isset($v['calculated_weight']))?$v['calculated_weight']:0,'attr'=>'');
 
                 $aux = Prefs::getAuxData($v['delivery_id']);
 
