@@ -61,6 +61,34 @@ class Prefs {
             );
     }
 
+    public static function getAuxDataDetail($dids)
+    {
+        $sign = Uploaded::whereIn('parent_id',$dids)
+                    ->where(function($qs){
+                        $qs->where('is_signature','=',1)
+                            ->orWhere('is_signature','=',strval(1));
+                    })->get();
+
+        $photos = Uploaded::whereIn('parent_id',$dids)
+                    ->where(function($qp){
+                        $qp->where('is_signature','=',0)
+                            ->orWhere('is_signature','=',strval(0));
+                    })->get();
+
+        $loc = Geolog::whereIn('deliveryId',$dids)
+                    ->where(function($ql){
+                        $ql->where('status','=','delivered')
+                            ->orWhere('status','=','returned')
+                            ->orWhere('status','=','pending');
+                    })->get();
+
+        return array(
+                'photo'=>$photos,
+                'sign'=>$sign,
+                'loc'=>$loc
+            );
+    }
+
     public static function getNotes($delivery_id, $as_array = true)
     {
         $notes = Deliverynote::where('deliveryId','=',$delivery_id)
