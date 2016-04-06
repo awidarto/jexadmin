@@ -78,6 +78,14 @@ td{
     vertical-align: top;
 }
 
+td.bold{
+    font-weight: bold;
+}
+
+td.italic{
+    font-style: italic;
+}
+
 td.box{
     height:100%;
     min-height:75px;

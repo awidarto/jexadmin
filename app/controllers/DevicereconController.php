@@ -32,7 +32,7 @@ class DevicereconController extends AdminController {
 
         $this->is_report = true;
 
-        Breadcrumbs::addCrumb('Manifest',URL::to( strtolower($this->controller_name) ));
+        Breadcrumbs::addCrumb('Device Reconciliation',URL::to( strtolower($this->controller_name) ));
 
         $this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','devicerecon')->render();
 

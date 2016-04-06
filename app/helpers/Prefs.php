@@ -63,7 +63,7 @@ class Prefs {
 
     public static function getAuxDataDetail($dids)
     {
-        $sign = Uploaded::whereIn('parent_id',$dids)
+        $signs = Uploaded::whereIn('parent_id',$dids)
                     ->where(function($qs){
                         $qs->where('is_signature','=',1)
                             ->orWhere('is_signature','=',strval(1));
@@ -75,17 +75,44 @@ class Prefs {
                             ->orWhere('is_signature','=',strval(0));
                     })->get();
 
-        $loc = Geolog::whereIn('deliveryId',$dids)
+        $locs = Geolog::whereIn('deliveryId',$dids)
                     ->where(function($ql){
                         $ql->where('status','=','delivered')
                             ->orWhere('status','=','returned')
                             ->orWhere('status','=','pending');
                     })->get();
 
+        $sign_groups = array();
+        foreach($signs as $s){
+            if( isset($sign_groups[$s->parent_id])){
+                $sign_groups[$s->parent_id] += 1;
+            }else{
+                $sign_groups[$s->parent_id] = 1;
+            }
+        }
+
+        $photo_groups = array();
+        foreach($photos as $p){
+            if( isset($photo_groups[$p->parent_id])){
+                $photo_groups[$p->parent_id] += 1;
+            }else{
+                $photo_groups[$p->parent_id] = 1;
+            }
+        }
+
+        $loc_groups = array();
+        foreach($locs as $l){
+            if( isset($loc_groups[$l->parent_id])){
+                $loc_groups[$l->parent_id] += 1;
+            }else{
+                $loc_groups[$l->parent_id] = 1;
+            }
+        }
+
         return array(
-                'photo'=>$photos,
-                'sign'=>$sign,
-                'loc'=>$loc
+                'photo'=>$photo_groups,
+                'sign'=>$sign_groups,
+                'loc'=>$loc_groups
             );
     }
 

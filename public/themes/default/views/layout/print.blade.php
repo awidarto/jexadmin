@@ -51,6 +51,14 @@
       h3{
         margin-top: 8px;
       }
+
+      td.bold{
+          font-weight: bold;
+      }
+
+      td.italic{
+          font-style: italic;
+      }
     </style>
 
 

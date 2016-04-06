@@ -102,6 +102,13 @@
                     writing-mode: rl-tb;
                 }
 
+            td.bold{
+                font-weight: bold;
+            }
+
+            td.italic{
+                font-style: italic;
+            }
 
         </style>
 

@@ -32,7 +32,7 @@ class DevicerecondetailController extends AdminController {
 
         $this->is_report = true;
 
-        Breadcrumbs::addCrumb('Manifest',URL::to( strtolower($this->controller_name) ));
+        Breadcrumbs::addCrumb('Device Reconciliation Detail',URL::to( strtolower($this->controller_name) ));
 
         $this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','devicerecondetail')->render();
 
@@ -266,6 +266,11 @@ class DevicerecondetailController extends AdminController {
                 $darr[$a['ndate']][$a['device']]['actual_weight'] = $a['actual_weight'];
             }
 
+            if(isset($darr[$a['ndate']][$a['device']]['delivery_cost'])){
+                $darr[$a['ndate']][$a['device']]['delivery_cost'] += $a['weight'];
+            }else{
+                $darr[$a['ndate']][$a['device']]['delivery_cost'] = $a['weight'];
+            }
 
             if(isset($darr[$a['ndate']][$a['device']]['calculated_weight'])){
                 $cw = (isset($cwarray[$a['application_id']][$a['weight']]))?$cwarray[$a['application_id']][$a['weight']]:0;
@@ -373,21 +378,24 @@ Tanda Tangan
 
                 //print_r($v);
 
-                $aux = Prefs::getAuxData($v['delivery_id']);
+                $aux = Prefs::getAuxDataDetail($v['delivery_id']);
+
+                $taux = Prefs::getAuxData($v['delivery_id']);
 
                 $item = array(
                         array('value'=>$seq,'attr'=>''),
-                        array('value'=>$ddate,'attr'=>''),
-                        array('value'=>$ddev,'attr'=>''),
+                        array('value'=>$ddate,'attr'=>'class="bold"'),
+                        array('value'=>$ddev,'attr'=>'class="bold"'),
                         array('value'=>(isset($v['total_paket']))?$v['total_paket'].' order':0,'attr'=>''),
                         array('value'=>'','attr'=>''),
                         array('value'=>'','attr'=>''),
                         array('value'=>'','attr'=>''),
-                        array('value'=>(isset($v['actual_weight']))?$v['actual_weight']:0,'attr'=>''),
-                        array('value'=>(isset($v['calculated_weight']))?$v['calculated_weight']:0,'attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>'')
+                        array('value'=>(isset($v['actual_weight']))?$v['actual_weight']:0,'attr'=>'class="bold"'),
+                        array('value'=>(isset($v['calculated_weight']))?$v['calculated_weight']:0,'attr'=>'class="bold"'),
+                        array('value'=>$v['delivery_cost'],'attr'=>'class="bold"'),
+                        array('value'=>$taux['photo'],'attr'=>'class="bold"'),
+                        array('value'=>$taux['sign'],'attr'=>'class="bold"'),
+                        array('value'=>$taux['loc'],'attr'=>'class="bold"'),
                     );
 
                 $tabdata[] = $item;
@@ -396,6 +404,10 @@ Tanda Tangan
                 foreach ($v['data'] as $vd) {
 
                     $cw = (isset($cwarray[$vd['application_id']][$vd['weight']]))?$cwarray[$vd['application_id']][$vd['weight']]:0;
+
+                    $sg = (isset($aux['sign'][$vd['delivery_id']]))?$aux['sign'][$vd['delivery_id']]:0;
+                    $ph = (isset($aux['photo'][$vd['delivery_id']]))?$aux['photo'][$vd['delivery_id']]:0;
+                    $lo = (isset($aux['loc'][$vd['delivery_id']]))?$aux['loc'][$vd['delivery_id']]:0;
 
                     $item = array(
                             array('value'=>'','attr'=>''),
@@ -408,11 +420,41 @@ Tanda Tangan
                             array('value'=>$vd['actual_weight'],'attr'=>''),
                             array('value'=>$cw,'attr'=>''),
                             array('value'=>$vd['weight'],'attr'=>''),
-                            array('value'=>'','attr'=>'')
+                            array('value'=>$ph,'attr'=>''),
+                            array('value'=>$sg,'attr'=>''),
+                            array('value'=>$lo,'attr'=>'')
                         );
                     $tabdata[] = $item;
                     $sseq++;
                 }
+
+                $item = array(
+                        array('value'=>'','attr'=>''),
+                        array('value'=>$ddate,'attr'=>'class="bold"'),
+                        array('value'=>$ddev,'attr'=>'class="bold"'),
+                        array('value'=>(isset($v['total_paket']))?$v['total_paket'].' order':0,'attr'=>''),
+                        array('value'=>'','attr'=>''),
+                        array('value'=>'','attr'=>''),
+                        array('value'=>'','attr'=>''),
+                        array('value'=>(isset($v['actual_weight']))?$v['actual_weight']:0,'attr'=>'class="bold"'),
+                        array('value'=>(isset($v['calculated_weight']))?$v['calculated_weight']:0,'attr'=>'class="bold"'),
+                        array('value'=>$v['delivery_cost'],'attr'=>'class="bold"'),
+                        array('value'=>$taux['photo'],'attr'=>'class="bold"'),
+                        array('value'=>$taux['sign'],'attr'=>'class="bold"'),
+                        array('value'=>$taux['loc'],'attr'=>'class="bold"'),
+                    );
+
+                $tabdata[] = $item;
+
+                $sp = count($item);
+
+                $separator = array(
+
+                        array('value'=>'','attr'=>'colspan="'.$sp.'"')
+                    );
+
+                $tabdata[] = $separator;
+
                 /*
                 $itarray = array();
                 $itarray[] = array('value'=>$d,'attr'=>'');
