@@ -96,7 +96,7 @@ class DevicerecondetailController extends AdminController {
             ,'d.identifier as device'
             ,'m.merchantname as merchantname'
             ,'delivery_type','actual_weight','delivery_id','weight','application_id'
-            ,'status','pickup_status','warehouse_status','cod_cost','delivery_cost','total_price','total_tax','total_discount')
+            ,'status','box_count','pickup_status','warehouse_status','cod_cost','delivery_cost','total_price','total_tax','total_discount')
             ->leftJoin('members as m',Config::get('jayon.incoming_delivery_table').'.merchant_id','=','m.id')
             ->leftJoin('applications as a',Config::get('jayon.assigned_delivery_table').'.application_id','=','a.id')
             ->leftJoin('devices as d',Config::get('jayon.assigned_delivery_table').'.device_id','=','d.id')
@@ -279,6 +279,12 @@ class DevicerecondetailController extends AdminController {
                 $darr[$a['ndate']][$a['device']]['cod_cost'] = $a['cod_cost'];
             }
 
+            if(isset($darr[$a['ndate']][$a['device']]['box_count'])){
+                $darr[$a['ndate']][$a['device']]['box_count'] += $a['box_count'];
+            }else{
+                $darr[$a['ndate']][$a['device']]['box_count'] = $a['box_count'];
+            }
+
             if(isset($darr[$a['ndate']][$a['device']]['total_price'])){
                 $darr[$a['ndate']][$a['device']]['total_price'] += $a['total_price'];
             }else{
@@ -356,6 +362,7 @@ Tanda Tangan
                 array('value'=>'Status','attr'=>''),
                 array('value'=>'Actual Weight','attr'=>''),
                 array('value'=>'Calc. Weight','attr'=>''),
+                array('value'=>'Box','attr'=>''),
                 array('value'=>'Delivery Cost','attr'=>''),
                 array('value'=>'COD Surcharge','attr'=>''),
                 array('value'=>'Price','attr'=>''),
@@ -409,6 +416,7 @@ Tanda Tangan
                         array('value'=>'','attr'=>''),
                         array('value'=>(isset($v['actual_weight']))?$v['actual_weight']:0,'attr'=>'class="bold"'),
                         array('value'=>(isset($v['calculated_weight']))?$v['calculated_weight']:0,'attr'=>'class="bold"'),
+                        array('value'=>$v['box_count'],'attr'=>'class="bold"'),
                         array('value'=>$v['delivery_cost'],'attr'=>'class="bold"'),
                         array('value'=>$v['cod_cost'],'attr'=>'class="bold"'),
                         array('value'=>$v['total_price'],'attr'=>'class="bold"'),
@@ -438,6 +446,7 @@ Tanda Tangan
                             array('value'=>$vd['delivery_type'],'attr'=>''),
                             array('value'=>$vd['status'],'attr'=>'class="'.$vd['status'].'"'),
                             array('value'=>$vd['actual_weight'],'attr'=>''),
+                            array('value'=>$vd['box_count'],'attr'=>''),
                             array('value'=>$cw,'attr'=>''),
                             array('value'=>$vd['weight'],'attr'=>''),
                             array('value'=>$vd['cod_cost'],'attr'=>''),
@@ -461,6 +470,7 @@ Tanda Tangan
                         array('value'=>'','attr'=>''),
                         array('value'=>(isset($v['actual_weight']))?$v['actual_weight']:0,'attr'=>'class="bold"'),
                         array('value'=>(isset($v['calculated_weight']))?$v['calculated_weight']:0,'attr'=>'class="bold"'),
+                        array('value'=>$v['box_count'],'attr'=>'class="bold"'),
                         array('value'=>$v['delivery_cost'],'attr'=>'class="bold"'),
                         array('value'=>$v['cod_cost'],'attr'=>'class="bold"'),
                         array('value'=>$v['total_price'],'attr'=>'class="bold"'),
@@ -526,6 +536,8 @@ Tanda Tangan
                 'return'=>$cntreturn,
                 'avg'=>0
         );
+
+        $this->report_header_data = $report_header_data;
 
         if($this->print == true || $this->pdf == true){
             return array('tables'=>$tables,'report_header_data'=>$report_header_data);
