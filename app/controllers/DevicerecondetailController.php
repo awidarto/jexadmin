@@ -94,6 +94,7 @@ class DevicerecondetailController extends AdminController {
             //,Db::raw('sum(actual_weight) as w')
             //,Db::raw('count(*) as cnt')
             ,'d.identifier as device'
+            ,'m.merchantname as merchantname'
             ,'delivery_type','actual_weight','delivery_id','weight','application_id'
             ,'status','pickup_status','warehouse_status','cod_cost','delivery_cost','total_price','total_tax','total_discount')
             ->leftJoin('members as m',Config::get('jayon.incoming_delivery_table').'.merchant_id','=','m.id')
@@ -350,6 +351,7 @@ Tanda Tangan
                 array('value'=>'Device','attr'=>''),
                 array('value'=>'Count','attr'=>''),
                 array('value'=>'Delivery ID','attr'=>''),
+                array('value'=>'Merchant','attr'=>''),
                 array('value'=>'Type','attr'=>''),
                 array('value'=>'Status','attr'=>''),
                 array('value'=>'Actual Weight','attr'=>''),
@@ -404,6 +406,7 @@ Tanda Tangan
                         array('value'=>'','attr'=>''),
                         array('value'=>'','attr'=>''),
                         array('value'=>'','attr'=>''),
+                        array('value'=>'','attr'=>''),
                         array('value'=>(isset($v['actual_weight']))?$v['actual_weight']:0,'attr'=>'class="bold"'),
                         array('value'=>(isset($v['calculated_weight']))?$v['calculated_weight']:0,'attr'=>'class="bold"'),
                         array('value'=>$v['delivery_cost'],'attr'=>'class="bold"'),
@@ -431,6 +434,7 @@ Tanda Tangan
                             array('value'=>'','attr'=>''),
                             array('value'=>$sseq,'attr'=>''),
                             array('value'=>$vd['delivery_id'],'attr'=>''),
+                            array('value'=>$vd['merchantname'],'attr'=>''),
                             array('value'=>$vd['delivery_type'],'attr'=>''),
                             array('value'=>$vd['status'],'attr'=>'class="'.$vd['status'].'"'),
                             array('value'=>$vd['actual_weight'],'attr'=>''),
@@ -451,6 +455,7 @@ Tanda Tangan
                         array('value'=>$ddate,'attr'=>'class="bold"'),
                         array('value'=>$ddev,'attr'=>'class="bold"'),
                         array('value'=>(isset($v['total_paket']))?$v['total_paket'].' order':0,'attr'=>''),
+                        array('value'=>'','attr'=>''),
                         array('value'=>'','attr'=>''),
                         array('value'=>'','attr'=>''),
                         array('value'=>'','attr'=>''),
