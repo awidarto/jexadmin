@@ -272,6 +272,18 @@ class DevicerecondetailController extends AdminController {
                 $darr[$a['ndate']][$a['device']]['delivery_cost'] = $a['weight'];
             }
 
+            if(isset($darr[$a['ndate']][$a['device']]['cod_cost'])){
+                $darr[$a['ndate']][$a['device']]['cod_cost'] += $a['cod_cost'];
+            }else{
+                $darr[$a['ndate']][$a['device']]['cod_cost'] = $a['cod_cost'];
+            }
+
+            if(isset($darr[$a['ndate']][$a['device']]['total_price'])){
+                $darr[$a['ndate']][$a['device']]['total_price'] += $a['total_price'];
+            }else{
+                $darr[$a['ndate']][$a['device']]['total_price'] = $a['total_price'];
+            }
+
             if(isset($darr[$a['ndate']][$a['device']]['calculated_weight'])){
                 $cw = (isset($cwarray[$a['application_id']][$a['weight']]))?$cwarray[$a['application_id']][$a['weight']]:0;
                 $darr[$a['ndate']][$a['device']]['calculated_weight'] += $cw;
@@ -343,6 +355,8 @@ Tanda Tangan
                 array('value'=>'Actual Weight','attr'=>''),
                 array('value'=>'Calc. Weight','attr'=>''),
                 array('value'=>'Delivery Cost','attr'=>''),
+                array('value'=>'COD Surcharge','attr'=>''),
+                array('value'=>'Price','attr'=>''),
                 array('value'=>'Photo','attr'=>''),
                 array('value'=>'Sign','attr'=>''),
                 array('value'=>'Location','attr'=>'')
@@ -393,6 +407,8 @@ Tanda Tangan
                         array('value'=>(isset($v['actual_weight']))?$v['actual_weight']:0,'attr'=>'class="bold"'),
                         array('value'=>(isset($v['calculated_weight']))?$v['calculated_weight']:0,'attr'=>'class="bold"'),
                         array('value'=>$v['delivery_cost'],'attr'=>'class="bold"'),
+                        array('value'=>$v['cod_cost'],'attr'=>'class="bold"'),
+                        array('value'=>$v['total_price'],'attr'=>'class="bold"'),
                         array('value'=>$taux['photo'],'attr'=>'class="bold"'),
                         array('value'=>$taux['sign'],'attr'=>'class="bold"'),
                         array('value'=>$taux['loc'],'attr'=>'class="bold"'),
@@ -420,6 +436,8 @@ Tanda Tangan
                             array('value'=>$vd['actual_weight'],'attr'=>''),
                             array('value'=>$cw,'attr'=>''),
                             array('value'=>$vd['weight'],'attr'=>''),
+                            array('value'=>$vd['cod_cost'],'attr'=>''),
+                            array('value'=>$vd['total_price'],'attr'=>''),
                             array('value'=>$ph,'attr'=>''),
                             array('value'=>$sg,'attr'=>''),
                             array('value'=>$lo,'attr'=>'')
@@ -439,6 +457,8 @@ Tanda Tangan
                         array('value'=>(isset($v['actual_weight']))?$v['actual_weight']:0,'attr'=>'class="bold"'),
                         array('value'=>(isset($v['calculated_weight']))?$v['calculated_weight']:0,'attr'=>'class="bold"'),
                         array('value'=>$v['delivery_cost'],'attr'=>'class="bold"'),
+                        array('value'=>$v['cod_cost'],'attr'=>'class="bold"'),
+                        array('value'=>$v['total_price'],'attr'=>'class="bold"'),
                         array('value'=>$taux['photo'],'attr'=>'class="bold"'),
                         array('value'=>$taux['sign'],'attr'=>'class="bold"'),
                         array('value'=>$taux['loc'],'attr'=>'class="bold"'),
