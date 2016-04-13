@@ -712,54 +712,41 @@ class Prefs {
         }
     }
 
-    public static function get_cod_tariff($total_price,$app_id = null){
+    function get_cod_tariff($total_price,$app_id = null, $date = null){
 
-        $total_price = doubleval($total_price);
+        $CI =& get_instance();
 
-        $row = 0;
+        $CI->db->select_max('to_price','max');
+        $result = $CI->db->get($CI->config->item('jayon_cod_fee_table'));
+        $row = $result->row();
 
-        if(is_null($app_id)){
-            $max = Codsurcharge::max('to_price');
-
-            if($total_price > $max){
-                $row = Codsurcharge::max('surcharge');
-            }else{
-                $sel = Codsurcharge::where('from_price','<=', doubleval($total_price) )
-                        ->where('to_price', '>=', doubleval($total_price) )->first();
-
-                if($sel){
-                    if(isset($sel->surcharge)){
-                        $row = $sel->surcharge;
-                    }else{
-                        $row = 0;
-                    }
-                }
-
-            }
-
+        if($total_price > $row->max){
+            $CI->db->select_max('surcharge');
+            $result = $CI->db->get($CI->config->item('jayon_cod_fee_table'));
+            $row = $result->row();
         }else{
-            $max = Codsurcharge::where('app_id','=',$app_id)->max('to_price');
+            $CI->db->select('surcharge');
+            $CI->db->where('from_price <= ', doubleval($total_price) );
+            $CI->db->where('to_price >= ', doubleval($total_price) );
 
-            if($total_price > $max){
-                $row = Codsurcharge::where('app_id','=',$app_id)->max('surcharge');
-            }else{
-                $sel = Codsurcharge::where('from_price','<=', doubleval($total_price) )
-                        ->where('app_id','=',$app_id)
-                        ->where('to_price', '>=', doubleval($total_price) )->first();
-
-                if($sel){
-                    if(isset($sel->surcharge)){
-                        $row = $sel->surcharge;
-                    }else{
-                        $row = 0;
-                    }
-                }
-
+            if(!is_null($date)){
+                $CI->db->where('period_from <= ',$date);
+                $CI->db->where('period_to >= ',$date);
             }
 
+            if(!is_null($app_id)){
+                $CI->db->where('app_id',$app_id);
+            }
+            $result = $CI->db->get($CI->config->item('jayon_cod_fee_table'));
+            $row = $result->row();
         }
 
-        return $row;
+        if(isset($row->surcharge)){
+            return $row->surcharge;
+        }else{
+            return 0;
+        }
+
     }
 
     public static function get_weight_tariff($weight, $delivery_type ,$app_id = null){
