@@ -28,6 +28,8 @@ class Prefs {
                 }
             }
 
+            //print $r['total_price']."\r\n";
+
             $app_id = $r['application_id'];
 
             $total =  $r['total_price'];
@@ -84,7 +86,7 @@ class Prefs {
             if($r['delivery_type'] == 'COD' || $r['delivery_type'] == 'CCOD'){
                 if($r['cod_cost'] == 0 || is_null($r['cod_cost']) || $r['cod_cost'] == ''){
                     try{
-                        $cod = $self->get_cod_tariff($r['total_price'],$app_id, $orderdate);
+                        //$cod = $self->get_cod_tariff($r['total_price'],$app_id, $orderdate);
                     }catch(Exception $e){
 
                     }
@@ -97,7 +99,7 @@ class Prefs {
 
             if($r['delivery_cost'] == 0 || is_null($r['delivery_cost']) || $r['delivery_cost'] == ''){
                 try{
-                    $dc = $self->get_weight_tariff($r['actual_weight'], $r['delivery_type'] ,$app_id, $orderdate);
+                    //$dc = $self->get_weight_tariff($r['actual_weight'], $r['delivery_type'] ,$app_id, $orderdate);
                 }catch(Exception $e){
 
                 }
