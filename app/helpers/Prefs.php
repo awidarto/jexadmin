@@ -22,10 +22,14 @@ class Prefs {
 
     public static function getBilled($r)
     {
-            if($r['total_price'] == 0 || is_null($r['total_price']) || $r['total_price'] == ''){
-                if($r['chargeable_amount'] > 0){
-                    $r['total_price'] = $r['chargeable_amount'];
+            if(isset($r['total_price'])){
+                if($r['total_price'] == 0 || is_null($r['total_price']) || $r['total_price'] == ''){
+                    if($r['chargeable_amount'] > 0){
+                        $r['total_price'] = $r['chargeable_amount'];
+                    }
                 }
+            }else{
+                $r['total_price'] = 0;
             }
 
             //print $r['total_price']."\r\n";
@@ -82,7 +86,6 @@ class Prefs {
 
             $orderdate = date('Y-m-d', strtotime($r['created']) );
 
-            //
             if($r['delivery_type'] == 'COD' || $r['delivery_type'] == 'CCOD'){
                 if($r['cod_cost'] == 0 || is_null($r['cod_cost']) || $r['cod_cost'] == ''){
                     try{
