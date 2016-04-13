@@ -28,6 +28,8 @@ class Prefs {
                 }
             }
 
+            $app_id = $r['application_id'];
+
             $total =  $r['total_price'];
             $dsc =  $r['total_discount'];
             $tax = $r['total_tax'];
