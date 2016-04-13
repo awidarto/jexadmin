@@ -1,6 +1,6 @@
 <?php
 
-class DevicerecondetailController extends AdminController {
+class CashierController extends AdminController {
 
     public function __construct()
     {
@@ -14,7 +14,7 @@ class DevicerecondetailController extends AdminController {
 
         $this->model = new Shipment();
         //$this->model = DB::collection('documents');
-        $this->title = 'Device Reconciliation Detail';
+        $this->title = 'Cashier';
 
     }
 
@@ -22,7 +22,7 @@ class DevicerecondetailController extends AdminController {
     {
         set_time_limit(0);
 
-        $this->title = 'Device Reconciliation Detail';
+        $this->title = 'Cashier';
 
         $this->place_action = 'none';
 
@@ -32,9 +32,9 @@ class DevicerecondetailController extends AdminController {
 
         $this->is_report = true;
 
-        Breadcrumbs::addCrumb('Device Reconciliation Detail',URL::to( strtolower($this->controller_name) ));
+        Breadcrumbs::addCrumb('Cashier',URL::to( strtolower($this->controller_name) ));
 
-        $this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','devicerecondetail')->render();
+        $this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','cashier')->render();
 
 
         $db = Config::get('lundin.main_db');
@@ -292,10 +292,14 @@ class DevicerecondetailController extends AdminController {
 
             if(isset($darr[$a['ndate']][$a['device']]['total_price'])){
                 //$darr[$a['ndate']][$a['device']]['total_price'] += $a['total_price'];
-                $darr[$a['ndate']][$a['device']]['total_price'] += $tp['payable'];
+                if( $a['status'] == 'delivered' ){
+                    $darr[$a['ndate']][$a['device']]['total_price'] += $tp['payable'];
+                }
             }else{
                 //$darr[$a['ndate']][$a['device']]['total_price'] = $a['total_price'];
-                $darr[$a['ndate']][$a['device']]['total_price'] = $tp['payable'];
+                if( $a['status'] == 'delivered' ){
+                    $darr[$a['ndate']][$a['device']]['total_price'] = $tp['payable'];
+                }
             }
 
             if(isset($darr[$a['ndate']][$a['device']]['calculated_weight'])){
@@ -369,7 +373,7 @@ Tanda Tangan
                 array('value'=>'Merchant','attr'=>''),
                 array('value'=>'Type','attr'=>''),
                 array('value'=>'Status','attr'=>''),
-                array('value'=>'Actual Weight','attr'=>''),
+                //array('value'=>'Actual Weight','attr'=>''),
                 array('value'=>'Calc. Weight','attr'=>''),
                 array('value'=>'Box','attr'=>''),
                 array('value'=>'Delivery Cost','attr'=>''),
@@ -390,77 +394,11 @@ Tanda Tangan
 
         $ddev = '';
 
-        $tarr = array();
-
         foreach($darr as $dt=>$dev)
         {
 
 
             foreach($dev as $d=>$v){
-
-                $aux = Prefs::getAuxDataDetail($v['delivery_id']);
-
-                $taux = Prefs::getAuxData($v['delivery_id']);
-
-                if(isset($tarr[$d]['total_paket'])){
-                    $tarr[$d]['total_paket'] += $v['total_paket'];
-                }else{
-                    $tarr[$d]['total_paket'] = $v['total_paket'];
-                }
-
-                if(isset($tarr[$d]['actual_weight'])){
-                    $tarr[$d]['actual_weight'] += (isset($v['actual_weight']))?$v['actual_weight']:0;
-                }else{
-                    $tarr[$d]['actual_weight'] = (isset($v['actual_weight']))?$v['actual_weight']:0;
-                }
-
-                if(isset($tarr[$d]['calculated_weight'])){
-                    $tarr[$d]['calculated_weight'] += (isset($v['calculated_weight']))?$v['calculated_weight']:0;
-                }else{
-                    $tarr[$d]['calculated_weight'] = (isset($v['calculated_weight']))?$v['calculated_weight']:0;
-                }
-                if(isset($tarr[$d]['delivery_cost'])){
-                    $tarr[$d]['delivery_cost'] += $v['delivery_cost'];
-                }else{
-                    $tarr[$d]['delivery_cost'] = $v['delivery_cost'];
-                }
-                if(isset($tarr[$d]['box_count'])){
-                    $tarr[$d]['box_count'] += $v['box_count'];
-                }else{
-                    $tarr[$d]['box_count'] = $v['box_count'];
-                }
-
-                if(isset($tarr[$d]['cod_cost'])){
-                    $tarr[$d]['cod_cost'] += $v['cod_cost'];
-                }else{
-                    $tarr[$d]['cod_cost'] = $v['cod_cost'];
-                }
-
-                if(isset($tarr[$d]['total_price'])){
-                    $tarr[$d]['total_price'] += $v['total_price'];
-                }else{
-                    $tarr[$d]['total_price'] = $v['total_price'];
-                }
-
-                if(isset($tarr[$d]['photo'])){
-                    $tarr[$d]['photo'] += $taux['photo'];
-                }else{
-                    $tarr[$d]['photo'] = $taux['photo'];
-                }
-
-                if(isset($tarr[$d]['sign'])){
-                    $tarr[$d]['sign'] += $taux['sign'];
-                }else{
-                    $tarr[$d]['sign'] = $taux['sign'];
-                }
-
-                if(isset($tarr[$d]['loc'])){
-                    $tarr[$d]['loc'] += $taux['loc'];
-                }else{
-                    $tarr[$d]['loc'] = $taux['loc'];
-                }
-
-
 
                 if($xdate == $dt){
                     $ddate = '';
@@ -476,6 +414,9 @@ Tanda Tangan
 
                 //print_r($v);
 
+                $aux = Prefs::getAuxDataDetail($v['delivery_id']);
+
+                $taux = Prefs::getAuxData($v['delivery_id']);
 
                 $item = array(
                         array('value'=>$seq,'attr'=>''),
@@ -488,32 +429,7 @@ Tanda Tangan
                         array('value'=>'','attr'=>''),
                         array('value'=>'','attr'=>''),
                         array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>'')
-                    );
-
-                $tabdata[] = $item;
-
-                /*
-                $item = array(
-                        array('value'=>$seq,'attr'=>''),
-                        array('value'=>$ddate,'attr'=>'class="bold"'),
-                        array('value'=>$ddev,'attr'=>'class="bold"'),
-                        array('value'=>(isset($v['total_paket']))?$v['total_paket'].' order':0,'attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>(isset($v['actual_weight']))?$v['actual_weight']:0,'attr'=>'class="bold"'),
+                        //array('value'=>(isset($v['actual_weight']))?$v['actual_weight']:0,'attr'=>'class="bold"'),
                         array('value'=>(isset($v['calculated_weight']))?$v['calculated_weight']:0,'attr'=>'class="bold"'),
                         array('value'=>$v['box_count'],'attr'=>'class="bold"'),
                         array('value'=>$v['delivery_cost'],'attr'=>'class="bold"'),
@@ -525,7 +441,6 @@ Tanda Tangan
                     );
 
                 $tabdata[] = $item;
-                */
 
                 $sseq = 1;
                 foreach ($v['data'] as $vd) {
@@ -547,7 +462,7 @@ Tanda Tangan
                             array('value'=>$vd['merchantname'],'attr'=>''),
                             array('value'=>$vd['delivery_type'],'attr'=>''),
                             array('value'=>$vd['status'],'attr'=>'class="'.$vd['status'].'"'),
-                            array('value'=>$vd['actual_weight'],'attr'=>''),
+                            //array('value'=>$vd['actual_weight'],'attr'=>''),
                             array('value'=>$vd['box_count'],'attr'=>''),
                             array('value'=>$cw,'attr'=>''),
                             array('value'=>$vd['weight'],'attr'=>''),
@@ -561,7 +476,6 @@ Tanda Tangan
                     $sseq++;
                 }
 
-                /*
                 $item = array(
                         array('value'=>'','attr'=>''),
                         array('value'=>$ddate,'attr'=>'class="bold"'),
@@ -573,7 +487,7 @@ Tanda Tangan
                         array('value'=>'','attr'=>''),
                         array('value'=>'','attr'=>''),
                         array('value'=>'','attr'=>''),
-                        array('value'=>(isset($v['actual_weight']))?$v['actual_weight']:0,'attr'=>'class="bold"'),
+                        //array('value'=>(isset($v['actual_weight']))?$v['actual_weight']:0,'attr'=>'class="bold"'),
                         array('value'=>(isset($v['calculated_weight']))?$v['calculated_weight']:0,'attr'=>'class="bold"'),
                         array('value'=>$v['box_count'],'attr'=>'class="bold"'),
                         array('value'=>$v['delivery_cost'],'attr'=>'class="bold"'),
@@ -585,7 +499,6 @@ Tanda Tangan
                     );
 
                 $tabdata[] = $item;
-                */
 
                 $sp = count($item);
 
@@ -594,9 +507,9 @@ Tanda Tangan
                         array('value'=>'','attr'=>'colspan="'.$sp.'"')
                     );
 
-                /*
                 $tabdata[] = $separator;
 
+                /*
                 $itarray = array();
                 $itarray[] = array('value'=>$d,'attr'=>'');
                 $itarray[] = array('value'=>(isset($v['total_paket']))?$v['total_paket']:0,'attr'=>'');
@@ -626,36 +539,7 @@ Tanda Tangan
 
         }
 
-        $ttabdata = array();
 
-        foreach($tarr as $k=>$v){
-
-                $ttabdata[] = array(
-                        array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>'class="bold"'),
-                        array('value'=>$k,'attr'=>'class="bold"'),
-                        array('value'=>(isset($v['total_paket']))?$v['total_paket']:0,'attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>'','attr'=>''),
-                        array('value'=>(isset($v['actual_weight']))?$v['actual_weight']:0,'attr'=>'class="bold"'),
-                        array('value'=>(isset($v['calculated_weight']))?$v['calculated_weight']:0,'attr'=>'class="bold"'),
-                        array('value'=>$v['box_count'],'attr'=>'class="bold"'),
-                        array('value'=>$v['delivery_cost'],'attr'=>'class="bold"'),
-                        array('value'=>$v['cod_cost'],'attr'=>'class="bold"'),
-                        array('value'=>$v['total_price'],'attr'=>'class="bold"'),
-                        array('value'=>$v['photo'],'attr'=>'class="bold"'),
-                        array('value'=>$v['sign'],'attr'=>'class="bold"'),
-                        array('value'=>$v['loc'],'attr'=>'class="bold"'),
-                    );
-
-        }
-
-
-        $tabdata = array_merge($ttabdata,$tabdata);
 
         $mtable = new HtmlTable($tabdata,$tattrs,$thead);
 

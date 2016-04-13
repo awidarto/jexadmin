@@ -68,6 +68,7 @@
                             <li class="{{ sa('deliveryreport') }}" ><a href="{{ URL::to('deliveryreport') }}"> Delivery Report</a></li>
                             <li class="{{ sa('devicerecon') }}" ><a href="{{ URL::to('devicerecon') }}"> Device Reconciliation</a></li>
                             <li class="{{ sa('devicerecondetail') }}" ><a href="{{ URL::to('devicerecondetail') }}"> Device Reconciliation Detail</a></li>
+                            <li class="{{ sa('cashier') }}" ><a href="{{ URL::to('cashier') }}"> Cashier</a></li>
                             <li class="{{ sa('datatool') }}" ><a href="{{ URL::to('datatool') }}"> Data Tool</a></li>
                           </ul>
                         </li>

@@ -80,6 +80,7 @@ Route::controller('deliverybydate', 'DeliverybydateController');
 Route::controller('deliveryreport', 'DeliveryreportController');
 Route::controller('devicerecon', 'DevicereconController');
 Route::controller('devicerecondetail', 'DevicerecondetailController');
+Route::controller('cashier', 'CashierController');
 Route::controller('datatool', 'DatatoolController');
 
 

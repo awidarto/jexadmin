@@ -20,6 +20,95 @@ class Prefs {
 
     }
 
+    public static function getBilled($r)
+    {
+            if($r['total_price'] == 0 || is_null($r['total_price']) || $r['total_price'] == ''){
+                if($r['chargeable_amount'] > 0){
+                    $r['total_price'] = $r['chargeable_amount'];
+                }
+            }
+
+            $total =  $r['total_price'];
+            $dsc =  $r['total_discount'];
+            $tax = $r['total_tax'];
+            $dc = $r['delivery_cost'];
+            $cod = $r['cod_cost'];
+            $charge = $r['chargeable_amount'];
+
+            $total = (is_nan( (double)$total))?0:(double)$total;
+            $dsc = (is_nan((double)$dsc))?0:(double)$dsc;
+            $tax = (is_nan((double)$tax))?0:(double)$tax;
+            $dc = (is_nan((double)$dc))?0:(double)$dc;
+            $cod = (is_nan((double)$cod))?0:(double)$cod;
+            $charge = (is_nan((double)$charge))?0:(double)$charge;
+
+            if($total == 0 && $charge > 0){
+                $total = $charge;
+            }
+
+            $payable = 0;
+
+            $payable = ($total - $dsc) + $tax;
+
+            //$codval = ($r->delivery_type == 'COD'|| $r->delivery_type == 'CCOD')?$payable:0;
+
+
+            if($r['delivery_type'] == 'COD'|| $r['delivery_type'] == 'CCOD'){
+                if($r['delivery_bearer'] == 'merchant'){
+                    $dcx = 0;
+                }else{
+                    $dcx = $dc;
+                }
+
+                if($r['cod_bearer'] == 'merchant'){
+                    $codx = 0;
+                }else{
+                    $codx = $cod;
+                }
+
+                $codval = ($total - $dsc) + $tax + $dcx + $codx;
+
+            }else{
+                $cod = 0;
+                $codval = 0;
+            }
+
+            //$codval = $charge;
+            //$total_cod_val += $codval;
+
+            $orderdate = date('Y-m-d', strtotime($r['created']) );
+
+            //
+            if($r['delivery_type'] == 'COD' || $r['delivery_type'] == 'CCOD'){
+                if($r['cod_cost'] == 0 || is_null($r['cod_cost']) || $r['cod_cost'] == ''){
+                    try{
+                        $cod = $self->get_cod_tariff($r['total_price'],$app_id, $orderdate);
+                    }catch(Exception $e){
+
+                    }
+                }
+
+            }else{
+                $cod = 0;
+            }
+
+
+            if($r['delivery_cost'] == 0 || is_null($r['delivery_cost']) || $r['delivery_cost'] == ''){
+                try{
+                    $dc = $self->get_weight_tariff($r['actual_weight'], $r['delivery_type'] ,$app_id, $orderdate);
+                }catch(Exception $e){
+
+                }
+
+            }
+
+            return array(
+                    'payable'=>$payable,
+                    'cod_surcharge'=>$codval,
+                );
+
+    }
+
     public static function getWeightNominalCache($app_id)
     {
             $tars = Deliveryfee::whereIn('app_id',$app_id)->get();
