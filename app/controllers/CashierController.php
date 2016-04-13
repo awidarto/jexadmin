@@ -292,14 +292,11 @@ class CashierController extends AdminController {
 
             if(isset($darr[$a['ndate']][$a['device']]['total_price'])){
                 //$darr[$a['ndate']][$a['device']]['total_price'] += $a['total_price'];
-                if( $a['status'] == 'delivered' ){
-                    $darr[$a['ndate']][$a['device']]['total_price'] += $tp['payable'];
-                }
+                $darr[$a['ndate']][$a['device']]['total_price'] += ( $a['status'] == 'delivered' )?$tp['payable']:0;
             }else{
                 //$darr[$a['ndate']][$a['device']]['total_price'] = $a['total_price'];
-                if( $a['status'] == 'delivered' ){
-                    $darr[$a['ndate']][$a['device']]['total_price'] = $tp['payable'];
-                }
+
+                $darr[$a['ndate']][$a['device']]['total_price'] = ( $a['status'] == 'delivered' )?$tp['payable']:0;
             }
 
             if(isset($darr[$a['ndate']][$a['device']]['calculated_weight'])){
