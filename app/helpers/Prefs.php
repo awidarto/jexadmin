@@ -754,7 +754,7 @@ class Prefs {
             if($total_price > $max){
                 $row = Codsurcharge::where('app_id','=',$app_id)->max('surcharge');
             }else{
-                $sel = Codsurcharge::where('from_price','<=', doubleval($total_price) )
+                $selq = Codsurcharge::where('from_price','<=', doubleval($total_price) )
                         ->where('app_id','=',$app_id)
                         ->where('to_price', '>=', doubleval($total_price) );
 
