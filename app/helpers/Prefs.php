@@ -712,7 +712,7 @@ class Prefs {
         }
     }
 
-    function get_cod_tariff($total_price,$app_id = null, $date = null){
+    public static function get_cod_tariff($total_price,$app_id = null, $date = null){
 
         $CI =& get_instance();
 
