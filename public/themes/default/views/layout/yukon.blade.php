@@ -110,6 +110,11 @@
                 font-style: italic;
             }
 
+            hr{
+                margin-top: 5px !important;
+                margin-bottom: 5px !important;
+            }
+
         </style>
 
     </head>

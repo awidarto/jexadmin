@@ -96,6 +96,7 @@ class CashierController extends AdminController {
             ,'d.identifier as device'
             ,'m.merchantname as merchantname'
             ,'merchant_trans_id','fulfillment_code'
+            ,'courier_status','warehouse_status'
             ,'chargeable_amount','delivery_bearer','cod_bearer',$mtab.'.created'
             ,'delivery_type','actual_weight','delivery_id','weight','application_id'
             ,'status','box_count','pickup_status','warehouse_status','cod_cost','delivery_cost','total_price','total_tax','total_discount')
@@ -458,7 +459,7 @@ Tanda Tangan
                             array('value'=>$vd['fulfillment_code'],'attr'=>''),
                             array('value'=>$vd['merchantname'],'attr'=>''),
                             array('value'=>$vd['delivery_type'],'attr'=>''),
-                            array('value'=>$vd['status'],'attr'=>'class="'.$vd['status'].'"'),
+                            array('value'=>$vd['status'].'<hr />'.$vd['courier_status'].'<hr />'.$vd['warehouse_status'],'attr'=>'class="'.$vd['status'].'"'),
                             //array('value'=>$vd['actual_weight'],'attr'=>''),
                             array('value'=>$vd['box_count'],'attr'=>''),
                             array('value'=>$cw,'attr'=>''),

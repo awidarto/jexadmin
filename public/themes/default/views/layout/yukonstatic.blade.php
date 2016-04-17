@@ -107,6 +107,11 @@
                 font-style: italic;
             }
 
+            hr{
+                margin-top: 0px !important;
+                margin-bottom: 0px !important;
+            }
+
         </style>
 
     </head>
