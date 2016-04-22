@@ -661,14 +661,17 @@ Tanda Tangan
         $sequencer = new Sequence();
         $doc_number = $sequencer->getNewId('devmanifest');
 
+        print_r($this->report_header_data);
+
         $this->additional_filter = View::make(strtolower($this->controller_name).'.addhead')
                                             ->with('doc_number',$doc_number)
+                                            ->with('report_header_data',$this->report_header_data)
                                             ->render();
 
         $this->report_file_name = 'MDL-'.str_pad($doc_number, 5, '0', STR_PAD_LEFT).'.html';
         $this->report_file_path = realpath('storage/docs').'/devmanifest/';
 
-        $this->title = 'DELIVERY TIME';
+        $this->title = 'Penerimaan Cash';
 
         $this->report_type = 'deliverytime';
 

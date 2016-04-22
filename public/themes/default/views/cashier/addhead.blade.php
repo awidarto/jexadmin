@@ -47,7 +47,8 @@
                         @if(is_null(Input::get('device')) || Input::get('device') == '')
                             All
                         @else
-                            {{  Prefs::getDevice('key',Input::get('device'))->identifier
+                            {{
+                                Prefs::getDevice('id',Input::get('device'))->identifier
                             }}
                         @endif
                     </td>
@@ -58,18 +59,7 @@
                         @if(is_null(Input::get('courier')) || Input::get('courier') == '')
                             All
                         @else
-                            {{  Prefs::getCourier('_id',Input::get('courier'))->name
-                            }}
-                        @endif
-                    </td>
-                </tr>
-                <tr>
-                    <td>LOGISTIC</td>
-                    <td>
-                        @if(is_null(Input::get('logistic')) || Input::get('logistic') == '')
-                            All
-                        @else
-                            {{  Prefs::getLogistic('logistic_code',Input::get('logistic'))->name
+                            {{  Prefs::getCourier('id',Input::get('courier'))->name
                             }}
                         @endif
                     </td>
@@ -106,6 +96,7 @@
                 </tbody>
             </table>
             --}}
+
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -128,6 +119,7 @@
                     </tr>
                 </tbody>
             </table>
+
         </td>
     </tr>
 

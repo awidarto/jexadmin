@@ -47,7 +47,7 @@
                         @if(is_null(Input::get('device')) || Input::get('device') == '')
                             All
                         @else
-                            {{  Prefs::getDevice('key',Input::get('device'))->identifier
+                            {{  Prefs::getDevice('id',Input::get('device'))->identifier
                             }}
                         @endif
                     </td>
@@ -58,7 +58,7 @@
                         @if(is_null(Input::get('courier')) || Input::get('courier') == '')
                             All
                         @else
-                            {{  Prefs::getCourier('_id',Input::get('courier'))->name
+                            {{  Prefs::getCourier('id',Input::get('courier'))->name
                             }}
                         @endif
                     </td>
@@ -106,6 +106,9 @@
                 </tbody>
             </table>
             --}}
+
+            @if(isset($report_header_data))
+
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -128,6 +131,8 @@
                     </tr>
                 </tbody>
             </table>
+
+            @endif
         </td>
     </tr>
 
