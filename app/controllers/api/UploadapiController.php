@@ -68,13 +68,15 @@ class UploadapiController extends \Controller {
 
         $result = '';
 
+        $timepath = date('Ym',time());
+
         //$destinationPath = realpath('storage/media').'/'.$rstring;
 
         if(Input::hasFile('imagefile')){
 
             $file = Input::file('imagefile');
 
-            $destinationPath = realpath('storage/media').'/'.$rstring;
+            $destinationPath = realpath('storage/media').'/'.$timepath.'/'.$rstring;
 
             $filename = $file->getClientOriginalName();
             $filemime = $file->getMimeType();
@@ -124,10 +126,10 @@ class UploadapiController extends \Controller {
                     ->save($destinationPath.'/full_'.$filename);
 
                 $image_size_array = array(
-                    'thumbnail_url'=> \URL::to('storage/media/'.$rstring.'/'.$ps['thumbnail']['prefix'].$filename),
-                    'large_url'=> \URL::to('storage/media/'.$rstring.'/'.$ps['large']['prefix'].$filename),
-                    'medium_url'=> \URL::to('storage/media/'.$rstring.'/'.$ps['medium']['prefix'].$filename),
-                    'full_url'=> \URL::to('storage/media/'.$rstring.'/'.$ps['full']['prefix'].$filename),
+                    'thumbnail_url'=> \URL::to('storage/media/'.$timepath.'/'.$rstring.'/'.$ps['thumbnail']['prefix'].$filename),
+                    'large_url'=> \URL::to('storage/media/'.$timepath.'/'.$rstring.'/'.$ps['large']['prefix'].$filename),
+                    'medium_url'=> \URL::to('storage/media/'.$timepath.'/'.$rstring.'/'.$ps['medium']['prefix'].$filename),
+                    'full_url'=> \URL::to('storage/media/'.$timepath.'/'.$rstring.'/'.$ps['full']['prefix'].$filename),
                 );
 
                 $exif = \Image::make($destinationPath.'/'.$filename)
