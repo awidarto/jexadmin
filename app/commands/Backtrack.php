@@ -127,10 +127,22 @@ class Backtrack extends Command {
 
             foreach($files as $file){
 
+
+                if(preg_match('/201605/', $file->thumbnail_url)){
+
+                }else{
+                    $file->thumbnail_url = str_replace('storage/media', 'storage/media2/201605', $file->thumbnail_url);
+                    $file->large_url = str_replace('storage/media', 'storage/media2/201605', $file->large_url);
+                    $file->medium_url = str_replace('storage/media', 'storage/media2/201605', $file->medium_url);
+                    $file->full_url = str_replace('storage/media', 'storage/media2/201605', $file->full_url);
+                }
+
+
                 print $file->thumbnail_url."\r\n";
                 print $file->large_url."\r\n";
                 print $file->medium_url."\r\n";
                 print $file->full_url."\r\n";
+
 
             }
 
