@@ -147,6 +147,7 @@ class Backtrack extends Command {
                 print $file->medium_url."\r\n";
                 print $file->full_url."\r\n";
 
+                $file->save();
 
             }
 
