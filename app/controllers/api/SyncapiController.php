@@ -253,7 +253,7 @@ class SyncapiController extends \Controller {
                     $sdata['preObject'] = $pre->toArray();
                     $sdata['actor'] = $user->identifier;
                     $sdata['actor_id'] = $user->key;
-                    \Shipmentlog::insert($sdata);
+                    //\Shipmentlog::insert($sdata);
 
 
                 }
@@ -379,7 +379,7 @@ class SyncapiController extends \Controller {
                     $sdata['preObject'] = $pre->toArray();
                     $sdata['actor'] = $user->identifier;
                     $sdata['actor_id'] = $user->key;
-                    \Shipmentlog::insert($sdata);
+                    //\Shipmentlog::insert($sdata);
 
 
                 }
@@ -533,7 +533,7 @@ class SyncapiController extends \Controller {
                     $sdata['preObject'] = $pre->toArray();
                     $sdata['actor'] = $user->identifier;
                     $sdata['actor_id'] = $user->key;
-                    \Shipmentlog::insert($sdata);
+                    //\Shipmentlog::insert($sdata);
 
                 }
 
