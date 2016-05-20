@@ -105,6 +105,18 @@ class CashierController extends AdminController {
             ->leftJoin('devices as d',Config::get('jayon.assigned_delivery_table').'.device_id','=','d.id')
             ->leftJoin('couriers as c',Config::get('jayon.assigned_delivery_table').'.courier_id','=','c.id');
 
+        $model = $model->where(function($qr){
+            $qr->where('status',Config::get('jayon.trans_status_admin_courierassigned'))
+            ->orWhere('status',Config::get('jayon.trans_status_mobile_pickedup'))
+            ->orWhere('status',Config::get('jayon.trans_status_mobile_enroute'))
+            ->orWhere(function($q){
+                $q->where('status',Config::get('jayon.trans_status_new'))
+                  ->where('pending_count','>', 0);
+            });
+
+        });
+
+        /*
         $model = $model
             ->where(function($q){
                 $q->where('status',Config::get('jayon.trans_status_mobile_delivered'))
@@ -120,6 +132,7 @@ class CashierController extends AdminController {
                     });
 
             });
+        */
         /*
         $model = $model
             ->groupBy('ndate')
