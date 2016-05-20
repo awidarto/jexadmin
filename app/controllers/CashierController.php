@@ -123,7 +123,6 @@ class CashierController extends AdminController {
             ->groupBy('ndate')
             ->groupBy('device')
             ->groupBy('status');
-        */
 
         if($status == '' || is_null($status) ){
             $status = Config::get('jayon.devmanifest_default_status');
@@ -131,7 +130,6 @@ class CashierController extends AdminController {
             $status = explode(',', $status);
         }
 
-        /*
         if(empty($status)){
             $exstatus = Config::get('jayon.devmanifest_default_excl_status');
 
