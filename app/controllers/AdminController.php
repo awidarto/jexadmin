@@ -185,6 +185,8 @@ class AdminController extends Controller {
 
         Logger::access();
 
+        DB::disableQueryLog();
+
 	}
 
 

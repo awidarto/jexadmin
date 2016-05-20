@@ -105,21 +105,41 @@ class CashierController extends AdminController {
             ->leftJoin('devices as d',Config::get('jayon.assigned_delivery_table').'.device_id','=','d.id')
             ->leftJoin('couriers as c',Config::get('jayon.assigned_delivery_table').'.courier_id','=','c.id');
 
+        $model = $model->where(function($qr){
+            $qr->where('status',Config::get('jayon.trans_status_admin_courierassigned'))
+            ->orWhere('status',Config::get('jayon.trans_status_mobile_delivered'))
+            ->orWhere('status',Config::get('jayon.trans_status_mobile_return'))
+            ->orWhere('status',Config::get('jayon.trans_status_mobile_pickedup'))
+            ->orWhere('status',Config::get('jayon.trans_status_mobile_enroute'))
+            ->orWhere(function($q){
+                $q->where('status',Config::get('jayon.trans_status_new'))
+                  ->where('pending_count','>', 0);
+            });
+
+        });
+
+        /*
         $model = $model
             ->where(function($q){
                 $q->where('status',Config::get('jayon.trans_status_mobile_delivered'))
-                    //->where('status',Config::get('jayon.trans_status_admin_courierassigned'))
-                    ->orWhere('status',Config::get('jayon.trans_status_new'))
+                    ->orWhere('status',Config::get('jayon.trans_status_admin_courierassigned'))
+                    ->orWhere('status',Config::get('jayon.trans_status_mobile_pickedup'))
+                    ->orWhere('status',Config::get('jayon.trans_status_mobile_enroute'))                    //->where('status',Config::get('jayon.trans_status_admin_courierassigned'))
+                    //->orWhere('status',Config::get('jayon.trans_status_new'))
                     ->orWhere('status',Config::get('jayon.trans_status_rescheduled'))
-                    ->orWhere('status',Config::get('jayon.trans_status_mobile_return'));
+                    ->orWhere('status',Config::get('jayon.trans_status_mobile_return'))
+                    ->orWhere(function($qp){
+                        $qp->where('status',Config::get('jayon.trans_status_new'))
+                          ->where('pending_count','>', 0);
+                    });
 
             });
+        */
         /*
         $model = $model
             ->groupBy('ndate')
             ->groupBy('device')
             ->groupBy('status');
-        */
 
         if($status == '' || is_null($status) ){
             $status = Config::get('jayon.devmanifest_default_status');
@@ -127,7 +147,6 @@ class CashierController extends AdminController {
             $status = explode(',', $status);
         }
 
-        /*
         if(empty($status)){
             $exstatus = Config::get('jayon.devmanifest_default_excl_status');
 
