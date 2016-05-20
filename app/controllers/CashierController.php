@@ -247,6 +247,8 @@ class CashierController extends AdminController {
 
         //print_r($cwarray);
 
+        $pay_list = array();
+
         foreach ($actualresult->toArray() as $a) {
 
 
@@ -309,6 +311,8 @@ class CashierController extends AdminController {
             }
 
             $tp = Prefs::getBilled($a);
+
+            $pay_list[$a['delivery_id']] = $tp['payable'];
 
             if(isset($darr[$a['ndate']][$a['device']]['total_price'])){
                 //$darr[$a['ndate']][$a['device']]['total_price'] += $a['total_price'];
@@ -451,7 +455,7 @@ Tanda Tangan
                         array('value'=>$v['box_count'],'attr'=>'class="bold"'),
                         array('value'=>$v['delivery_cost'],'attr'=>'class="bold"'),
                         array('value'=>$v['cod_cost'],'attr'=>'class="bold"'),
-                        array('value'=>$v['total_price'],'attr'=>'class="bold"'),
+                        array('value'=>$pay_list[ $['delivery_id'] ],'attr'=>'class="bold"'),
                         array('value'=>$taux['photo'],'attr'=>'class="bold"'),
                         array('value'=>$taux['sign'],'attr'=>'class="bold"'),
                         array('value'=>$taux['loc'],'attr'=>'class="bold"'),
