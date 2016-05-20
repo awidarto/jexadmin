@@ -455,7 +455,7 @@ Tanda Tangan
                         array('value'=>$v['box_count'],'attr'=>'class="bold"'),
                         array('value'=>$v['delivery_cost'],'attr'=>'class="bold"'),
                         array('value'=>$v['cod_cost'],'attr'=>'class="bold"'),
-                        array('value'=>$pay_list[ $['delivery_id'] ],'attr'=>'class="bold"'),
+                        array('value'=>$pay_list[ $v['delivery_id'] ],'attr'=>'class="bold"'),
                         array('value'=>$taux['photo'],'attr'=>'class="bold"'),
                         array('value'=>$taux['sign'],'attr'=>'class="bold"'),
                         array('value'=>$taux['loc'],'attr'=>'class="bold"'),
