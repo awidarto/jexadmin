@@ -235,6 +235,8 @@ class DeliverybydateController extends AdminController {
 
         $model = $model->where(function($qr){
             $qr->where('status',Config::get('jayon.trans_status_admin_courierassigned'))
+            ->orWhere('status',Config::get('jayon.trans_status_mobile_delivered'))
+            ->orWhere('status',Config::get('jayon.trans_status_mobile_return'))
             ->orWhere('status',Config::get('jayon.trans_status_mobile_pickedup'))
             ->orWhere('status',Config::get('jayon.trans_status_mobile_enroute'))
             ->orWhere(function($q){
