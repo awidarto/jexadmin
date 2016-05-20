@@ -229,7 +229,7 @@ class IncomingController extends AdminController {
                 $sdata['preObject'] = $pre->toArray();
                 $sdata['actor'] = Auth::user()->fullname;
                 $sdata['actor_id'] = (isset(Auth::user()->_id))?Auth::user()->_id:Auth::user()->id;
-                Shipmentlog::insert($sdata);
+                //Shipmentlog::insert($sdata);
 
 
             }

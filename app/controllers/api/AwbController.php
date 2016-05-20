@@ -939,8 +939,12 @@ class AwbController extends \BaseController {
                 $order['total_discount'] = (isset($in->total_discount))?$in->total_discount:0;
                 $order['total_tax'] = (isset($in->total_tax))?$in->total_tax:0;
 
-                if(in_array( strtoupper(trim($in->delivery_type)) , array('COD','CCOD','PS','DO', 'DELIVERY ONLY' ) )){
+                if(in_array( strtoupper(trim($in->delivery_type)) , array('COD','CCOD','PS' ) )){
                     $in->delivery_type = 'COD';
+                }
+
+                if(in_array( strtoupper(trim($in->delivery_type)) , array('REG','DO', 'DELIVERY ONLY' ) )){
+                    $in->delivery_type = 'Delivery Only';
                 }
 
                 $order['delivery_type'] = $in->delivery_type;

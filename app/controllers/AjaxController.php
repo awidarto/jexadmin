@@ -468,7 +468,7 @@ class AjaxController extends BaseController {
             $sdata['object'] = $sh->toArray();
             $sdata['actor'] = Auth::user()->fullname;
             $sdata['actor_id'] = Auth::user()->_id;
-            Shipmentlog::insert($sdata);
+            //Shipmentlog::insert($sdata);
             //print_r($sh);
         }
 
@@ -543,7 +543,7 @@ class AjaxController extends BaseController {
             $sdata['object'] = $sh->toArray();
             $sdata['actor'] = Auth::user()->fullname;
             $sdata['actor_id'] = Auth::user()->_id;
-            Shipmentlog::insert($sdata);
+            //Shipmentlog::insert($sdata);
             //print_r($sh);
         }
 
@@ -596,7 +596,7 @@ class AjaxController extends BaseController {
                 $sdata['object'] = $sh->toArray();
                 $sdata['actor'] = Auth::user()->fullname;
                 $sdata['actor_id'] = Auth::user()->_id;
-                Shipmentlog::insert($sdata);
+                //Shipmentlog::insert($sdata);
 
 
             }
@@ -668,7 +668,7 @@ class AjaxController extends BaseController {
                 $sdata['object'] = $sh->toArray();
                 $sdata['actor'] = Auth::user()->fullname;
                 $sdata['actor_id'] = (isset(Auth::user()->_id))?Auth::user()->_id:Auth::user()->id;
-                Shipmentlog::insert($sdata);
+                //Shipmentlog::insert($sdata);
                 */
                 $res = true;
 
@@ -752,7 +752,7 @@ class AjaxController extends BaseController {
                 $sdata['object'] = $sh->toArray();
                 $sdata['actor'] = Auth::user()->fullname;
                 $sdata['actor_id'] = (isset(Auth::user()->_id))?Auth::user()->_id:Auth::user()->id;
-                Shipmentlog::insert($sdata);
+                //Shipmentlog::insert($sdata);
 
                 $res = true;
 
@@ -813,7 +813,7 @@ class AjaxController extends BaseController {
                 $sdata['object'] = $sh->toArray();
                 $sdata['actor'] = Auth::user()->fullname;
                 $sdata['actor_id'] = (isset(Auth::user()->_id))?Auth::user()->_id:Auth::user()->id;
-                Shipmentlog::insert($sdata);
+                //Shipmentlog::insert($sdata);
 
                 $res = true;
 
