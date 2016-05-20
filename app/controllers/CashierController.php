@@ -109,9 +109,13 @@ class CashierController extends AdminController {
             ->where(function($q){
                 $q->where('status',Config::get('jayon.trans_status_mobile_delivered'))
                     //->where('status',Config::get('jayon.trans_status_admin_courierassigned'))
-                    ->orWhere('status',Config::get('jayon.trans_status_new'))
+                    //->orWhere('status',Config::get('jayon.trans_status_new'))
                     ->orWhere('status',Config::get('jayon.trans_status_rescheduled'))
-                    ->orWhere('status',Config::get('jayon.trans_status_mobile_return'));
+                    ->orWhere('status',Config::get('jayon.trans_status_mobile_return'))
+                    ->orWhere(function($qp){
+                        $qp->where('status',Config::get('jayon.trans_status_new'))
+                          ->where('pending_count','>', 0);
+                    });
 
             });
         /*

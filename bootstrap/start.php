@@ -60,6 +60,7 @@ $framework = $app['path.base'].'/vendor/laravel/framework/src';
 
 require $framework.'/Illuminate/Foundation/start.php';
 
+DB::disableQueryLog();
 /*
 |--------------------------------------------------------------------------
 | Return The Application
