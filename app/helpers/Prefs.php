@@ -99,6 +99,7 @@ class Prefs {
 
             }else{
                 $cod = 0;
+                $payable = 0;
             }
 
 
