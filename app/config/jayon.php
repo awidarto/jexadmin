@@ -108,7 +108,7 @@ $config['trans_status_atmerchant'] = 'belum di gudang';
 $config['trans_status_pu2wh'] = 'diterima di gudang';
 $config['trans_status_inwh'] = 'di gudang';
 $config['trans_status_wh2ds'] = 'di delivery';
-$config['trans_status_ds2wh'] = 'kembali di gudang';
+$config['trans_status_ds2wh'] = 'kembali ke gudang';
 $config['trans_status_return2merchant'] = 'kembali ke merchant';
 
 $config['trans_wh_atmerchant'] = 'at_initial_node';
