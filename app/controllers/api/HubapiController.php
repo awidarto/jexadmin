@@ -156,7 +156,7 @@ class HubapiController extends \BaseController {
         $key = Input::get('key');
         $deliverydate = Input::get('date');
 
-        $page_size = Config::get('jex.api_page_size');
+        $page_size = \Config::get('jex.api_page_size');
 
         /*
                     ->join('members as m','d.merchant_id=m.id','left')
