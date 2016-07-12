@@ -1,6 +1,9 @@
 <?php
 
 return array(
+
+        'api_page_size'=>100,
+
         'tracker_app'=>'com.kickstartlab.android.jexdelivery',
         'hub_app'=>'com.kickstartlab.android.jexwarehouse',
         'pickup_app'=>'com.kickstartlab.android.jexpickup',

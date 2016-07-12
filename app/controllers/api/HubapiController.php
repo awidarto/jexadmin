@@ -152,8 +152,11 @@ class HubapiController extends \BaseController {
      */
     public function index()
     {
+        $page = Input::get('p');
         $key = Input::get('key');
         $deliverydate = Input::get('date');
+
+        $page_size = Config::get('jex.api_page_size');
 
         /*
                     ->join('members as m','d.merchant_id=m.id','left')
@@ -205,7 +208,7 @@ class HubapiController extends \BaseController {
                     ->get();
         */
 
-        $orders = $this->model
+        $model = $this->model
                 ->select(
                     \DB::raw(
                         \Config::get('jayon.incoming_delivery_table').'.* ,'.
@@ -247,8 +250,16 @@ class HubapiController extends \BaseController {
 
             })
 
-            ->orderBy('ordertime','desc')
-            ->get();
+            ->orderBy('ordertime','desc');
+
+
+            $total_records = $model->count();
+            $total_page = ceil( $total_records / $page_size);
+
+
+            //$orders = $model->skip( ($page - 1) * $page_size )->take($page_size)->get();
+
+            $orders = $model->get();
 
         $norders = array();
         for($n = 0; $n < count($orders);$n++){
@@ -283,8 +294,16 @@ class HubapiController extends \BaseController {
         $actor = $key;
         \Event::fire('log.api',array($this->controller_name, 'get' ,$actor,'logged out'));
 
-        return $orders;
+        //return $orders;
         //
+
+        $headers = array('X-Page' => $page, 'X-Total-Pages'=> $total_page, 'X-Total-Records'=>$total_records );
+
+        return Response::json(
+            $orders,
+            200,
+            $headers
+        );
     }
 
 
