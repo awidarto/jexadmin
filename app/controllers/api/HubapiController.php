@@ -257,9 +257,9 @@ class HubapiController extends \BaseController {
             $total_page = ceil( $total_records / $page_size);
 
 
-            //$orders = $model->skip( ($page - 1) * $page_size )->take($page_size)->get();
+            $orders = $model->skip( ($page - 1) * $page_size )->take($page_size)->get();
 
-            $orders = $model->get();
+            //$orders = $model->get();
 
         $norders = array();
         for($n = 0; $n < count($orders);$n++){
