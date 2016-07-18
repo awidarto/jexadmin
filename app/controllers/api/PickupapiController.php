@@ -107,6 +107,12 @@ class PickupapiController extends \BaseController {
      */
     public function index()
     {
+        if(Input::has('p')){
+            $page = Input::get('p');
+        }else{
+            $page = null;
+        }
+
         $key = Input::get('key');
         $deliverydate = Input::get('date');
         $until = Input::get('until');
@@ -114,6 +120,8 @@ class PickupapiController extends \BaseController {
         if(is_null($until) || $until == ''){
             $until = date('Y-m-d',time());
         }
+
+        $page_size = \Config::get('jex.api_page_size');
 
         /*
                     ->join('members as m','d.merchant_id=m.id','left')
@@ -165,7 +173,7 @@ class PickupapiController extends \BaseController {
                     ->get();
         */
 
-        $orders = $this->model
+        $model = $this->model
                 ->select(
                     \DB::raw(
                         \Config::get('jayon.incoming_delivery_table').'.* ,'.
@@ -204,8 +212,17 @@ class PickupapiController extends \BaseController {
 
             })
 
-            ->orderBy('ordertime','desc')
-            ->get();
+            ->orderBy('ordertime','desc');
+            //->get();
+
+        $total_records = $model->count();
+        $total_page = ceil( $total_records / $page_size);
+
+        if(is_null($page)){
+            $orders = $model->get();
+        }else{
+            $orders = $model->skip( ($page - 1) * $page_size )->take($page_size)->get();
+        }
 
         $total_billing = 0;
         $total_delivery = 0;
@@ -319,7 +336,15 @@ class PickupapiController extends \BaseController {
         $actor = $key;
         \Event::fire('log.api',array($this->controller_name, 'get' ,$actor,'logged out'));
 
-        return $orders;
+        $headers = array('X-Page' => $page, 'X-Total-Pages'=> $total_page, 'X-Total-Records'=>$total_records );
+
+        return Response::json(
+            $orders,
+            200,
+            $headers
+        );
+
+        //return $orders;
         //
     }
 
