@@ -176,7 +176,7 @@ class FcmdeviceController extends AdminController {
         $title = Input::get('title');
         $device_name = Input::get('device_name');
         $device_key = Input::get('device_key');
-        $parse_installation_id = Input::get('pinstall');
+        $fcm_installation_id = Input::get('pinstall');
 
         $msg = array
             (
@@ -198,7 +198,7 @@ class FcmdeviceController extends AdminController {
 
         $fields = array
             (
-                'to'  => $registrationIds,
+                'to'  => $fcm_installation_id,
                 'text'=>'Device ID Assignment - '.$device_name,
                 'data'          => $msg
             );
