@@ -180,7 +180,7 @@ class FcmdeviceController extends AdminController {
 
 
 
-        if($parse_installation_id != '')
+        if($fcm_installation_id != '')
         {
 
             $notification = array(
