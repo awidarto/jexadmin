@@ -20,10 +20,12 @@ class FcmController extends \Controller {
     public function postRegister()
     {
         $token = \Input::get('Token');
+        $prevToken = \Input::get('prevToken');
 
         $fcm = new \Fcm();
 
         $fcm->token = $token;
+        $fcm->prevToken = $prevToken;
         $fcm->save();
 
     }
