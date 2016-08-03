@@ -220,7 +220,7 @@ class FcmdeviceController extends AdminController {
         $result = curl_exec($ch );
         curl_close( $ch );
 
-        echo $result;
+        return Response::json( array('result'=>'OK', 'response'=>$result ) );
     }
 
     public function postPush()
