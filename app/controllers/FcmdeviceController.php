@@ -170,6 +170,59 @@ class FcmdeviceController extends AdminController {
         return parent::printGenerator();
     }
 
+    public function postFcmpush()
+    {
+        $message = Input::get('message');
+        $title = Input::get('title');
+        $device_name = Input::get('device_name');
+        $device_key = Input::get('device_key');
+        $parse_installation_id = Input::get('pinstall');
+
+        $msg = array
+            (
+                'message'   => 'here is a message. message',
+                'title'     => 'This is a title. title',
+                'subtitle'  => 'This is a subtitle. subtitle',
+                'tickerText'    => 'Ticker text here...Ticker text here...Ticker text here',
+                'vibrate'   => 1,
+                'sound'     => 1,
+                'largeIcon' => 'large_icon',
+                'smallIcon' => 'small_icon'
+
+            );
+
+        $data = array(
+                'device_name'=>$device_name,
+                'device_key'=>$device_key
+            );
+
+        $fields = array
+            (
+                'to'  => $registrationIds,
+                'text'=>'Device ID Assignment - '.$device_name,
+                'data'          => $msg
+            );
+             
+        $headers = array
+            (
+                'Authorization: key=' . Config::get('fcm.fcm_key') ,
+                'Content-Type: application/json'
+            );
+             
+        $ch = curl_init();
+
+        curl_setopt( $ch,CURLOPT_URL, 'https:///fcm.googleapis.com/fcm/send' );
+        curl_setopt( $ch,CURLOPT_POST, true );
+        curl_setopt( $ch,CURLOPT_HTTPHEADER, $headers );
+        curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
+        curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER, false );
+        curl_setopt( $ch,CURLOPT_POSTFIELDS, json_encode( $fields ) );
+        $result = curl_exec($ch );
+        curl_close( $ch );
+
+        echo $result;
+    }
+
     public function postPush()
     {
         ParseClient::initialize(
@@ -835,7 +888,7 @@ class FcmdeviceController extends AdminController {
         $actions = $stat.'<br />'.$edit.'<br />'.$delete;
         */
 
-        $senddevice = '<span class="senddevice action" id="'.$data['installationId'].'" ><i class="fa fa-send"></i> Send Device ID</span>';
+        $senddevice = '<span class="senddevice action" id="'.$data['token'].'" ><i class="fa fa-send"></i> Send Device ID</span>';
 
         $actions = $senddevice;
         return $actions;

@@ -91,7 +91,7 @@ button#label_default{
 
         $('#do-send-device').on('click',function(){
 
-            $.post('{{ URL::to('parsedevice/push')}}',
+            $.post('{{ URL::to('fcmdevice/fcmpush')}}',
                 {
                     message : 'Device ID Assignment',
                     title : 'New ID ' + $('#device-name').val(),
