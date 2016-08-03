@@ -130,6 +130,7 @@ Route::group(array('prefix' => 'api/v1/mobile'), function (){
     Route::post('/sync/pickup', 'Api\SyncapiController@postPickuporder');
     Route::post('/sync/pickupstatus', 'Api\SyncapiController@postPickupstatus');
 
+    Route::post('/fcm/register', 'Api\FcmController@postRegister');
 
     Route::post('/sync/box', 'Api\SyncapiController@postBox');
     Route::post('/sync/boxstatus', 'Api\SyncapiController@postBoxstatus');
