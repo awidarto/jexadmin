@@ -178,31 +178,34 @@ class FcmdeviceController extends AdminController {
         $device_key = Input::get('device_key');
         $fcm_installation_id = Input::get('pinstall');
 
-        $msg = array
-            (
-                'message'   => 'here is a message. message',
-                'title'     => 'This is a title. title',
-                'subtitle'  => 'This is a subtitle. subtitle',
-                'tickerText'    => 'Ticker text here...Ticker text here...Ticker text here',
-                'vibrate'   => 1,
-                'sound'     => 1,
-                'largeIcon' => 'large_icon',
-                'smallIcon' => 'small_icon'
 
-            );
 
-        $data = array(
-                'device_name'=>$device_name,
-                'device_key'=>$device_key
-            );
+        if($parse_installation_id != '')
+        {
 
-        $fields = array
-            (
-                'to'  => $fcm_installation_id,
-                'text'=>'Device ID Assignment - '.$device_name,
-                'data'          => $msg
-            );
-             
+            $notification = array(
+                    'body'=>'Device ID Assignment - '.$device_name,
+                    'title'=>Config::get('site.name')
+                );
+
+
+            $data = array(
+                    'device_name'=>$device_name,
+                    'device_key'=>$device_key
+                );
+
+            $message = array(
+                    'to'  => $fcm_installation_id,
+                    'notification'=>$notification,
+                    'data'=> $data
+                );
+
+
+        }else{
+
+        }
+
+
         $headers = array
             (
                 'Authorization: key=' . Config::get('fcm.fcm_key') ,
@@ -216,7 +219,7 @@ class FcmdeviceController extends AdminController {
         curl_setopt( $ch,CURLOPT_HTTPHEADER, $headers );
         curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
         curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER, false );
-        curl_setopt( $ch,CURLOPT_POSTFIELDS, json_encode( $fields ) );
+        curl_setopt( $ch,CURLOPT_POSTFIELDS, json_encode( $message ) );
         $result = curl_exec($ch );
         curl_close( $ch );
 
