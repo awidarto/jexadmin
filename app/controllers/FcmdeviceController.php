@@ -198,7 +198,7 @@ class FcmdeviceController extends AdminController {
                     'to'  => $fcm_installation_id,
                     'notification'=>$notification,
                     'data'=> $data,
-                    "click_action": "ACTIVITY_MAIN"
+                    'click_action'=>'MAIN'
                 );
 
 
