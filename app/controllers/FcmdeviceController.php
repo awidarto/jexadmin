@@ -214,16 +214,30 @@ class FcmdeviceController extends AdminController {
              
         $ch = curl_init();
 
-        curl_setopt( $ch,CURLOPT_URL, 'https:///fcm.googleapis.com/fcm/send' );
+        curl_setopt( $ch,CURLOPT_URL, Config::get('fcm.fcm_url') );
         curl_setopt( $ch,CURLOPT_POST, true );
         curl_setopt( $ch,CURLOPT_HTTPHEADER, $headers );
         curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
         curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER, false );
         curl_setopt( $ch,CURLOPT_POSTFIELDS, json_encode( $message ) );
+        
         $result = curl_exec($ch );
+
+
+
         curl_close( $ch );
 
-        return Response::json( array('result'=>'OK', 'response'=>$result ) );
+        if ($result === FALSE) {
+
+            $resp = $curl_error($ch);
+            $status = 'NOK';
+        }else{
+            $resp = $result;
+            $status = 'OK';
+        }
+
+        return Response::json( array('result'=>$status, 'response'=>$resp ) );
+
     }
 
     public function postPush()
