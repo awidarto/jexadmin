@@ -185,7 +185,8 @@ class FcmdeviceController extends AdminController {
 
             $notification = array(
                     'body'=>'Device ID Assignment - '.$device_name,
-                    'title'=>Config::get('site.name')
+                    'title'=>Config::get('site.name'),
+                    'sound'=>'default'
                 );
 
 
