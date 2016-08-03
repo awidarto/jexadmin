@@ -22,11 +22,30 @@ class FcmController extends \Controller {
         $token = \Input::get('Token');
         $prevToken = \Input::get('prevToken');
 
-        $fcm = new \Fcm();
+        if($prevToken == 'new'){
+            $fcm = new \Fcm();
 
-        $fcm->token = $token;
-        $fcm->prevToken = $prevToken;
-        $fcm->save();
+            $fcm->token = $token;
+            $fcm->prevToken = $prevToken;
+            $fcm->save();
+        }else{
+
+            $efcm = \Fcm::where('token','=', $prevToken)->first();
+
+            if($efcm ){
+                $efcm->token = $token;
+                $efcm->prevToken = $prevToken;
+                $efcm->save();
+
+            }else{
+                $fcm = new \Fcm();
+                $fcm->token = $token;
+                $fcm->prevToken = $prevToken;
+                $fcm->save();
+            }
+
+        }
+
 
     }
 
