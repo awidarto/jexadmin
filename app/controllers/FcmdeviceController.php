@@ -11,6 +11,7 @@ class FcmdeviceController extends AdminController {
         array('Created',array('search'=>true,'sort'=>true, 'daterange'=>true)),
         array('JEX Device Identifier',array('search'=>true,'sort'=>true)),
         array('App Identifier',array('search'=>true,'sort'=>true)),
+        array('Previous Identifier',array('search'=>true,'sort'=>true)),
         array('App Name',array('search'=>true,'sort'=>true)),
         array('App Version',array('search'=>true,'sort'=>true)),
         array('Device Brand',array('search'=>true,'sort'=>true)),
@@ -23,7 +24,8 @@ class FcmdeviceController extends AdminController {
     public $fields = array(
         array('createdAt',array('kind'=>'datetimerange','query'=>'like','pos'=>'both','show'=>true)),
         array('JEXDeviceId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-        array('appIdentifier',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+        array('Token',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+        array('prevToken',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
         array('appName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
         array('appVersion',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
         array('deviceBrand',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
@@ -54,7 +56,7 @@ class FcmdeviceController extends AdminController {
     public function getIndex()
     {
 
-        $this->title = 'Push Device Registry';
+        $this->title = 'FCM Push Device Registry';
 
         $this->place_action = 'first';
 

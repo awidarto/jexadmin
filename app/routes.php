@@ -40,6 +40,7 @@ Route::controller('asset', 'AssetController');
 
 Route::controller('device', 'DeviceController');
 Route::controller('parsedevice', 'ParsedeviceController');
+Route::controller('fcmdevice', 'FcmdeviceController');
 
 
 Route::controller('employee', 'EmployeeController');

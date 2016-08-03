@@ -53,6 +53,9 @@
                             <li>
                                 <a href="{{ URL::to('parsedevice') }}"> Parse Devices</a>
                             </li>
+                            <li>
+                                <a href="{{ URL::to('fcmdevice') }}"> FCM Devices</a>
+                            </li>
                           </ul>
                         </li>
                         <li class="first_level {{ hsa( array('manifest','devmanifest') ) }} ">
