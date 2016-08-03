@@ -24,7 +24,7 @@ class FcmdeviceController extends AdminController {
     public $fields = array(
         array('createdAt',array('kind'=>'datetimerange','query'=>'like','pos'=>'both','show'=>true)),
         array('JEXDeviceId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-        array('Token',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+        array('token',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
         array('prevToken',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
         array('appName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
         array('appVersion',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
