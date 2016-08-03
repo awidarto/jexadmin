@@ -197,7 +197,8 @@ class FcmdeviceController extends AdminController {
             $message = array(
                     'to'  => $fcm_installation_id,
                     'notification'=>$notification,
-                    'data'=> $data
+                    'data'=> $data,
+                    "click_action": "ACTIVITY_MAIN"
                 );
 
 
@@ -211,7 +212,7 @@ class FcmdeviceController extends AdminController {
                 'Authorization: key=' . Config::get('fcm.fcm_key') ,
                 'Content-Type: application/json'
             );
-             
+
         $ch = curl_init();
 
         curl_setopt( $ch,CURLOPT_URL, Config::get('fcm.fcm_url') );
@@ -220,7 +221,7 @@ class FcmdeviceController extends AdminController {
         curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
         curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER, false );
         curl_setopt( $ch,CURLOPT_POSTFIELDS, json_encode( $message ) );
-        
+
         $result = curl_exec($ch );
 
 
