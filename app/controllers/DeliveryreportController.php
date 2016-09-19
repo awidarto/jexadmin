@@ -242,13 +242,11 @@ class DeliveryreportController extends AdminController {
             $totaldcost = 0;
             $totalcodsur = 0;
 
-            $mtotaltype = 0;
-            $mtotaldcost = 0;
-            $mtotalcodsur = 0;
-
-
             foreach ($m as $mc=> $yr) {
 
+                $mtotaltype = 0;
+                $mtotaldcost = 0;
+                $mtotalcodsur = 0;
 
                 $row = array();
 
@@ -261,7 +259,6 @@ class DeliveryreportController extends AdminController {
                 $totalcrows = 0;
 
                 foreach ($effdates2 as $yr=>$w) {
-
 
                     foreach ($w as $wk=>$dt) {
 
@@ -302,13 +299,12 @@ class DeliveryreportController extends AdminController {
                             $codcost = 0;
                         }
 
-                        $valrows[] = array('value'=>$val,'attr'=>'style="text-align:right;');
+                        $valrows[] = array('value'=>$val,'attr'=>'');
                         $totalrows += $val;
 
-                        $valrows[] = array('value'=>$dcost,'attr'=>'style="text-align:right;');
+                        $valrows[] = array('value'=>$dcost,'attr'=>'');
                         $totaldrows += $dcost;
-
-                        $valrows[] = array('value'=>$codcost,'attr'=>'style="text-align:right;');
+                        $valrows[] = array('value'=>$codcost,'attr'=>'');
                         $totalcrows += $codcost;
 
                     }
@@ -317,22 +313,19 @@ class DeliveryreportController extends AdminController {
                     $totaldcost += $totaldrows;
                     $totalcodsur += $totalcrows;
 
+                    $mtotaltype += $totaltype;
+                    $mtotaldcost += $totaldcost;
+                    $mtotalcodsur += $totalcodsur;
+
 
                 }
 
 
-                $row[] = array('value'=>$totalrows,'attr'=>'style="text-align:right;"');
-                $row[] = array('value'=>$totaldrows,'attr'=>'style="text-align:right;"');
-                $row[] = array('value'=>$totalcrows,'attr'=>'style="text-align:right;"');
+                $row[] = array('value'=>$totalrows,'attr'=>'');
+                $row[] = array('value'=>$totaldrows,'attr'=>'');
+                $row[] = array('value'=>$totalcrows,'attr'=>'');
 
                 $mrow = array_merge($row, $valrows);
-
-                $weektotal[] = array(
-                        'mtotaltype' => $totalrows,
-                        'mtotaldcost' => $totaldrows,
-                        'mtotalcodsur' => $totalcrows
-                    );
-
 
                 $tarr[$t][] = $mrow;
 
@@ -340,22 +333,20 @@ class DeliveryreportController extends AdminController {
 
             }
 
-
-
             // subhead
             $head = array();
 
             $head[] = array('value'=>'','attr'=>'');
             $head[] = array('value'=>strtoupper($t),'attr'=>'style="text-align:right;"');
 
-            $head[] = array('value'=>$totaltype,'attr'=>'style="text-align:right;font-weight:bold;');
-            $head[] = array('value'=>$totaldcost,'attr'=>'style="text-align:right;font-weight:bold;');
-            $head[] = array('value'=>$totalcodsur,'attr'=>'style="text-align:right;font-weight:bold;');
+            $head[] = array('value'=>$totaltype,'attr'=>'');
+            $head[] = array('value'=>$totaldcost,'attr'=>'');
+            $head[] = array('value'=>$totalcodsur,'attr'=>'');
 
             for($i = 1; $i < $weekspan;$i++){
-                $head[] = array('value'=>$weektotal[$i]['mtotaltype'],'attr'=>'style="text-align:right;font-weight:bold;');
-                $head[] = array('value'=>$weektotal[$i]['mtotaldcost'],'attr'=>'style="text-align:right;font-weight:bold;');
-                $head[] = array('value'=>$weektotal[$i]['mtotalcodsur'],'attr'=>'style="text-align:right;font-weight:bold;');
+                $head[] = array('value'=>'','attr'=>'');
+                $head[] = array('value'=>'','attr'=>'');
+                $head[] = array('value'=>'','attr'=>'');
             }
             $tharr[$t] = $head;
 
