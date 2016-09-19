@@ -67,7 +67,7 @@ class DeliveryreportController extends AdminController {
 
         $model = new Shipment();
 
-        $model = $model->select( DB::raw('count(*) as count, year(ordertime) as orderyear,weekofyear(ordertime) as orderweek, date(ordertime) as orderdate, m.merchantname as merchant_name, delivery_type') )
+        $model = $model->select( DB::raw('count(*) as count, year(ordertime) as orderyear,weekofyear(ordertime) as orderweek, date(ordertime) as orderdate, m.merchantname as merchant_name, delivery_type, sum(delivery_cost) as delivery_cost, sum(cod_cost) as cod_cost') )
                     ->leftJoin('members as m', $mtab.'.merchant_id','=','m.id')
                     ->orderBy('m.merchantname', 'asc');
 
@@ -103,6 +103,10 @@ class DeliveryreportController extends AdminController {
 
         $bymc = array();
 
+        $bydecost = array();
+
+        $bycodcost = array();
+
         $effdates = array();
 
         foreach($actualresult as $mc){
@@ -110,6 +114,18 @@ class DeliveryreportController extends AdminController {
                 $bymc[$mc->delivery_type][$mc->merchant_name][$mc->orderyear][$mc->orderweek][$mc->orderdate] += $mc->count;
             }else{
                 $bymc[$mc->delivery_type][$mc->merchant_name][$mc->orderyear][$mc->orderweek][$mc->orderdate] = $mc->count;
+            }
+
+            if(isset($bydecost[$mc->delivery_type][$mc->merchant_name][$mc->orderyear][$mc->orderweek][$mc->orderdate])){
+                $bydecost[$mc->delivery_type][$mc->merchant_name][$mc->orderyear][$mc->orderweek][$mc->orderdate] += $mc->delivery_cost;
+            }else{
+                $bydecost[$mc->delivery_type][$mc->merchant_name][$mc->orderyear][$mc->orderweek][$mc->orderdate] = $mc->delivery_cost;
+            }
+
+            if(isset($bycodcost[$mc->delivery_type][$mc->merchant_name][$mc->orderyear][$mc->orderweek][$mc->orderdate])){
+                $bycodcost[$mc->delivery_type][$mc->merchant_name][$mc->orderyear][$mc->orderweek][$mc->orderdate] += $mc->cod_cost;
+            }else{
+                $bycodcost[$mc->delivery_type][$mc->merchant_name][$mc->orderyear][$mc->orderweek][$mc->orderdate] = $mc->cod_cost;
             }
 
             $effdates[$mc->orderyear][$mc->orderweek][] = $mc->orderdate;
@@ -149,10 +165,14 @@ class DeliveryreportController extends AdminController {
         $headvar1 = array(
             array('value'=>'','attr'=>''),
             array('value'=>'','attr'=>''),
+            array('value'=>'','attr'=>''),
+            array('value'=>'','attr'=>''),
             array('value'=>'','attr'=>'')
         );
 
         $headvar2 = array(
+            array('value'=>'','attr'=>''),
+            array('value'=>'','attr'=>''),
             array('value'=>'','attr'=>''),
             array('value'=>'','attr'=>''),
             array('value'=>'','attr'=>'')
@@ -161,13 +181,17 @@ class DeliveryreportController extends AdminController {
         $headvar3 = array(
             array('value'=>'','attr'=>''),
             array('value'=>'','attr'=>''),
+            array('value'=>'','attr'=>''),
+            array('value'=>'','attr'=>''),
             array('value'=>'','attr'=>'')
 
             );
         $headvar4 = array(
             array('value'=>'No.','attr'=>''),
             array('value'=>'Merchant','attr'=>''),
-            array('value'=>'Total','attr'=>'')
+            array('value'=>'Total','attr'=>''),
+            array('value'=>'DCost','attr'=>''),
+            array('value'=>'CODSur','attr'=>'')
 
             );
 
@@ -177,16 +201,17 @@ class DeliveryreportController extends AdminController {
 
             $cy = '';
             foreach ($w as $wk => $v) {
-                $headvar1[] = array('value'=>'','attr'=>'');
+                $headvar1[] = array('value'=>'','attr'=>'colspan="3"');
 
                 if($cy != $y){
-                    $headvar2[] = array('value'=>$y,'attr'=>'');
+                    $headvar2[] = array('value'=>$y,'attr'=>'colspan="3"');
                 }else{
-                    $headvar2[] = array('value'=>'','attr'=>'');
+                    $headvar2[] = array('value'=>'','attr'=>'colspan="3"');
                 }
 
-                $headvar3[] = array('value'=>$wk,'attr'=>'');
-                $headvar4[] = array('value'=>$v[0].' - '.$v[1],'attr'=>'');
+                $headvar3[] = array('value'=>$wk,'attr'=>'colspan="3"');
+                $headvar4[] = array('value'=>$v[0].' - '.$v[1],'attr'=>'colspan="3"');
+                $headvar1[] = array('value'=>'','attr'=>'colspan="3"');
 
                 $cy = $y;
                 $weekspan++;
@@ -212,6 +237,8 @@ class DeliveryreportController extends AdminController {
             $seq = 1;
 
             $totaltype = 0;
+            $totaldcost = 0;
+            $totalcodsur = 0;
 
             foreach ($m as $mc=> $yr) {
 
@@ -222,13 +249,16 @@ class DeliveryreportController extends AdminController {
 
                 $valrows = array();
                 $totalrows = 0;
+                $totaldrows = 0;
+                $totalcrows = 0;
 
                 foreach ($effdates2 as $yr=>$w) {
 
                     foreach ($w as $wk=>$dt) {
 
                         $val = 0;
-
+                        $dcost = 0;
+                        $codcost = 0;
 
                         if(isset($bymc[$t][$mc][$yr][$wk])){
                             //print_r($bymc[$t][$mc][$yr][$wk]);
@@ -236,21 +266,52 @@ class DeliveryreportController extends AdminController {
                             foreach ($vr as $k => $v) {
                                 $val += $v;
                             }
+
                         }else{
                             $val = 0;
+                        }
+
+                        if(isset($bydecost[$t][$mc][$yr][$wk])){
+                            //print_r($bymc[$t][$mc][$yr][$wk]);
+                            $dr = $bydecost[$t][$mc][$yr][$wk];
+                            foreach ($dr as $k => $v) {
+                                $dcost += $v;
+                            }
+
+                        }else{
+                            $dcost = 0;
+                        }
+
+                        if(isset($bycodcost[$t][$mc][$yr][$wk])){
+                            //print_r($bymc[$t][$mc][$yr][$wk]);
+                            $cr = $bycodcost[$t][$mc][$yr][$wk];
+                            foreach ($cr as $k => $v) {
+                                $codcost += $v;
+                            }
+
+                        }else{
+                            $codcost = 0;
                         }
 
                         $valrows[] = array('value'=>$val,'attr'=>'');
                         $totalrows += $val;
 
+                        $valrows[] = array('value'=>$dcost,'attr'=>'');
+                        $totaldrows += $dcost;
+                        $valrows[] = array('value'=>$codcost,'attr'=>'');
+                        $totalcrows += $codcost;
 
                     }
 
                     $totaltype += $totalrows;
+                    $totaldcost += $totaldrows;
+                    $totalcodsur += $totalcrows;
 
                 }
 
                 $row[] = array('value'=>$totalrows,'attr'=>'');
+                $row[] = array('value'=>$totaldrows,'attr'=>'');
+                $row[] = array('value'=>$totalcrows,'attr'=>'');
 
                 $mrow = array_merge($row, $valrows);
 
@@ -267,9 +328,13 @@ class DeliveryreportController extends AdminController {
             $head[] = array('value'=>strtoupper($t),'attr'=>'style="text-align:right;"');
 
             $head[] = array('value'=>$totaltype,'attr'=>'');
+            $head[] = array('value'=>$totaldcost,'attr'=>'');
+            $head[] = array('value'=>$totalcodsur,'attr'=>'');
 
             for($i = 1; $i < $weekspan;$i++){
-                $head[] = array('value'=>'','attr'=>'');
+                $head[] = array('value'=>'Count','attr'=>'');
+                $head[] = array('value'=>'DCost','attr'=>'');
+                $head[] = array('value'=>'CODSur','attr'=>'');
             }
             $tharr[$t] = $head;
 
@@ -294,6 +359,8 @@ class DeliveryreportController extends AdminController {
         $sumup[] = array('value'=>'<b>TOTAL</b>','attr'=>'style="text-align:right;"');
 
         $sumup[] = array('value'=>$totalorder,'attr'=>'style="text-align:right;"');
+        $sumup[] = array('value'=>'','attr'=>'style="text-align:right;"');
+        $sumup[] = array('value'=>'','attr'=>'style="text-align:right;"');
 
         for($i = 1; $i < $weekspan;$i++){
             $sumup[] = array('value'=>'','attr'=>'');
