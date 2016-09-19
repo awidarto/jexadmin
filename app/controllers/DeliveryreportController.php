@@ -230,6 +230,8 @@ class DeliveryreportController extends AdminController {
         $tharr = array();
         $thval = array();
 
+        $weektotal = array();
+
         foreach ($bymc as $t => $m) {
 
             //$weekspan += 1;
@@ -307,7 +309,20 @@ class DeliveryreportController extends AdminController {
                         $valrows[] = array('value'=>$codcost,'attr'=>'');
                         $totalcrows += $codcost;
 
+                        $mtotaltype += $totalrows;
+                        $mtotaldcost += $totaldrows;
+                        $mtotalcodsur += $totalcrows;
+
                     }
+
+                    $weektotal[] = array(
+
+                            'totaltype'=>$mtotaltype,
+                            'totaldcost'=>$mtotaldcost,
+                            'totalcodsur'=>$mtotalcodsur
+
+
+                        );
 
                     $totaltype += $totalrows;
                     $totaldcost += $totaldrows;

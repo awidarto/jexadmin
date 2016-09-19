@@ -68,7 +68,7 @@
                             <li class="{{ sa('devmanifest') }}" ><a href="{{ URL::to('devmanifest') }}"> Manifest</a></li>
                             <li class="{{ sa('deliverytime') }}" ><a href="{{ URL::to('deliverytime') }}"> Delivery Time</a></li>
                             <li class="{{ sa('deliverybydate') }}" ><a href="{{ URL::to('deliverybydate') }}"> Delivery By Date</a></li>
-                            <li class="{{ sa('deliveryreport') }}" ><a href="{{ URL::to('deliveryreport') }}"> Delivery Report</a></li>
+                            <li class="{{ sa('deliveryreport') }}" ><a href="{{ URL::to('deliveryreport') }}"> Week Delivery Report</a></li>
                             <li class="{{ sa('devicerecon') }}" ><a href="{{ URL::to('devicerecon') }}"> Device Reconciliation</a></li>
                             <li class="{{ sa('devicerecondetail') }}" ><a href="{{ URL::to('devicerecondetail') }}"> Device Reconciliation Detail</a></li>
                             <li class="{{ sa('cashier') }}" ><a href="{{ URL::to('cashier') }}"> Cashier</a></li>
