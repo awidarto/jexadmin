@@ -484,7 +484,6 @@ Route::get('init/{entity}/{initial}',function($entity,$initial){
 });
 
 Route::get('hashme/{mypass}',function($mypass){
-
     print Hash::make($mypass);
 });
 
